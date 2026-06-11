@@ -97,8 +97,14 @@
     .event-title {
       font-weight: 700;
       margin-bottom: 2px;
+      color: inherit;
+      text-decoration: none;
+      display: block;
     }
 
+.event-title:hover {
+  text-decoration: underline;
+}
     .event-meta {
       color: #333;
       font-size: 11px;
@@ -232,9 +238,15 @@ loadEvents();
           item.className = `event ${event.rank === "S" ? "rank-s" : ""}`;
           item.style.background = categoryColors[event.category] || "#eeeeee";
 
-          const title = document.createElement("div");
+          const title = document.createElement(event.tohoUrl ? "a" : "div");
           title.className = "event-title";
           title.textContent = event.title;
+
+          if (event.tohoUrl) {
+            title.href = event.tohoUrl;
+            title.target = "_blank";
+            title.rel = "noopener noreferrer";
+          }
 
           const meta = document.createElement("div");
           meta.className = "event-meta";
