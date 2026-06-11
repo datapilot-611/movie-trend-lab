@@ -149,14 +149,25 @@
   </main>
 
   <script>
-    const events = [
-      { date: "2026-06-09", title: "コードギアス　奪還のロゼ　第3幕", category: "アニメ", score: 88, rank: "S" },
-      { date: "2026-06-12", title: "映画「おそ松さん」", category: "邦画", score: 47, rank: "B" },
-      { date: "2026-06-23", title: "コードギアス　奪還のロゼ　最終幕", category: "アニメ", score: 83, rank: "S" },
-      { date: "2026-06-26", title: "アンパンマン", category: "アニメ", score: 53, rank: "B" },
-      { date: "2026-07-31", title: "スパイダーマン：ブランド・ニュー・デイ", category: "洋画", score: 92, rank: "S" }
-    ];
+    let events = [];
 
+    async function loadEvents() {
+      try {
+        const response = await fetch('./data.json');
+    
+        if (!response.ok) {
+          throw new Error('data.jsonを読み込めませんでした');
+        }
+
+        events = await response.json();
+        renderCalendar();
+      } catch (error) {
+        console.error(error);
+        calendarEl.innerHTML = '<div style="padding:16px;background:white;">data.jsonの読み込みに失敗しました</div>';
+      }
+    }
+
+loadEvents();
     const categoryColors = {
       "アニメ": "#cfe2f3",
       "洋画": "#f4cccc",
@@ -238,7 +249,6 @@
       }
     }
 
-    renderCalendar();
   </script>
 </body>
 </html>
