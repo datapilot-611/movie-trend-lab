@@ -130,6 +130,23 @@
       display: inline-block;
       margin-right: 4px;
     }
+    .event-links {
+      display: flex;
+      gap: 6px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .event-links a {
+      font-size: 11px;
+      color: #1d4ed8;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .event-links a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -254,6 +271,27 @@ loadEvents();
 
           item.appendChild(title);
           item.appendChild(meta);
+
+          const links = document.createElement("div");
+          links.className = "event-links";
+
+          if (event.dmmUrl) {
+            const dmmLink = document.createElement("a");
+            dmmLink.href = event.dmmUrl;
+            dmmLink.target = "_blank";
+            dmmLink.textContent = "▶ DMM";
+            links.appendChild(dmmLink);
+          }
+
+          if (event.trendUrl) {
+            const trendLink = document.createElement("a");
+            trendLink.href = event.trendUrl;
+            trendLink.target = "_blank";
+            trendLink.textContent = "📈 Trend";
+            links.appendChild(trendLink);
+          }
+
+          item.appendChild(links);
           cell.appendChild(item);
         });
 
