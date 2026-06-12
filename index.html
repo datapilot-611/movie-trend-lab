@@ -22,7 +22,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     h1 {
@@ -37,6 +37,18 @@
       padding: 8px 12px;
       cursor: pointer;
       font-weight: 600;
+    }
+
+    button.active {
+      background: #111827;
+      color: white;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
     }
 
     .month-label {
@@ -102,9 +114,10 @@
       display: block;
     }
 
-.event-title:hover {
-  text-decoration: underline;
-}
+    .event-title:hover {
+      text-decoration: underline;
+    }
+
     .event-meta {
       color: #333;
       font-size: 11px;
@@ -112,6 +125,24 @@
 
     .rank-s .event-title::before {
       content: "🔥 ";
+    }
+
+    .event-links {
+      display: flex;
+      gap: 6px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .event-links a {
+      font-size: 11px;
+      color: #1d4ed8;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .event-links a:hover {
+      text-decoration: underline;
     }
 
     .legend {
@@ -130,22 +161,68 @@
       display: inline-block;
       margin-right: 4px;
     }
-    .event-links {
-      display: flex;
-      gap: 6px;
-      margin-top: 5px;
-      flex-wrap: wrap;
+
+    .ranking {
+      margin-top: 28px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 16px;
     }
 
-    .event-links a {
-      font-size: 11px;
-      color: #1d4ed8;
-      text-decoration: none;
+    .ranking h2 {
+      font-size: 18px;
+      margin: 0 0 12px;
+    }
+
+    .ranking-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .ranking-item {
+      display: grid;
+      grid-template-columns: 40px 1fr 90px 70px auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #fafafa;
+      font-size: 13px;
+    }
+
+    .ranking-title {
       font-weight: 700;
     }
 
-    .event-links a:hover {
-      text-decoration: underline;
+    .ranking-links a {
+      margin-right: 8px;
+      color: #1d4ed8;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .day {
+        min-height: 105px;
+        padding: 6px;
+      }
+
+      .event {
+        font-size: 11px;
+      }
+
+      .ranking-item {
+        grid-template-columns: 32px 1fr;
+      }
     }
   </style>
 </head>
@@ -160,6 +237,8 @@
       </div>
     </div>
 
+    <div class="filters" id="filters"></div>
+
     <section class="calendar" id="calendar"></section>
 
     <div class="legend">
@@ -169,28 +248,17 @@
       <span><span class="chip" style="background:#fff2cc"></span>特撮</span>
       <span>🔥 Sランク</span>
     </div>
+
+    <section class="ranking">
+      <h2>期待値ランキング TOP10</h2>
+      <div class="ranking-list" id="rankingList"></div>
+    </section>
   </main>
 
   <script>
     let events = [];
+    let activeFilter = "すべて";
 
-    async function loadEvents() {
-      try {
-        const response = await fetch('./data.json');
-    
-        if (!response.ok) {
-          throw new Error('data.jsonを読み込めませんでした');
-        }
-
-        events = await response.json();
-        renderCalendar();
-      } catch (error) {
-        console.error(error);
-        calendarEl.innerHTML = '<div style="padding:16px;background:white;">data.jsonの読み込みに失敗しました</div>';
-      }
-    }
-
-loadEvents();
     const categoryColors = {
       "アニメ": "#cfe2f3",
       "洋画": "#f4cccc",
@@ -203,6 +271,53 @@ loadEvents();
 
     const calendarEl = document.getElementById("calendar");
     const monthLabelEl = document.getElementById("monthLabel");
+    const filtersEl = document.getElementById("filters");
+    const rankingListEl = document.getElementById("rankingList");
+
+    async function loadEvents() {
+      try {
+        const response = await fetch('./data.json');
+
+        if (!response.ok) {
+          throw new Error('data.jsonを読み込めませんでした');
+        }
+
+        events = await response.json();
+        renderFilters();
+        renderCalendar();
+        renderRanking();
+      } catch (error) {
+        console.error(error);
+        calendarEl.innerHTML = '<div style="padding:16px;background:white;">data.jsonの読み込みに失敗しました</div>';
+      }
+    }
+
+    function getFilteredEvents() {
+      if (activeFilter === "すべて") return events;
+      if (activeFilter === "Sランク") return events.filter(event => event.rank === "S");
+      return events.filter(event => event.category === activeFilter);
+    }
+
+    function renderFilters() {
+      const categories = ["すべて", ...new Set(events.map(event => event.category).filter(Boolean)), "Sランク"];
+
+      filtersEl.innerHTML = "";
+
+      categories.forEach(category => {
+        const button = document.createElement("button");
+        button.textContent = category;
+        button.className = category === activeFilter ? "active" : "";
+
+        button.addEventListener("click", () => {
+          activeFilter = category;
+          renderFilters();
+          renderCalendar();
+          renderRanking();
+        });
+
+        filtersEl.appendChild(button);
+      });
+    }
 
     document.getElementById("prev").addEventListener("click", () => {
       current.setMonth(current.getMonth() - 1);
@@ -217,6 +332,7 @@ loadEvents();
     function renderCalendar() {
       calendarEl.innerHTML = "";
 
+      const filteredEvents = getFilteredEvents();
       const year = current.getFullYear();
       const month = current.getMonth();
 
@@ -248,57 +364,128 @@ loadEvents();
         cell.appendChild(number);
 
         const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-        const todaysEvents = events.filter(event => event.date === dateKey);
+        const todaysEvents = filteredEvents.filter(event => event.date === dateKey);
 
         todaysEvents.forEach(event => {
-          const item = document.createElement("div");
-          item.className = `event ${event.rank === "S" ? "rank-s" : ""}`;
-          item.style.background = categoryColors[event.category] || "#eeeeee";
-
-          const title = document.createElement(event.tohoUrl ? "a" : "div");
-          title.className = "event-title";
-          title.textContent = event.title;
-
-          if (event.tohoUrl) {
-            title.href = event.tohoUrl;
-            title.target = "_blank";
-            title.rel = "noopener noreferrer";
-          }
-
-          const meta = document.createElement("div");
-          meta.className = "event-meta";
-          meta.textContent = `${event.category} / ${event.rank} / 期待値 ${Math.round(event.score)}`;
-
-          item.appendChild(title);
-          item.appendChild(meta);
-
-          const links = document.createElement("div");
-          links.className = "event-links";
-
-          if (event.dmmUrl) {
-            const dmmLink = document.createElement("a");
-            dmmLink.href = event.dmmUrl;
-            dmmLink.target = "_blank";
-            dmmLink.textContent = "▶ DMM";
-            links.appendChild(dmmLink);
-          }
-
-          if (event.trendUrl) {
-            const trendLink = document.createElement("a");
-            trendLink.href = event.trendUrl;
-            trendLink.target = "_blank";
-            trendLink.textContent = "📈 Trend";
-            links.appendChild(trendLink);
-          }
-
-          item.appendChild(links);
-          cell.appendChild(item);
+          cell.appendChild(createEventCard(event));
         });
 
         calendarEl.appendChild(cell);
       }
     }
 
+    function createEventCard(event) {
+      const item = document.createElement("div");
+      item.className = `event ${event.rank === "S" ? "rank-s" : ""}`;
+      item.style.background = categoryColors[event.category] || "#eeeeee";
+
+      const title = document.createElement(event.tohoUrl ? "a" : "div");
+      title.className = "event-title";
+      title.textContent = event.title;
+
+      if (event.tohoUrl) {
+        title.href = event.tohoUrl;
+        title.target = "_blank";
+        title.rel = "noopener noreferrer";
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "event-meta";
+      meta.textContent = `${event.category} / ${event.rank} / 期待値 ${Math.round(event.score)}`;
+
+      item.appendChild(title);
+      item.appendChild(meta);
+
+      const links = document.createElement("div");
+      links.className = "event-links";
+
+      if (event.dmmUrl) {
+        const dmmLink = document.createElement("a");
+        dmmLink.href = event.dmmUrl;
+        dmmLink.target = "_blank";
+        dmmLink.rel = "noopener noreferrer";
+        dmmLink.textContent = "▶ DMM";
+        links.appendChild(dmmLink);
+      }
+
+      if (event.trendUrl) {
+        const trendLink = document.createElement("a");
+        trendLink.href = event.trendUrl;
+        trendLink.target = "_blank";
+        trendLink.rel = "noopener noreferrer";
+        trendLink.textContent = "📈 Trend";
+        links.appendChild(trendLink);
+      }
+
+      if (links.children.length > 0) {
+        item.appendChild(links);
+      }
+
+      return item;
+    }
+
+    function renderRanking() {
+      const filteredEvents = getFilteredEvents()
+        .slice()
+        .sort((a, b) => Number(b.score || 0) - Number(a.score || 0))
+        .slice(0, 10);
+
+      rankingListEl.innerHTML = "";
+
+      filteredEvents.forEach((event, index) => {
+        const row = document.createElement("div");
+        row.className = "ranking-item";
+
+        const rank = document.createElement("div");
+        rank.textContent = `${index + 1}位`;
+
+        const title = document.createElement("div");
+        title.className = "ranking-title";
+        title.textContent = event.title;
+
+        const date = document.createElement("div");
+        date.textContent = formatDate(event.date);
+
+        const score = document.createElement("div");
+        score.textContent = `期待値 ${Math.round(event.score)}`;
+
+        const links = document.createElement("div");
+        links.className = "ranking-links";
+
+        if (event.dmmUrl) {
+          const dmm = document.createElement("a");
+          dmm.href = event.dmmUrl;
+          dmm.target = "_blank";
+          dmm.rel = "noopener noreferrer";
+          dmm.textContent = "DMM";
+          links.appendChild(dmm);
+        }
+
+        if (event.trendUrl) {
+          const trend = document.createElement("a");
+          trend.href = event.trendUrl;
+          trend.target = "_blank";
+          trend.rel = "noopener noreferrer";
+          trend.textContent = "Trend";
+          links.appendChild(trend);
+        }
+
+        row.appendChild(rank);
+        row.appendChild(title);
+        row.appendChild(date);
+        row.appendChild(score);
+        row.appendChild(links);
+
+        rankingListEl.appendChild(row);
+      });
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString + "T00:00:00");
+      return `${date.getMonth() + 1}/${date.getDate()}`;
+    }
+
+    loadEvents();
   </script>
 </body>
 </html>
