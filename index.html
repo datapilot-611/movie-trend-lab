@@ -389,10 +389,15 @@
     ];
 
     /*
-     * 最初に表示する月
-     * 2026年6月
+     * 最後に見ていた月を復元
      */
-    let current = new Date(2026, 5, 1);
+    const savedMonth = localStorage.getItem("movieCalendarMonth");
+
+    let current = savedMonth
+      ? new Date(savedMonth)
+      : new Date();
+
+    current.setDate(1);
 
     const calendarEl = document.getElementById("calendar");
     const monthLabelEl = document.getElementById("monthLabel");
@@ -479,26 +484,26 @@
     /*
      * 前月ボタン
      */
-    document
-      .getElementById("prev")
-      .addEventListener("click", () => {
-        current.setMonth(current.getMonth() - 1);
-        current.setDate(1);
+    document.getElementById("prev").addEventListener("click", () => {
+      current.setMonth(current.getMonth() - 1);
+      current.setDate(1);
 
-        renderCalendar();
-      });
+      localStorage.setItem("movieCalendarMonth", current.toISOString());
+
+      renderCalendar();
+    });
 
     /*
      * 翌月ボタン
      */
-    document
-      .getElementById("next")
-      .addEventListener("click", () => {
-        current.setMonth(current.getMonth() + 1);
-        current.setDate(1);
+    document.getElementById("next").addEventListener("click", () => {
+      current.setMonth(current.getMonth() + 1);
+      current.setDate(1);
 
-        renderCalendar();
-      });
+      localStorage.setItem("movieCalendarMonth", current.toISOString());
+
+      renderCalendar();
+    });
 
     /*
      * 日付を縦に並べたカレンダーを表示
