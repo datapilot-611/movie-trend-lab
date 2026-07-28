@@ -8,7 +8,7 @@
   <style>
     body {
       margin: 0;
-      font-family: system-ui, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #f7f8fb;
       color: #222;
     }
@@ -28,8 +28,8 @@
     }
 
     h1 {
-      font-size: 24px;
       margin: 0;
+      font-size: 24px;
     }
 
     button {
@@ -42,7 +42,7 @@
     }
 
     button:hover {
-      background: #f3f4f6;
+      background: #f1f5f9;
     }
 
     button.active {
@@ -65,112 +65,70 @@
       font-size: 18px;
     }
 
-    /*
-     * 縦型カレンダー全体
-     */
     .calendar {
-      background: white;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 1px;
+      background: #e5e7eb;
       border: 1px solid #e5e7eb;
       border-radius: 14px;
       overflow: hidden;
     }
 
-    /*
-     * 1日分の行
-     */
-    .date-row {
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      min-height: 30px;
-      border-bottom: 1px solid #e5e7eb;
-      align-items: stretch;
+    .weekday {
+      background: #111827;
+      color: white;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
     }
 
-    .date-row:last-child {
-      border-bottom: none;
-    }
-
-    /*
-     * 土日の背景
-     */
-    .date-row.sunday .date-area {
-      background: #fff5f5;
-    }
-
-    .date-row.saturday .date-area {
-      background: #f4f8ff;
-    }
-
-    /*
-     * 左側の日付部分
-     */
-    .date-area {
-      padding: 8px 12px;
-      background: #fafafa;
-      border-right: 1px solid #e5e7eb;
+    .day {
+      min-height: 125px;
+      background: white;
+      padding: 7px;
       box-sizing: border-box;
+      min-width: 0;
     }
 
-    .date-main {
-      font-size: 12px;
+    .day.empty {
+      background: #f3f4f6;
+    }
+
+    .day-number {
+      margin-bottom: 6px;
+      color: #666;
+      font-size: 13px;
       font-weight: 700;
     }
 
-    .date-weekday {
-      margin-top: 4px;
-      font-size: 10px;
-      color: #666;
-    }
-
-    .sunday .date-main,
-    .sunday .date-weekday {
-      color: #dc2626;
-    }
-
-    .saturday .date-main,
-    .saturday .date-weekday {
-      color: #2563eb;
-    }
-
-    /*
-     * 右側の作品カード表示部分
-     */
-    .movie-area {
-      padding: 10px 12px;
-      box-sizing: border-box;
-    }
-
-    .movie-list {
-      display: grid;
-      gap: 4px;
-    }
-
-    /*
-     * 作品がない日の余白
-     */
-    .no-movie {
-      min-height: 30px;
-    }
-
-    /*
-     * 作品カード
-     */
     .event {
-      border-radius: 10px;
-      padding: 6px 8px;
-      font-size: 10px;
-      line-height: 1.5;
-      border-left: 5px solid rgba(0, 0, 0, 0.18);
-      box-sizing: border-box;
+      margin-bottom: 6px;
+      padding: 6px 7px;
+      border-left: 4px solid rgba(0, 0, 0, 0.18);
+      border-radius: 8px;
+      font-size: 11px;
+      line-height: 1.35;
       word-break: break-word;
+      overflow: hidden;
+    }
+
+    .event-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 5px;
     }
 
     .event-title {
       display: block;
-      margin-bottom: 3px;
+      flex: 1;
+      min-width: 0;
       color: inherit;
       font-size: 12px;
       font-weight: 700;
+      line-height: 1.35;
       text-decoration: none;
     }
 
@@ -178,20 +136,29 @@
       text-decoration: underline;
     }
 
-    .event-meta {
-      color: #333;
-      font-size: 10px;
+    .event-category {
+      flex-shrink: 0;
+      padding: 1px 5px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.55);
+      font-size: 9px;
+      font-weight: 700;
+      white-space: nowrap;
     }
 
-    .rank-s .event-title::before {
-      content: "🔥 ";
+    .event-meta {
+      margin-top: 3px;
+      color: #333;
+      font-size: 10px;
+      line-height: 1.45;
     }
 
     .event-links {
       display: flex;
-      gap: 10px;
+      gap: 7px;
       flex-wrap: wrap;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .event-links a {
@@ -210,8 +177,8 @@
       gap: 10px;
       flex-wrap: wrap;
       margin-top: 14px;
-      font-size: 10px;
       color: #666;
+      font-size: 12px;
     }
 
     .chip {
@@ -223,99 +190,37 @@
       vertical-align: -2px;
     }
 
-    .ranking {
-      margin-top: 28px;
-      padding: 16px;
+    .empty-message {
+      grid-column: 1 / -1;
+      padding: 24px;
       background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
+      color: #666;
+      text-align: center;
     }
 
-    .ranking h2 {
-      margin: 0 0 12px;
-      font-size: 18px;
-    }
-
-    .ranking-list {
-      display: grid;
-      gap: 8px;
-    }
-
-    .ranking-item {
-      display: grid;
-      grid-template-columns: 40px 1fr 90px 90px auto;
-      gap: 10px;
-      align-items: center;
-      padding: 10px;
-      background: #fafafa;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      font-size: 13px;
-    }
-
-    .ranking-title {
-      font-weight: 700;
-    }
-
-    .ranking-links a {
-      margin-right: 8px;
-      color: #1d4ed8;
-      font-size: 12px;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .ranking-links a:hover {
-      text-decoration: underline;
-    }
-
-    /*
-     * スマートフォン表示
-     */
     @media (max-width: 760px) {
       .wrap {
-        margin: 20px auto;
-        padding: 0 12px;
+        margin-top: 20px;
+        padding: 0 10px;
       }
 
       .header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 12px;
       }
 
-      .date-row {
-        grid-template-columns: 105px 1fr;
+      .calendar {
+        min-width: 900px;
       }
 
-      .date-area {
-        padding: 12px 8px;
+      .calendar-scroll {
+        overflow-x: auto;
+        border-radius: 14px;
       }
 
-      .movie-area {
-        padding: 8px;
-      }
-
-      .date-main {
-        font-size: 12px;
-      }
-
-      .event {
-        padding: 8px 9px;
-        font-size: 12px;
-      }
-
-      .event-title {
-        font-size: 13px;
-      }
-
-      .ranking-item {
-        grid-template-columns: 32px 1fr;
-      }
-
-      .ranking-item > div:nth-child(3),
-      .ranking-item > div:nth-child(4),
-      .ranking-item > div:nth-child(5) {
-        grid-column: 2;
+      .day {
+        min-height: 110px;
       }
     }
   </style>
@@ -335,36 +240,27 @@
 
     <div class="filters" id="filters"></div>
 
-    <section class="calendar" id="calendar"></section>
+    <div class="calendar-scroll">
+      <section class="calendar" id="calendar"></section>
+    </div>
 
     <div class="legend">
       <span>
-        <span class="chip" style="background:#cfe2f3"></span>
-        アニメ
+        <span class="chip" style="background:#cfe2f3"></span>アニメ
       </span>
 
       <span>
-        <span class="chip" style="background:#f4cccc"></span>
-        洋画
+        <span class="chip" style="background:#f4cccc"></span>洋画
       </span>
 
       <span>
-        <span class="chip" style="background:#d9ead3"></span>
-        邦画
+        <span class="chip" style="background:#d9ead3"></span>邦画
       </span>
 
       <span>
-        <span class="chip" style="background:#fff2cc"></span>
-        特撮
+        <span class="chip" style="background:#fff2cc"></span>特撮
       </span>
-
-      <span>🔥 Sランク</span>
     </div>
-
-    <section class="ranking">
-      <h2>期待値ランキング TOP10</h2>
-      <div class="ranking-list" id="rankingList"></div>
-    </section>
   </main>
 
   <script>
@@ -379,74 +275,176 @@
     };
 
     const weekdays = [
-      "日曜日",
-      "月曜日",
-      "火曜日",
-      "水曜日",
-      "木曜日",
-      "金曜日",
-      "土曜日"
+      "日",
+      "月",
+      "火",
+      "水",
+      "木",
+      "金",
+      "土"
     ];
 
-    /*
-     * 最後に見ていた月を復元
-     */
-    const savedMonth = localStorage.getItem("movieCalendarMonth");
-
-    let current = savedMonth
-      ? new Date(savedMonth)
-      : new Date();
-
-    current.setDate(1);
+    let current = new Date();
 
     const calendarEl = document.getElementById("calendar");
     const monthLabelEl = document.getElementById("monthLabel");
     const filtersEl = document.getElementById("filters");
-    const rankingListEl = document.getElementById("rankingList");
 
     async function loadEvents() {
       try {
         const response = await fetch("./data.json");
 
         if (!response.ok) {
-          throw new Error("data.jsonを読み込めませんでした");
+          throw new Error(
+            `data.jsonの読み込みに失敗しました：${response.status}`
+          );
         }
 
-        events = await response.json();
+        const loadedData = await response.json();
 
+        if (!Array.isArray(loadedData)) {
+          throw new Error(
+            "data.jsonの形式が配列ではありません"
+          );
+        }
+
+        events = loadedData
+          .filter(event => event && event.date && event.title)
+          .map(event => ({
+            date: String(event.date || ""),
+            title: String(event.title || ""),
+            category: String(event.category || ""),
+            tohoUrl: String(event.tohoUrl || ""),
+            dmmUrl: String(event.dmmUrl || ""),
+            trendUrl: String(event.trendUrl || ""),
+            dmmKeyword: String(event.dmmKeyword || ""),
+            dmmCount: normalizeCount(event.dmmCount),
+            relationType: String(event.relationType || "")
+          }));
+
+        setInitialMonth();
         renderFilters();
         renderCalendar();
-        renderRanking();
 
       } catch (error) {
         console.error(error);
 
         calendarEl.innerHTML = `
-          <div style="padding:16px;background:white;">
+          <div class="empty-message">
             data.jsonの読み込みに失敗しました
           </div>
         `;
       }
     }
 
-    /*
-     * 現在選択中のフィルターに応じて作品を絞り込む
-     */
+    function normalizeCount(value) {
+      if (
+        value === null ||
+        value === undefined ||
+        value === ""
+      ) {
+        return null;
+      }
+
+      const number = Number(value);
+
+      return Number.isFinite(number)
+        ? number
+        : null;
+    }
+
+    function setInitialMonth() {
+      const savedMonth = localStorage.getItem(
+        "movieCalendarMonth"
+      );
+
+      if (savedMonth && /^\d{4}-\d{2}$/.test(savedMonth)) {
+        const [year, month] = savedMonth
+          .split("-")
+          .map(Number);
+
+        current = new Date(
+          year,
+          month - 1,
+          1
+        );
+
+        return;
+      }
+
+      const futureEvents = events
+        .filter(event => {
+          const eventDate = parseDate(event.date);
+
+          if (!eventDate) {
+            return false;
+          }
+
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          return eventDate >= today;
+        })
+        .sort((a, b) => {
+          return a.date.localeCompare(b.date);
+        });
+
+      const firstEvent = futureEvents[0] || events[0];
+
+      if (firstEvent) {
+        const eventDate = parseDate(firstEvent.date);
+
+        if (eventDate) {
+          current = new Date(
+            eventDate.getFullYear(),
+            eventDate.getMonth(),
+            1
+          );
+        }
+      }
+    }
+
+    function saveCurrentMonth() {
+      const year = current.getFullYear();
+      const month = String(
+        current.getMonth() + 1
+      ).padStart(2, "0");
+
+      localStorage.setItem(
+        "movieCalendarMonth",
+        `${year}-${month}`
+      );
+    }
+
+    function parseDate(dateString) {
+      if (
+        typeof dateString !== "string" ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(dateString)
+      ) {
+        return null;
+      }
+
+      const [year, month, day] = dateString
+        .split("-")
+        .map(Number);
+
+      return new Date(
+        year,
+        month - 1,
+        day
+      );
+    }
+
     function getFilteredEvents() {
       if (activeFilter === "すべて") {
         return events;
       }
 
-      if (activeFilter === "Sランク") {
-        return events.filter(event => event.rank === "S");
-      }
-
-      return events.filter(event => event.category === activeFilter);
+      return events.filter(event => {
+        return event.category === activeFilter;
+      });
     }
 
-    /*
-     * フィルターボタンを作る
-     */
     function renderFilters() {
       const categories = [
         "すべて",
@@ -454,8 +452,7 @@
           events
             .map(event => event.category)
             .filter(Boolean)
-        ),
-        "Sランク"
+        )
       ];
 
       filtersEl.innerHTML = "";
@@ -474,40 +471,34 @@
 
           renderFilters();
           renderCalendar();
-          renderRanking();
         });
 
         filtersEl.appendChild(button);
       });
     }
 
-    /*
-     * 前月ボタン
-     */
-    document.getElementById("prev").addEventListener("click", () => {
-      current.setMonth(current.getMonth() - 1);
-      current.setDate(1);
+    document
+      .getElementById("prev")
+      .addEventListener("click", () => {
+        current.setMonth(
+          current.getMonth() - 1
+        );
 
-      localStorage.setItem("movieCalendarMonth", current.toISOString());
+        saveCurrentMonth();
+        renderCalendar();
+      });
 
-      renderCalendar();
-    });
+    document
+      .getElementById("next")
+      .addEventListener("click", () => {
+        current.setMonth(
+          current.getMonth() + 1
+        );
 
-    /*
-     * 翌月ボタン
-     */
-    document.getElementById("next").addEventListener("click", () => {
-      current.setMonth(current.getMonth() + 1);
-      current.setDate(1);
+        saveCurrentMonth();
+        renderCalendar();
+      });
 
-      localStorage.setItem("movieCalendarMonth", current.toISOString());
-
-      renderCalendar();
-    });
-
-    /*
-     * 日付を縦に並べたカレンダーを表示
-     */
     function renderCalendar() {
       calendarEl.innerHTML = "";
 
@@ -519,124 +510,86 @@
       monthLabelEl.textContent =
         `${year}年${month + 1}月`;
 
-      /*
-       * 対象月の最終日を取得
-       */
+      weekdays.forEach(day => {
+        const weekday = document.createElement("div");
+
+        weekday.className = "weekday";
+        weekday.textContent = day;
+
+        calendarEl.appendChild(weekday);
+      });
+
+      const firstDay = new Date(
+        year,
+        month,
+        1
+      );
+
       const lastDay = new Date(
         year,
         month + 1,
         0
-      ).getDate();
+      );
 
-      /*
-       * 1日から末日まで、1行ずつ作成
-       */
-      for (let day = 1; day <= lastDay; day++) {
-        const currentDate = new Date(
+      for (
+        let i = 0;
+        i < firstDay.getDay();
+        i++
+      ) {
+        const empty = document.createElement("div");
+
+        empty.className = "day empty";
+
+        calendarEl.appendChild(empty);
+      }
+
+      for (
+        let day = 1;
+        day <= lastDay.getDate();
+        day++
+      ) {
+        const cell = document.createElement("div");
+
+        cell.className = "day";
+
+        const number = document.createElement("div");
+
+        number.className = "day-number";
+        number.textContent = day;
+
+        cell.appendChild(number);
+
+        const dateKey = [
           year,
-          month,
-          day
-        );
+          String(month + 1).padStart(2, "0"),
+          String(day).padStart(2, "0")
+        ].join("-");
 
-        const weekdayNumber = currentDate.getDay();
+        const todaysEvents = filteredEvents.filter(event => {
+          return event.date === dateKey;
+        });
 
-        const dateKey =
-          `${year}-` +
-          `${String(month + 1).padStart(2, "0")}-` +
-          `${String(day).padStart(2, "0")}`;
-
-        /*
-         * この日に公開される作品だけ取得
-         */
-        const todaysEvents = filteredEvents
-          .filter(event => event.date === dateKey)
-          .sort(
-            (a, b) =>
-              Number(b.score || 0) -
-              Number(a.score || 0)
+        todaysEvents.forEach(event => {
+          cell.appendChild(
+            createEventCard(event)
           );
+        });
 
-        /*
-         * 1日分の行
-         */
-        const row = document.createElement("div");
-        row.className = "date-row";
-
-        if (weekdayNumber === 0) {
-          row.classList.add("sunday");
-        }
-
-        if (weekdayNumber === 6) {
-          row.classList.add("saturday");
-        }
-
-        /*
-         * 左側の日付
-         */
-        const dateArea = document.createElement("div");
-        dateArea.className = "date-area";
-
-        const dateMain = document.createElement("div");
-        dateMain.className = "date-main";
-        dateMain.textContent =
-          `${year}/${month + 1}/${day}`;
-
-        const dateWeekday = document.createElement("div");
-        dateWeekday.className = "date-weekday";
-        dateWeekday.textContent =
-          weekdays[weekdayNumber];
-
-        dateArea.appendChild(dateMain);
-        dateArea.appendChild(dateWeekday);
-
-        /*
-         * 右側の作品欄
-         */
-        const movieArea = document.createElement("div");
-        movieArea.className = "movie-area";
-
-        const movieList = document.createElement("div");
-        movieList.className = "movie-list";
-
-        if (todaysEvents.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "no-movie";
-
-          movieList.appendChild(empty);
-        } else {
-          todaysEvents.forEach(event => {
-            movieList.appendChild(
-              createEventCard(event)
-            );
-          });
-        }
-
-        movieArea.appendChild(movieList);
-
-        row.appendChild(dateArea);
-        row.appendChild(movieArea);
-
-        calendarEl.appendChild(row);
+        calendarEl.appendChild(cell);
       }
     }
 
-    /*
-     * 作品カードを作成
-     */
     function createEventCard(event) {
       const item = document.createElement("div");
 
-      item.className =
-        `event ${event.rank === "S" ? "rank-s" : ""}`;
-
+      item.className = "event";
       item.style.background =
         categoryColors[event.category] ||
         "#eeeeee";
 
-      /*
-       * 作品名
-       * TOHO URLがある場合はリンクにする
-       */
+      const header = document.createElement("div");
+      header.className = "event-header";
+
       const title = document.createElement(
         event.tohoUrl ? "a" : "div"
       );
@@ -650,25 +603,46 @@
         title.rel = "noopener noreferrer";
       }
 
-      /*
-       * カテゴリ、ランク、期待値
-       */
-      const meta = document.createElement("div");
-      meta.className = "event-meta";
+      header.appendChild(title);
 
-      const score = Number(event.score || 0);
+      if (event.category) {
+        const category = document.createElement("span");
 
-      meta.textContent =
-        `${event.category || "カテゴリ未設定"} / ` +
-        `${event.rank || "-"} / ` +
-        `期待値 ${Math.round(score)}`;
+        category.className = "event-category";
+        category.textContent = event.category;
 
-      item.appendChild(title);
-      item.appendChild(meta);
+        header.appendChild(category);
+      }
 
-      /*
-       * DMM・Trendリンク
-       */
+      item.appendChild(header);
+
+      const metaParts = [];
+
+      if (event.relationType) {
+        metaParts.push(event.relationType);
+      }
+
+      if (event.dmmKeyword) {
+        metaParts.push(
+          `DMM検索KW：${event.dmmKeyword}`
+        );
+      }
+
+      if (event.dmmCount !== null) {
+        metaParts.push(
+          `関連作品数：${event.dmmCount}件`
+        );
+      }
+
+      if (metaParts.length > 0) {
+        const meta = document.createElement("div");
+
+        meta.className = "event-meta";
+        meta.textContent = metaParts.join(" / ");
+
+        item.appendChild(meta);
+      }
+
       const links = document.createElement("div");
       links.className = "event-links";
 
@@ -699,85 +673,6 @@
       }
 
       return item;
-    }
-
-    /*
-     * 期待値ランキングを表示
-     */
-    function renderRanking() {
-      const filteredEvents = getFilteredEvents()
-        .slice()
-        .sort(
-          (a, b) =>
-            Number(b.score || 0) -
-            Number(a.score || 0)
-        )
-        .slice(0, 10);
-
-      rankingListEl.innerHTML = "";
-
-      filteredEvents.forEach((event, index) => {
-        const row = document.createElement("div");
-        row.className = "ranking-item";
-
-        const rank = document.createElement("div");
-        rank.textContent = `${index + 1}位`;
-
-        const title = document.createElement("div");
-        title.className = "ranking-title";
-        title.textContent = event.title;
-
-        const date = document.createElement("div");
-        date.textContent = formatDate(event.date);
-
-        const score = document.createElement("div");
-        score.textContent =
-          `期待値 ${Math.round(Number(event.score || 0))}`;
-
-        const links = document.createElement("div");
-        links.className = "ranking-links";
-
-        if (event.dmmUrl) {
-          const dmm = document.createElement("a");
-
-          dmm.href = event.dmmUrl;
-          dmm.target = "_blank";
-          dmm.rel = "noopener noreferrer";
-          dmm.textContent = "DMM";
-
-          links.appendChild(dmm);
-        }
-
-        if (event.trendUrl) {
-          const trend = document.createElement("a");
-
-          trend.href = event.trendUrl;
-          trend.target = "_blank";
-          trend.rel = "noopener noreferrer";
-          trend.textContent = "Trend";
-
-          links.appendChild(trend);
-        }
-
-        row.appendChild(rank);
-        row.appendChild(title);
-        row.appendChild(date);
-        row.appendChild(score);
-        row.appendChild(links);
-
-        rankingListEl.appendChild(row);
-      });
-    }
-
-    /*
-     * 2026-06-03 → 6/3
-     */
-    function formatDate(dateString) {
-      const date = new Date(
-        dateString + "T00:00:00"
-      );
-
-      return `${date.getMonth() + 1}/${date.getDate()}`;
     }
 
     loadEvents();
