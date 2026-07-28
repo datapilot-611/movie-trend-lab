@@ -150,6 +150,24 @@
     .movie-link-placeholder {
       visibility: hidden;
     }
+    .meta-row {
+      display: grid;
+      grid-template-columns: 82px 12px minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .meta-label {
+      white-space: nowrap;
+    }
+
+    .meta-colon {
+      text-align: center;
+    }
+
+    .meta-value {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
   </style>
 </head>
 <body>
@@ -339,10 +357,39 @@
 
       const meta = document.createElement("div");
       meta.className = "movie-meta";
-      const parts = [];
-      if (event.dmmKeyword) parts.push(`DMM検索KW：${event.dmmKeyword}`);
-      if (event.dmmCount !== null) parts.push(`関連作品数：${event.dmmCount}件`);
-      if (event.relationType) parts.push(`関連タイプ：${event.relationType}`);
+      const metaItems = [];
+
+      if (event.dmmKeyword) {
+        metaItems.push(["DMM検索KW", event.dmmKeyword]);
+      }
+
+      if (event.dmmCount !== null) {
+        metaItems.push(["関連作品数", `${event.dmmCount}件`]);
+      }
+
+      if (event.relationType) {
+        metaItems.push(["関連タイプ", event.relationType]);
+      }
+
+      metaItems.forEach(([labelText, valueText]) => {
+        const row = document.createElement("div");
+        row.className = "meta-row";
+
+        const label = document.createElement("span");
+        label.className = "meta-label";
+        label.textContent = labelText;
+
+        const colon = document.createElement("span");
+        colon.className = "meta-colon";
+        colon.textContent = "：";
+
+        const value = document.createElement("span");
+        value.className = "meta-value";
+        value.textContent = valueText;
+
+        row.append(label, colon, value);
+        meta.appendChild(row);
+      });
       parts.forEach(text => {
         const span = document.createElement("span");
         span.className = "meta-item";
