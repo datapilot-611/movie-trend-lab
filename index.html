@@ -132,6 +132,24 @@
       .movie-card { grid-template-columns: 1fr; gap: 5px; }
       .movie-links { justify-content: flex-start; }
     }
+    .movie-links {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      width: 120px;
+    }
+
+    .movie-links a,
+    .movie-link-placeholder {
+      width: 55px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .movie-link-placeholder {
+      visibility: hidden;
+    }
   </style>
 </head>
 <body>
@@ -342,19 +360,33 @@
     }
 
     function makeLink(url, text) {
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = text;
-      return link;
-    }
+      const links = document.createElement("div");
+      links.className = "movie-links";
+
+      links.appendChild(
+        event.dmmUrl
+          ? makeLink(event.dmmUrl, "▶ DMM")
+          : makePlaceholder("▶ DMM")
+      );
+
+      links.appendChild(
+        event.trendUrl
+          ? makeLink(event.trendUrl, "↗ Trend")
+          : makePlaceholder("↗ Trend")
+      );
 
     document.getElementById("prev").addEventListener("click", () => {
       current = new Date(current.getFullYear(), current.getMonth() - 1, 1);
       saveCurrentMonth();
       renderTimeline();
     });
+
+    function makePlaceholder(text) {
+      const span = document.createElement("span");
+      span.className = "movie-link-placeholder";
+      span.textContent = text;
+      return span;
+    }
 
     document.getElementById("next").addEventListener("click", () => {
       current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
