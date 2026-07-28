@@ -352,16 +352,6 @@
 
       const links = document.createElement("div");
       links.className = "movie-links";
-      if (event.dmmUrl) links.appendChild(makeLink(event.dmmUrl, "▶ DMM"));
-      if (event.trendUrl) links.appendChild(makeLink(event.trendUrl, "↗ Trend"));
-
-      card.append(main, meta, links);
-      return card;
-    }
-
-    function makeLink(url, text) {
-      const links = document.createElement("div");
-      links.className = "movie-links";
 
       links.appendChild(
         event.dmmUrl
@@ -375,6 +365,18 @@
           : makePlaceholder("↗ Trend")
       );
 
+      card.append(main, meta, links);
+      return card;
+    }
+
+    function makeLink(url, text) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = text;
+      return link;
+    }
     document.getElementById("prev").addEventListener("click", () => {
       current = new Date(current.getFullYear(), current.getMonth() - 1, 1);
       saveCurrentMonth();
