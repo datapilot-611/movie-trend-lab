@@ -324,7 +324,7 @@
       const parts = [];
       if (event.dmmKeyword) parts.push(`DMM検索KW：${event.dmmKeyword}`);
       if (event.dmmCount !== null) parts.push(`関連作品数：${event.dmmCount}件`);
-      if (event.relationType) parts.push(event.relationType);
+      if (event.relationType) parts.push(`関連タイプ：${event.relationType}`);
       parts.forEach(text => {
         const span = document.createElement("span");
         span.className = "meta-item";
