@@ -4,21 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>映画公開カレンダー</title>
-
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f7f8fb;
-      color: #222;
+      background: #f6f7fb;
+      color: #20242c;
     }
-
     .wrap {
-      max-width: 1100px;
-      margin: 32px auto;
-      padding: 0 20px;
+      width: min(1180px, calc(100% - 32px));
+      margin: 28px auto 56px;
     }
-
     .header {
       display: flex;
       justify-content: space-between;
@@ -26,212 +23,118 @@
       gap: 16px;
       margin-bottom: 16px;
     }
-
-    h1 {
-      margin: 0;
-      font-size: 24px;
-    }
-
+    h1 { margin: 0; font-size: 25px; }
+    .month-nav { display: flex; align-items: center; gap: 10px; }
+    .month-label { min-width: 120px; text-align: center; font-weight: 800; font-size: 18px; }
     button {
-      border: 1px solid #e5e7eb;
-      background: white;
-      border-radius: 8px;
-      padding: 8px 12px;
+      border: 1px solid #dfe3ea;
+      background: #fff;
+      color: #252a34;
+      border-radius: 9px;
+      padding: 8px 13px;
       cursor: pointer;
-      font-weight: 600;
-    }
-
-    button:hover {
-      background: #f1f5f9;
-    }
-
-    button.active {
-      background: #111827;
-      color: white;
-    }
-
-    .filters {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    .month-label {
-      display: inline-block;
-      min-width: 120px;
-      text-align: center;
       font-weight: 700;
-      font-size: 18px;
     }
-
-    .calendar {
+    button:hover { background: #f0f3f8; }
+    button.active { background: #20242c; color: #fff; border-color: #20242c; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .date-row {
       display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 1px;
-      background: #e5e7eb;
-      border: 1px solid #e5e7eb;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      padding: 12px 14px;
+      background: #fff;
+      border: 1px solid #e4e7ed;
       border-radius: 14px;
-      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(34, 42, 53, 0.04);
     }
-
-    .weekday {
-      background: #111827;
-      color: white;
-      padding: 10px;
-      font-size: 13px;
-      font-weight: 700;
-      text-align: center;
-    }
-
-    .day {
-      min-height: 125px;
-      background: white;
-      padding: 7px;
-      box-sizing: border-box;
-      min-width: 0;
-    }
-
-    .day.empty {
-      background: #f3f4f6;
-    }
-
-    .day-number {
-      margin-bottom: 6px;
-      color: #666;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .event {
-      margin-bottom: 6px;
-      padding: 6px 7px;
-      border-left: 4px solid rgba(0, 0, 0, 0.18);
-      border-radius: 8px;
-      font-size: 11px;
-      line-height: 1.35;
-      word-break: break-word;
-      overflow: hidden;
-    }
-
-    .event-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 5px;
-    }
-
-    .event-title {
-      display: block;
-      flex: 1;
-      min-width: 0;
-      color: inherit;
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1.35;
-      text-decoration: none;
-    }
-
-    .event-title:hover {
-      text-decoration: underline;
-    }
-
-    .event-category {
-      flex-shrink: 0;
-      padding: 1px 5px;
-      border: 1px solid rgba(0, 0, 0, 0.12);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.55);
-      font-size: 9px;
-      font-weight: 700;
+    .date-label {
+      position: sticky;
+      top: 10px;
+      padding-top: 3px;
+      font-size: 15px;
+      font-weight: 800;
       white-space: nowrap;
     }
-
-    .event-meta {
-      margin-top: 3px;
-      color: #333;
-      font-size: 10px;
-      line-height: 1.45;
+    .date-label .weekday { margin-left: 4px; color: #687080; font-size: 12px; }
+    .movies { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .movie-card {
+      display: grid;
+      grid-template-columns: minmax(180px, 1.25fr) minmax(320px, 2fr) auto;
+      gap: 12px;
+      align-items: center;
+      min-width: 0;
+      padding: 9px 11px;
+      border-left: 5px solid var(--category-color, #dfe3ea);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--category-color, #e8ebf0) 24%, white);
     }
-
-    .event-links {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
+    .movie-main { min-width: 0; }
+    .movie-title {
+      display: block;
+      color: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.4;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+    .movie-title:hover { text-decoration: underline; }
+    .category-tag {
+      display: inline-block;
       margin-top: 4px;
-    }
-
-    .event-links a {
-      color: #1d4ed8;
+      padding: 2px 7px;
+      border: 1px solid rgba(0,0,0,.09);
+      border-radius: 999px;
+      background: rgba(255,255,255,.7);
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 800;
+    }
+    .movie-meta {
+      min-width: 0;
+      color: #424956;
+      font-size: 12px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+    .meta-item + .meta-item::before { content: " / "; color: #a0a6b1; }
+    .movie-links { display: flex; gap: 8px; justify-content: flex-end; white-space: nowrap; }
+    .movie-links a {
+      color: #2458b8;
+      font-size: 11px;
+      font-weight: 800;
       text-decoration: none;
     }
-
-    .event-links a:hover {
-      text-decoration: underline;
-    }
-
-    .legend {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-      color: #666;
-      font-size: 12px;
-    }
-
-    .chip {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      margin-right: 4px;
-      border-radius: 4px;
-      vertical-align: -2px;
-    }
-
+    .movie-links a:hover { text-decoration: underline; }
     .empty-message {
-      grid-column: 1 / -1;
-      padding: 24px;
-      background: white;
-      color: #666;
+      padding: 28px;
+      border: 1px solid #e4e7ed;
+      border-radius: 14px;
+      background: #fff;
+      color: #687080;
       text-align: center;
     }
-
-    @media (max-width: 760px) {
-      .wrap {
-        margin-top: 20px;
-        padding: 0 10px;
-      }
-
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-      }
-
-      .calendar {
-        min-width: 900px;
-      }
-
-      .calendar-scroll {
-        overflow-x: auto;
-        border-radius: 14px;
-      }
-
-      .day {
-        min-height: 110px;
-      }
+    @media (max-width: 800px) {
+      .wrap { width: min(100% - 20px, 1180px); margin-top: 18px; }
+      .header { flex-direction: column; align-items: flex-start; }
+      .date-row { grid-template-columns: 1fr; gap: 8px; }
+      .date-label { position: static; }
+      .movie-card { grid-template-columns: 1fr; gap: 5px; }
+      .movie-links { justify-content: flex-start; }
     }
   </style>
 </head>
-
 <body>
   <main class="wrap">
     <div class="header">
       <h1>映画公開カレンダー</h1>
-
-      <div>
+      <div class="month-nav">
         <button id="prev">‹ 前月</button>
         <span class="month-label" id="monthLabel"></span>
         <button id="next">翌月 ›</button>
@@ -239,74 +142,32 @@
     </div>
 
     <div class="filters" id="filters"></div>
-
-    <div class="calendar-scroll">
-      <section class="calendar" id="calendar"></section>
-    </div>
-
-    <div class="legend">
-      <span>
-        <span class="chip" style="background:#cfe2f3"></span>アニメ
-      </span>
-
-      <span>
-        <span class="chip" style="background:#f4cccc"></span>洋画
-      </span>
-
-      <span>
-        <span class="chip" style="background:#d9ead3"></span>邦画
-      </span>
-
-      <span>
-        <span class="chip" style="background:#fff2cc"></span>特撮
-      </span>
-    </div>
+    <section class="timeline" id="timeline"></section>
   </main>
 
   <script>
     let events = [];
     let activeFilter = "すべて";
-
-    const categoryColors = {
-      "アニメ": "#cfe2f3",
-      "洋画": "#f4cccc",
-      "邦画": "#d9ead3",
-      "特撮": "#fff2cc"
-    };
-
-    const weekdays = [
-      "日",
-      "月",
-      "火",
-      "水",
-      "木",
-      "金",
-      "土"
-    ];
-
     let current = new Date();
 
-    const calendarEl = document.getElementById("calendar");
+    const categoryColors = {
+      "アニメ": "#b9dcf3",
+      "洋画": "#f3c7c7",
+      "邦画": "#c9e8ce",
+      "特撮": "#f7e5a8"
+    };
+
+    const timelineEl = document.getElementById("timeline");
     const monthLabelEl = document.getElementById("monthLabel");
     const filtersEl = document.getElementById("filters");
 
     async function loadEvents() {
       try {
-        const response = await fetch("./data.json");
-
-        if (!response.ok) {
-          throw new Error(
-            `data.jsonの読み込みに失敗しました：${response.status}`
-          );
-        }
+        const response = await fetch("./data.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`data.jsonの読み込みに失敗しました：${response.status}`);
 
         const loadedData = await response.json();
-
-        if (!Array.isArray(loadedData)) {
-          throw new Error(
-            "data.jsonの形式が配列ではありません"
-          );
-        }
+        if (!Array.isArray(loadedData)) throw new Error("data.jsonの形式が配列ではありません");
 
         events = loadedData
           .filter(event => event && event.date && event.title)
@@ -320,360 +181,182 @@
             dmmKeyword: String(event.dmmKeyword || ""),
             dmmCount: normalizeCount(event.dmmCount),
             relationType: String(event.relationType || "")
-          }));
+          }))
+          .sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title, "ja"));
 
         setInitialMonth();
         renderFilters();
-        renderCalendar();
-
+        renderTimeline();
       } catch (error) {
         console.error(error);
-
-        calendarEl.innerHTML = `
-          <div class="empty-message">
-            data.jsonの読み込みに失敗しました
-          </div>
-        `;
+        timelineEl.innerHTML = '<div class="empty-message">data.jsonの読み込みに失敗しました</div>';
       }
     }
 
     function normalizeCount(value) {
-      if (
-        value === null ||
-        value === undefined ||
-        value === ""
-      ) {
-        return null;
-      }
-
+      if (value === null || value === undefined || value === "") return null;
       const number = Number(value);
-
-      return Number.isFinite(number)
-        ? number
-        : null;
-    }
-
-    function setInitialMonth() {
-      const savedMonth = localStorage.getItem(
-        "movieCalendarMonth"
-      );
-
-      if (savedMonth && /^\d{4}-\d{2}$/.test(savedMonth)) {
-        const [year, month] = savedMonth
-          .split("-")
-          .map(Number);
-
-        current = new Date(
-          year,
-          month - 1,
-          1
-        );
-
-        return;
-      }
-
-      const futureEvents = events
-        .filter(event => {
-          const eventDate = parseDate(event.date);
-
-          if (!eventDate) {
-            return false;
-          }
-
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-
-          return eventDate >= today;
-        })
-        .sort((a, b) => {
-          return a.date.localeCompare(b.date);
-        });
-
-      const firstEvent = futureEvents[0] || events[0];
-
-      if (firstEvent) {
-        const eventDate = parseDate(firstEvent.date);
-
-        if (eventDate) {
-          current = new Date(
-            eventDate.getFullYear(),
-            eventDate.getMonth(),
-            1
-          );
-        }
-      }
-    }
-
-    function saveCurrentMonth() {
-      const year = current.getFullYear();
-      const month = String(
-        current.getMonth() + 1
-      ).padStart(2, "0");
-
-      localStorage.setItem(
-        "movieCalendarMonth",
-        `${year}-${month}`
-      );
+      return Number.isFinite(number) ? number : null;
     }
 
     function parseDate(dateString) {
-      if (
-        typeof dateString !== "string" ||
-        !/^\d{4}-\d{2}-\d{2}$/.test(dateString)
-      ) {
-        return null;
-      }
-
-      const [year, month, day] = dateString
-        .split("-")
-        .map(Number);
-
-      return new Date(
-        year,
-        month - 1,
-        day
-      );
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return null;
+      const [year, month, day] = dateString.split("-").map(Number);
+      return new Date(year, month - 1, day);
     }
 
-    function getFilteredEvents() {
-      if (activeFilter === "すべて") {
-        return events;
+    function setInitialMonth() {
+      const saved = localStorage.getItem("movieCalendarMonth");
+      if (saved && /^\d{4}-\d{2}$/.test(saved)) {
+        const [year, month] = saved.split("-").map(Number);
+        current = new Date(year, month - 1, 1);
+        return;
       }
 
-      return events.filter(event => {
-        return event.category === activeFilter;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const firstFuture = events.find(event => {
+        const date = parseDate(event.date);
+        return date && date >= today;
       });
+      const base = firstFuture ? parseDate(firstFuture.date) : parseDate(events[0]?.date || "");
+      if (base) current = new Date(base.getFullYear(), base.getMonth(), 1);
+    }
+
+    function saveCurrentMonth() {
+      const value = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}`;
+      localStorage.setItem("movieCalendarMonth", value);
     }
 
     function renderFilters() {
-      const categories = [
-        "すべて",
-        ...new Set(
-          events
-            .map(event => event.category)
-            .filter(Boolean)
-        )
-      ];
-
+      const categories = ["すべて", ...new Set(events.map(e => e.category).filter(Boolean))];
       filtersEl.innerHTML = "";
-
       categories.forEach(category => {
         const button = document.createElement("button");
-
         button.textContent = category;
-        button.className =
-          category === activeFilter
-            ? "active"
-            : "";
-
+        button.className = category === activeFilter ? "active" : "";
         button.addEventListener("click", () => {
           activeFilter = category;
-
           renderFilters();
-          renderCalendar();
+          renderTimeline();
         });
-
         filtersEl.appendChild(button);
       });
     }
 
-    document
-      .getElementById("prev")
-      .addEventListener("click", () => {
-        current.setMonth(
-          current.getMonth() - 1
-        );
-
-        saveCurrentMonth();
-        renderCalendar();
-      });
-
-    document
-      .getElementById("next")
-      .addEventListener("click", () => {
-        current.setMonth(
-          current.getMonth() + 1
-        );
-
-        saveCurrentMonth();
-        renderCalendar();
-      });
-
-    function renderCalendar() {
-      calendarEl.innerHTML = "";
-
-      const filteredEvents = getFilteredEvents();
-
+    function renderTimeline() {
+      timelineEl.innerHTML = "";
       const year = current.getFullYear();
       const month = current.getMonth();
+      monthLabelEl.textContent = `${year}年${month + 1}月`;
 
-      monthLabelEl.textContent =
-        `${year}年${month + 1}月`;
-
-      weekdays.forEach(day => {
-        const weekday = document.createElement("div");
-
-        weekday.className = "weekday";
-        weekday.textContent = day;
-
-        calendarEl.appendChild(weekday);
+      const monthEvents = events.filter(event => {
+        const date = parseDate(event.date);
+        if (!date) return false;
+        if (date.getFullYear() !== year || date.getMonth() !== month) return false;
+        return activeFilter === "すべて" || event.category === activeFilter;
       });
 
-      const firstDay = new Date(
-        year,
-        month,
-        1
-      );
-
-      const lastDay = new Date(
-        year,
-        month + 1,
-        0
-      );
-
-      for (
-        let i = 0;
-        i < firstDay.getDay();
-        i++
-      ) {
-        const empty = document.createElement("div");
-
-        empty.className = "day empty";
-
-        calendarEl.appendChild(empty);
+      if (monthEvents.length === 0) {
+        timelineEl.innerHTML = '<div class="empty-message">この月に該当する作品はありません</div>';
+        return;
       }
 
-      for (
-        let day = 1;
-        day <= lastDay.getDate();
-        day++
-      ) {
-        const cell = document.createElement("div");
+      const grouped = new Map();
+      monthEvents.forEach(event => {
+        if (!grouped.has(event.date)) grouped.set(event.date, []);
+        grouped.get(event.date).push(event);
+      });
 
-        cell.className = "day";
-
-        const number = document.createElement("div");
-
-        number.className = "day-number";
-        number.textContent = day;
-
-        cell.appendChild(number);
-
-        const dateKey = [
-          year,
-          String(month + 1).padStart(2, "0"),
-          String(day).padStart(2, "0")
-        ].join("-");
-
-        const todaysEvents = filteredEvents.filter(event => {
-          return event.date === dateKey;
-        });
-
-        todaysEvents.forEach(event => {
-          cell.appendChild(
-            createEventCard(event)
-          );
-        });
-
-        calendarEl.appendChild(cell);
-      }
+      [...grouped.entries()].forEach(([dateKey, dayEvents]) => {
+        timelineEl.appendChild(createDateRow(dateKey, dayEvents));
+      });
     }
 
-    function createEventCard(event) {
-      const item = document.createElement("div");
+    function createDateRow(dateKey, dayEvents) {
+      const row = document.createElement("article");
+      row.className = "date-row";
 
-      item.className = "event";
-      item.style.background =
-        categoryColors[event.category] ||
-        "#eeeeee";
+      const date = parseDate(dateKey);
+      const label = document.createElement("div");
+      label.className = "date-label";
+      label.innerHTML = `${date.getMonth() + 1}/${date.getDate()}<span class="weekday">（${["日","月","火","水","木","金","土"][date.getDay()]}）</span>`;
 
-      const header = document.createElement("div");
-      header.className = "event-header";
+      const movies = document.createElement("div");
+      movies.className = "movies";
+      dayEvents.forEach(event => movies.appendChild(createMovieCard(event)));
 
-      const title = document.createElement(
-        event.tohoUrl ? "a" : "div"
-      );
+      row.append(label, movies);
+      return row;
+    }
 
-      title.className = "event-title";
+    function createMovieCard(event) {
+      const card = document.createElement("div");
+      card.className = "movie-card";
+      card.style.setProperty("--category-color", categoryColors[event.category] || "#dfe3ea");
+
+      const main = document.createElement("div");
+      main.className = "movie-main";
+
+      const title = document.createElement(event.tohoUrl ? "a" : "div");
+      title.className = "movie-title";
       title.textContent = event.title;
-
       if (event.tohoUrl) {
         title.href = event.tohoUrl;
         title.target = "_blank";
         title.rel = "noopener noreferrer";
       }
-
-      header.appendChild(title);
+      main.appendChild(title);
 
       if (event.category) {
-        const category = document.createElement("span");
-
-        category.className = "event-category";
-        category.textContent = event.category;
-
-        header.appendChild(category);
+        const tag = document.createElement("span");
+        tag.className = "category-tag";
+        tag.textContent = event.category;
+        main.appendChild(tag);
       }
 
-      item.appendChild(header);
-
-      const metaParts = [];
-
-      if (event.relationType) {
-        metaParts.push(event.relationType);
-      }
-
-      if (event.dmmKeyword) {
-        metaParts.push(
-          `DMM検索KW：${event.dmmKeyword}`
-        );
-      }
-
-      if (event.dmmCount !== null) {
-        metaParts.push(
-          `関連作品数：${event.dmmCount}件`
-        );
-      }
-
-      if (metaParts.length > 0) {
-        const meta = document.createElement("div");
-
-        meta.className = "event-meta";
-        meta.textContent = metaParts.join(" / ");
-
-        item.appendChild(meta);
-      }
+      const meta = document.createElement("div");
+      meta.className = "movie-meta";
+      const parts = [];
+      if (event.relationType) parts.push(event.relationType);
+      if (event.dmmKeyword) parts.push(`DMM検索KW：${event.dmmKeyword}`);
+      if (event.dmmCount !== null) parts.push(`関連作品数：${event.dmmCount}件`);
+      parts.forEach(text => {
+        const span = document.createElement("span");
+        span.className = "meta-item";
+        span.textContent = text;
+        meta.appendChild(span);
+      });
 
       const links = document.createElement("div");
-      links.className = "event-links";
+      links.className = "movie-links";
+      if (event.dmmUrl) links.appendChild(makeLink(event.dmmUrl, "▶ DMM"));
+      if (event.trendUrl) links.appendChild(makeLink(event.trendUrl, "↗ Trend"));
 
-      if (event.dmmUrl) {
-        const dmmLink = document.createElement("a");
-
-        dmmLink.href = event.dmmUrl;
-        dmmLink.target = "_blank";
-        dmmLink.rel = "noopener noreferrer";
-        dmmLink.textContent = "▶ DMM";
-
-        links.appendChild(dmmLink);
-      }
-
-      if (event.trendUrl) {
-        const trendLink = document.createElement("a");
-
-        trendLink.href = event.trendUrl;
-        trendLink.target = "_blank";
-        trendLink.rel = "noopener noreferrer";
-        trendLink.textContent = "📈 Trend";
-
-        links.appendChild(trendLink);
-      }
-
-      if (links.children.length > 0) {
-        item.appendChild(links);
-      }
-
-      return item;
+      card.append(main, meta, links);
+      return card;
     }
+
+    function makeLink(url, text) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = text;
+      return link;
+    }
+
+    document.getElementById("prev").addEventListener("click", () => {
+      current = new Date(current.getFullYear(), current.getMonth() - 1, 1);
+      saveCurrentMonth();
+      renderTimeline();
+    });
+
+    document.getElementById("next").addEventListener("click", () => {
+      current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
+      saveCurrentMonth();
+      renderTimeline();
+    });
 
     loadEvents();
   </script>
