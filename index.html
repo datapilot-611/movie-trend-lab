@@ -357,6 +357,7 @@
 
       const meta = document.createElement("div");
       meta.className = "movie-meta";
+
       const metaItems = [];
 
       if (event.dmmKeyword) {
@@ -389,12 +390,6 @@
 
         row.append(label, colon, value);
         meta.appendChild(row);
-      });
-      parts.forEach(text => {
-        const span = document.createElement("span");
-        span.className = "meta-item";
-        span.textContent = text;
-        meta.appendChild(span);
       });
 
       const links = document.createElement("div");
