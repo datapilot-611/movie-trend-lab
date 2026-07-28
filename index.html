@@ -66,7 +66,7 @@
     .movies { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
     .movie-card {
       display: grid;
-      grid-template-columns: minmax(180px, 1.25fr) minmax(320px, 2fr) auto;
+      grid-template-columns: minmax(340px, 2fr) 260px auto;
       gap: 12px;
       align-items: center;
       min-width: 0;
@@ -98,6 +98,7 @@
     }
     .movie-meta {
       min-width: 0;
+      padding-left: 18px;
       color: #424956;
       font-size: 12px;
       line-height: 1.45;
@@ -321,9 +322,9 @@
       const meta = document.createElement("div");
       meta.className = "movie-meta";
       const parts = [];
-      if (event.relationType) parts.push(event.relationType);
       if (event.dmmKeyword) parts.push(`DMM検索KW：${event.dmmKeyword}`);
       if (event.dmmCount !== null) parts.push(`関連作品数：${event.dmmCount}件`);
+      if (event.relationType) parts.push(event.relationType);
       parts.forEach(text => {
         const span = document.createElement("span");
         span.className = "meta-item";
