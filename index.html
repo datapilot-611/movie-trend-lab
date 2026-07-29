@@ -236,14 +236,28 @@
 
     async function loadEvents() {
       try {
-        const response = await fetch("./data.json", { cache: "no-store" });
-        if (!response.ok) throw new Error(`data.jsonの読み込みに失敗しました：${response.status}`);
+        const response = await fetch("./data.json", {
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `data.jsonの読み込みに失敗しました：${response.status}`
+          );
+        }
 
         const loadedData = await response.json();
-        if (!Array.isArray(loadedData)) throw new Error("data.jsonの形式が配列ではありません");
+
+        if (!Array.isArray(loadedData)) {
+          throw new Error(
+            "data.jsonの形式が配列ではありません"
+          );
+        }
 
         events = loadedData
-          .filter(event => event && event.date && event.title)
+          .filter(event => {
+            return event && event.date && event.title;
+          })
           .map(event => ({
             date: String(event.date || ""),
             title: String(event.title || ""),
@@ -253,17 +267,27 @@
             trendUrl: String(event.trendUrl || ""),
             dmmKeyword: String(event.dmmKeyword || ""),
             dmmCount: normalizeCount(event.dmmCount),
-            relationType: String(event.relationType || "")
-            newLabel: String(event.newLabel || "")   
+            relationType: String(event.relationType || ""),
+            newLabel: String(event.newLabel || "")
           }))
-          .sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title, "ja"));
+          .sort((a, b) => {
+            return (
+              a.date.localeCompare(b.date) ||
+              a.title.localeCompare(b.title, "ja")
+            );
+          });
 
         setInitialMonth();
         renderFilters();
         renderTimeline();
+
       } catch (error) {
         console.error(error);
-        timelineEl.innerHTML = '<div class="empty-message">data.jsonの読み込みに失敗しました</div>';
+
+        timelineEl.innerHTML =
+          '<div class="empty-message">' +
+          'data.jsonの読み込みに失敗しました' +
+          '</div>';
       }
     }
 
