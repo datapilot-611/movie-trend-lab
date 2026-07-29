@@ -254,6 +254,7 @@
             dmmKeyword: String(event.dmmKeyword || ""),
             dmmCount: normalizeCount(event.dmmCount),
             relationType: String(event.relationType || "")
+            newLabel: String(event.newLabel || "")   
           }))
           .sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title, "ja"));
 
@@ -364,19 +365,14 @@
     }
 
     function createMovieCard(event) {
-
-      // NEWラベル（リボン）
-      if (String(event.newLabel || "").trim().toUpperCase() === "NEW") {
-        const badge = document.createElement("div");
-        badge.className = "movie-new-ribbon";
-        badge.textContent = "NEW";
-        card.appendChild(badge);
-      }
       const card = document.createElement("div");
       card.className = "movie-card";
-      card.style.setProperty("--category-color", categoryColors[event.category] || "#dfe3ea");
-
-      // NEWラベル（カード左上）
+      card.style.setProperty(
+        "--category-color",
+        categoryColors[event.category] || "#dfe3ea"
+      );
+    
+      // NEWラベル（リボン）
       if (String(event.newLabel || "").trim().toUpperCase() === "NEW") {
         const badge = document.createElement("div");
         badge.className = "movie-new-ribbon";
@@ -396,7 +392,7 @@
         title.target = "_blank";
         title.rel = "noopener noreferrer";
       }
-    
+
       main.appendChild(title);
 
       if (event.category) {
