@@ -168,6 +168,39 @@
       min-width: 0;
       overflow-wrap: anywhere;
     }
+
+    .movie-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .movie-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .movie-new-ribbon {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 80px;
+      padding: 6px 0;
+
+      background: linear-gradient(135deg, #ff5a5f, #ff2d55);
+      color: #fff;
+
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 1px;
+
+      transform: rotate(-45deg) translate(-22px, -10px);
+      transform-origin: top left;
+
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
@@ -331,9 +364,25 @@
     }
 
     function createMovieCard(event) {
+
+      // NEWラベル（リボン）
+      if (String(event.newLabel || "").trim().toUpperCase() === "NEW") {
+        const badge = document.createElement("div");
+        badge.className = "movie-new-ribbon";
+        badge.textContent = "NEW";
+        card.appendChild(badge);
+      }
       const card = document.createElement("div");
       card.className = "movie-card";
       card.style.setProperty("--category-color", categoryColors[event.category] || "#dfe3ea");
+
+      // NEWラベル（カード左上）
+      if (String(event.newLabel || "").trim().toUpperCase() === "NEW") {
+        const badge = document.createElement("div");
+        badge.className = "movie-new-ribbon";
+        badge.textContent = "NEW";
+        card.appendChild(badge);
+      }
 
       const main = document.createElement("div");
       main.className = "movie-main";
@@ -341,11 +390,13 @@
       const title = document.createElement(event.tohoUrl ? "a" : "div");
       title.className = "movie-title";
       title.textContent = event.title;
+
       if (event.tohoUrl) {
         title.href = event.tohoUrl;
         title.target = "_blank";
         title.rel = "noopener noreferrer";
       }
+    
       main.appendChild(title);
 
       if (event.category) {
