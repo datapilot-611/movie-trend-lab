@@ -184,22 +184,34 @@
       top: 0;
       left: 0;
 
-      width: 80px;
-      padding: 6px 0;
+      width: 72px;
+      height: 72px;
+
+     pointer-events: none;
+      z-index: 10;
+    }
+
+    .movie-new-ribbon::before {
+      content: "NEW";
+
+      position: absolute;
+      top: 14px;
+      left: -18px;
+
+      width: 90px;
+      padding: 4px 0;
 
       background: linear-gradient(135deg, #ff5a5f, #ff2d55);
       color: #fff;
 
       font-size: 11px;
-      font-weight: 700;
-      text-align: center;
+      font-weight: 800;
       letter-spacing: 1px;
+      text-align: center;
 
-      transform: rotate(-45deg) translate(-22px, -10px);
-      transform-origin: top left;
+      transform: rotate(-45deg);
 
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
-      z-index: 10;
+      box-shadow: 0 2px 6px rgba(0,0,0,.18);
     }
   </style>
 </head>
@@ -400,7 +412,6 @@
       if (String(event.newLabel || "").trim().toUpperCase() === "NEW") {
         const badge = document.createElement("div");
         badge.className = "movie-new-ribbon";
-        badge.textContent = "NEW";
         card.appendChild(badge);
       }
 
