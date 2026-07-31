@@ -37,7 +37,53 @@
     }
     button:hover { background: #f0f3f8; }
     button.active { background: #20242c; color: #fff; border-color: #20242c; }
-    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+    .filters {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 0 0 18px;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-label {
+      width: 82px;
+      flex-shrink: 0;
+      color: #687080;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .filter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-row button {
+      padding: 7px 12px;
+      font-size: 12px;
+    }
+
+    .sort-note {
+      color: #8a919e;
+      font-size: 11px;
+    }
+
+    @media (max-width: 800px) {
+      .filter-row {
+        align-items: flex-start;
+      }
+
+      .filter-label {
+        width: 100%;
+      }
+    }
     .timeline {
       display: flex;
       flex-direction: column;
@@ -235,296 +281,642 @@
   </main>
 
   <script>
-    let events = [];
-    let activeFilter = "すべて";
-    let current = new Date();
+  let events = [];
 
-    const categoryColors = {
-      "アニメ": "#b9dcf3",
-      "洋画": "#f3c7c7",
-      "邦画": "#c9e8ce",
-      "特撮": "#f7e5a8"
-    };
+  let activeGenreFilter = "すべて";
+  let activeRelationFilter = "すべて";
+  let activeSort = "公開日順";
 
-    const timelineEl = document.getElementById("timeline");
-    const monthLabelEl = document.getElementById("monthLabel");
-    const filtersEl = document.getElementById("filters");
+  let current = new Date();
 
-    async function loadEvents() {
-      try {
-        const response = await fetch("./data.json", {
-          cache: "no-store"
+  const categoryColors = {
+    "アニメ": "#b9dcf3",
+    "洋画": "#f3c7c7",
+    "邦画": "#c9e8ce",
+    "特撮": "#f7e5a8"
+  };
+
+  const timelineEl = document.getElementById("timeline");
+  const monthLabelEl = document.getElementById("monthLabel");
+  const filtersEl = document.getElementById("filters");
+
+  async function loadEvents() {
+    try {
+      const response = await fetch("./data.json", {
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `data.jsonの読み込みに失敗しました：${response.status}`
+        );
+      }
+
+      const loadedData = await response.json();
+
+      if (!Array.isArray(loadedData)) {
+        throw new Error(
+          "data.jsonの形式が配列ではありません"
+        );
+      }
+
+      events = loadedData
+        .filter(event => {
+          return event && event.date && event.title;
+        })
+        .map(event => ({
+          date: String(event.date || ""),
+          title: String(event.title || ""),
+          category: String(event.category || ""),
+          tohoUrl: String(event.tohoUrl || ""),
+          dmmUrl: String(event.dmmUrl || ""),
+          trendUrl: String(event.trendUrl || ""),
+          dmmKeyword: String(event.dmmKeyword || ""),
+          dmmCount: normalizeCount(event.dmmCount),
+          relationType: String(event.relationType || ""),
+          newLabel: String(event.newLabel || "")
+        }))
+        .sort((a, b) => {
+          return (
+            a.date.localeCompare(b.date) ||
+            a.title.localeCompare(b.title, "ja")
+          );
         });
 
-        if (!response.ok) {
-          throw new Error(
-            `data.jsonの読み込みに失敗しました：${response.status}`
-          );
-        }
+      setInitialMonth();
+      renderFilters();
+      renderTimeline();
 
-        const loadedData = await response.json();
+    } catch (error) {
+      console.error(error);
 
-        if (!Array.isArray(loadedData)) {
-          throw new Error(
-            "data.jsonの形式が配列ではありません"
-          );
-        }
+      timelineEl.innerHTML =
+        '<div class="empty-message">' +
+        'data.jsonの読み込みに失敗しました' +
+        '</div>';
+    }
+  }
 
-        events = loadedData
-          .filter(event => {
-            return event && event.date && event.title;
-          })
-          .map(event => ({
-            date: String(event.date || ""),
-            title: String(event.title || ""),
-            category: String(event.category || ""),
-            tohoUrl: String(event.tohoUrl || ""),
-            dmmUrl: String(event.dmmUrl || ""),
-            trendUrl: String(event.trendUrl || ""),
-            dmmKeyword: String(event.dmmKeyword || ""),
-            dmmCount: normalizeCount(event.dmmCount),
-            relationType: String(event.relationType || ""),
-            newLabel: String(event.newLabel || "")
-          }))
-          .sort((a, b) => {
-            return (
-              a.date.localeCompare(b.date) ||
-              a.title.localeCompare(b.title, "ja")
-            );
-          });
+  function normalizeCount(value) {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return null;
+    }
 
-        setInitialMonth();
+    const number = Number(value);
+
+    return Number.isFinite(number)
+      ? number
+      : null;
+  }
+
+  function parseDate(dateString) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      return null;
+    }
+
+    const [year, month, day] =
+      dateString.split("-").map(Number);
+
+    return new Date(
+      year,
+      month - 1,
+      day
+    );
+  }
+
+  function setInitialMonth() {
+    const saved =
+      localStorage.getItem("movieCalendarMonth");
+
+    if (
+      saved &&
+      /^\d{4}-\d{2}$/.test(saved)
+    ) {
+      const [year, month] =
+        saved.split("-").map(Number);
+
+      current = new Date(
+        year,
+        month - 1,
+        1
+      );
+
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const firstFuture = events.find(event => {
+      const date = parseDate(event.date);
+
+      return date && date >= today;
+    });
+
+    const base = firstFuture
+      ? parseDate(firstFuture.date)
+      : parseDate(events[0]?.date || "");
+
+    if (base) {
+      current = new Date(
+        base.getFullYear(),
+        base.getMonth(),
+        1
+      );
+    }
+  }
+
+  function saveCurrentMonth() {
+    const value =
+      `${current.getFullYear()}-` +
+      `${String(current.getMonth() + 1).padStart(2, "0")}`;
+
+    localStorage.setItem(
+      "movieCalendarMonth",
+      value
+    );
+  }
+
+  function renderFilters() {
+    filtersEl.innerHTML = "";
+
+    const genres = [
+      "すべて",
+      ...new Set(
+        events
+          .map(event => event.category)
+          .filter(Boolean)
+      )
+    ];
+
+    const relationTypes = [
+      "すべて",
+      ...new Set(
+        events
+          .map(event => event.relationType)
+          .filter(Boolean)
+      )
+    ];
+
+    const genreRow = createFilterRow(
+      "ジャンル",
+      genres,
+      activeGenreFilter,
+      value => {
+        activeGenreFilter = value;
         renderFilters();
         renderTimeline();
-
-      } catch (error) {
-        console.error(error);
-
-        timelineEl.innerHTML =
-          '<div class="empty-message">' +
-          'data.jsonの読み込みに失敗しました' +
-          '</div>';
       }
-    }
+    );
 
-    function normalizeCount(value) {
-      if (value === null || value === undefined || value === "") return null;
-      const number = Number(value);
-      return Number.isFinite(number) ? number : null;
-    }
-
-    function parseDate(dateString) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return null;
-      const [year, month, day] = dateString.split("-").map(Number);
-      return new Date(year, month - 1, day);
-    }
-
-    function setInitialMonth() {
-      const saved = localStorage.getItem("movieCalendarMonth");
-      if (saved && /^\d{4}-\d{2}$/.test(saved)) {
-        const [year, month] = saved.split("-").map(Number);
-        current = new Date(year, month - 1, 1);
-        return;
+    const relationRow = createFilterRow(
+      "関連タイプ",
+      relationTypes,
+      activeRelationFilter,
+      value => {
+        activeRelationFilter = value;
+        renderFilters();
+        renderTimeline();
       }
+    );
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const firstFuture = events.find(event => {
-        const date = parseDate(event.date);
-        return date && date >= today;
-      });
-      const base = firstFuture ? parseDate(firstFuture.date) : parseDate(events[0]?.date || "");
-      if (base) current = new Date(base.getFullYear(), base.getMonth(), 1);
-    }
-
-    function saveCurrentMonth() {
-      const value = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}`;
-      localStorage.setItem("movieCalendarMonth", value);
-    }
-
-    function renderFilters() {
-      const categories = ["すべて", ...new Set(events.map(e => e.category).filter(Boolean))];
-      filtersEl.innerHTML = "";
-      categories.forEach(category => {
-        const button = document.createElement("button");
-        button.textContent = category;
-        button.className = category === activeFilter ? "active" : "";
-        button.addEventListener("click", () => {
-          activeFilter = category;
-          renderFilters();
-          renderTimeline();
-        });
-        filtersEl.appendChild(button);
-      });
-    }
-
-    function renderTimeline() {
-      timelineEl.innerHTML = "";
-      const year = current.getFullYear();
-      const month = current.getMonth();
-      monthLabelEl.textContent = `${year}年${month + 1}月`;
-
-      const monthEvents = events.filter(event => {
-        const date = parseDate(event.date);
-        if (!date) return false;
-        if (date.getFullYear() !== year || date.getMonth() !== month) return false;
-        return activeFilter === "すべて" || event.category === activeFilter;
-      });
-
-      if (monthEvents.length === 0) {
-        timelineEl.innerHTML = '<div class="empty-message">この月に該当する作品はありません</div>';
-        return;
+    const sortRow = createFilterRow(
+      "並び順",
+      [
+        "公開日順",
+        "関連数が多い順"
+      ],
+      activeSort,
+      value => {
+        activeSort = value;
+        renderFilters();
+        renderTimeline();
       }
+    );
 
-      const grouped = new Map();
-      monthEvents.forEach(event => {
-        if (!grouped.has(event.date)) grouped.set(event.date, []);
-        grouped.get(event.date).push(event);
-      });
+    const note = document.createElement("span");
+    note.className = "sort-note";
+    note.textContent =
+      "※関連数順は、同じ公開日の作品内で並び替えます";
 
-      [...grouped.entries()].forEach(([dateKey, dayEvents]) => {
-        timelineEl.appendChild(createDateRow(dateKey, dayEvents));
-      });
-    }
+    sortRow
+      .querySelector(".filter-buttons")
+      .appendChild(note);
 
-    function createDateRow(dateKey, dayEvents) {
-      const row = document.createElement("article");
-      row.className = "date-row";
+    filtersEl.append(
+      genreRow,
+      relationRow,
+      sortRow
+    );
+  }
 
-      const date = parseDate(dateKey);
-      const label = document.createElement("div");
-      label.className = "date-label";
-      label.innerHTML = `${date.getMonth() + 1}/${date.getDate()}<span class="weekday">（${["日","月","火","水","木","金","土"][date.getDay()]}）</span>`;
+  function createFilterRow(
+    labelText,
+    options,
+    activeValue,
+    onSelect
+  ) {
+    const row = document.createElement("div");
+    row.className = "filter-row";
 
-      const movies = document.createElement("div");
-      movies.className = "movies";
-      dayEvents.forEach(event => movies.appendChild(createMovieCard(event)));
+    const label = document.createElement("div");
+    label.className = "filter-label";
+    label.textContent = labelText;
 
-      row.append(label, movies);
-      return row;
-    }
+    const buttons = document.createElement("div");
+    buttons.className = "filter-buttons";
 
-    function createMovieCard(event) {
-      const card = document.createElement("div");
-      card.className = "movie-card";
-      card.style.setProperty(
-        "--category-color",
-        categoryColors[event.category] || "#dfe3ea"
+    options.forEach(option => {
+      const button =
+        document.createElement("button");
+
+      button.textContent = option;
+
+      button.className =
+        option === activeValue
+          ? "active"
+          : "";
+
+      button.addEventListener(
+        "click",
+        () => onSelect(option)
       );
-    
-      // NEWラベル（リボン）
-      if (String(event.newLabel || "").trim().toUpperCase() === "NEW") {
-        const badge = document.createElement("div");
-        badge.className = "movie-new-ribbon";
-        card.appendChild(badge);
+
+      buttons.appendChild(button);
+    });
+
+    row.append(
+      label,
+      buttons
+    );
+
+    return row;
+  }
+
+  function renderTimeline() {
+    timelineEl.innerHTML = "";
+
+    const year = current.getFullYear();
+    const month = current.getMonth();
+
+    monthLabelEl.textContent =
+      `${year}年${month + 1}月`;
+
+    const monthEvents = events.filter(event => {
+      const date = parseDate(event.date);
+
+      if (!date) {
+        return false;
       }
 
-      const main = document.createElement("div");
-      main.className = "movie-main";
-
-      const title = document.createElement(event.tohoUrl ? "a" : "div");
-      title.className = "movie-title";
-      title.textContent = event.title;
-
-      if (event.tohoUrl) {
-        title.href = event.tohoUrl;
-        title.target = "_blank";
-        title.rel = "noopener noreferrer";
+      if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month
+      ) {
+        return false;
       }
 
-      main.appendChild(title);
+      const matchesGenre =
+        activeGenreFilter === "すべて" ||
+        event.category === activeGenreFilter;
 
-      if (event.category) {
-        const tag = document.createElement("span");
-        tag.className = "category-tag";
-        tag.textContent = event.category;
-        main.appendChild(tag);
+      const matchesRelation =
+        activeRelationFilter === "すべて" ||
+        event.relationType === activeRelationFilter;
+
+      return (
+        matchesGenre &&
+        matchesRelation
+      );
+    });
+
+    if (monthEvents.length === 0) {
+      timelineEl.innerHTML =
+        '<div class="empty-message">' +
+        'この条件に該当する作品はありません' +
+        '</div>';
+
+      return;
+    }
+
+    const grouped = new Map();
+
+    monthEvents.forEach(event => {
+      if (!grouped.has(event.date)) {
+        grouped.set(event.date, []);
       }
 
-      const meta = document.createElement("div");
-      meta.className = "movie-meta";
+      grouped
+        .get(event.date)
+        .push(event);
+    });
 
-      const metaItems = [];
+    [...grouped.entries()]
+      .sort((a, b) => {
+        return a[0].localeCompare(b[0]);
+      })
+      .forEach(([dateKey, dayEvents]) => {
+        const sortedEvents =
+          sortDayEvents(dayEvents);
 
-      if (event.dmmKeyword) {
-        metaItems.push(["DMM検索KW", event.dmmKeyword]);
-      }
+        timelineEl.appendChild(
+          createDateRow(
+            dateKey,
+            sortedEvents
+          )
+        );
+      });
+  }
 
-      if (event.dmmCount !== null) {
-        metaItems.push(["関連作品数", `${event.dmmCount}件`]);
-      }
+  function sortDayEvents(dayEvents) {
+    const copied = [...dayEvents];
 
-      if (event.relationType) {
-        metaItems.push(["関連タイプ", event.relationType]);
-      }
+    if (activeSort === "関連数が多い順") {
+      return copied.sort((a, b) => {
+        const countA =
+          a.dmmCount === null
+            ? -1
+            : a.dmmCount;
 
-      metaItems.forEach(([labelText, valueText]) => {
-        const row = document.createElement("div");
+        const countB =
+          b.dmmCount === null
+            ? -1
+            : b.dmmCount;
+
+        return (
+          countB - countA ||
+          a.title.localeCompare(
+            b.title,
+            "ja"
+          )
+        );
+      });
+    }
+
+    return copied.sort((a, b) => {
+      return a.title.localeCompare(
+        b.title,
+        "ja"
+      );
+    });
+  }
+
+  function createDateRow(
+    dateKey,
+    dayEvents
+  ) {
+    const row =
+      document.createElement("article");
+
+    row.className = "date-row";
+
+    const date = parseDate(dateKey);
+
+    const label =
+      document.createElement("div");
+
+    label.className = "date-label";
+
+    label.innerHTML =
+      `${date.getMonth() + 1}/${date.getDate()}` +
+      `<span class="weekday">` +
+      `（${["日", "月", "火", "水", "木", "金", "土"][date.getDay()]}）` +
+      `</span>`;
+
+    const movies =
+      document.createElement("div");
+
+    movies.className = "movies";
+
+    dayEvents.forEach(event => {
+      movies.appendChild(
+        createMovieCard(event)
+      );
+    });
+
+    row.append(
+      label,
+      movies
+    );
+
+    return row;
+  }
+
+  function createMovieCard(event) {
+    const card =
+      document.createElement("div");
+
+    card.className = "movie-card";
+
+    card.style.setProperty(
+      "--category-color",
+      categoryColors[event.category] ||
+      "#dfe3ea"
+    );
+
+    if (
+      String(event.newLabel || "")
+        .trim()
+        .toUpperCase() === "NEW"
+    ) {
+      const badge =
+        document.createElement("div");
+
+      badge.className =
+        "movie-new-ribbon";
+
+      card.appendChild(badge);
+    }
+
+    const main =
+      document.createElement("div");
+
+    main.className = "movie-main";
+
+    const title =
+      document.createElement(
+        event.tohoUrl
+          ? "a"
+          : "div"
+      );
+
+    title.className = "movie-title";
+    title.textContent = event.title;
+
+    if (event.tohoUrl) {
+      title.href = event.tohoUrl;
+      title.target = "_blank";
+      title.rel =
+        "noopener noreferrer";
+    }
+
+    main.appendChild(title);
+
+    if (event.category) {
+      const tag =
+        document.createElement("span");
+
+      tag.className = "category-tag";
+      tag.textContent = event.category;
+
+      main.appendChild(tag);
+    }
+
+    const meta =
+      document.createElement("div");
+
+    meta.className = "movie-meta";
+
+    const metaItems = [];
+
+    if (event.dmmKeyword) {
+      metaItems.push([
+        "DMM検索KW",
+        event.dmmKeyword
+      ]);
+    }
+
+    if (event.dmmCount !== null) {
+      metaItems.push([
+        "関連作品数",
+        `${event.dmmCount}件`
+      ]);
+    }
+
+    if (event.relationType) {
+      metaItems.push([
+        "関連タイプ",
+        event.relationType
+      ]);
+    }
+
+    metaItems.forEach(
+      ([labelText, valueText]) => {
+        const row =
+          document.createElement("div");
+
         row.className = "meta-row";
 
-        const label = document.createElement("span");
+        const label =
+          document.createElement("span");
+
         label.className = "meta-label";
         label.textContent = labelText;
 
-        const colon = document.createElement("span");
+        const colon =
+          document.createElement("span");
+
         colon.className = "meta-colon";
         colon.textContent = "：";
 
-        const value = document.createElement("span");
+        const value =
+          document.createElement("span");
+
         value.className = "meta-value";
         value.textContent = valueText;
 
-        row.append(label, colon, value);
+        row.append(
+          label,
+          colon,
+          value
+        );
+
         meta.appendChild(row);
-      });
+      }
+    );
 
-      const links = document.createElement("div");
-      links.className = "movie-links";
+    const links =
+      document.createElement("div");
 
-      links.appendChild(
-        event.dmmUrl
-          ? makeLink(event.dmmUrl, "🎬 DMM")
-          : makePlaceholder("🎬 DMM")
+    links.className = "movie-links";
+
+    links.appendChild(
+      event.dmmUrl
+        ? makeLink(
+            event.dmmUrl,
+            "🎬 DMM"
+          )
+        : makePlaceholder(
+            "🎬 DMM"
+          )
+    );
+
+    links.appendChild(
+      event.trendUrl
+        ? makeLink(
+            event.trendUrl,
+            "📈 Trend"
+          )
+        : makePlaceholder(
+            "📈 Trend"
+          )
+    );
+
+    card.append(
+      main,
+      meta,
+      links
+    );
+
+    return card;
+  }
+
+  function makeLink(url, text) {
+    const link =
+      document.createElement("a");
+
+    link.href = url;
+    link.target = "_blank";
+    link.rel =
+      "noopener noreferrer";
+    link.textContent = text;
+
+    return link;
+  }
+
+  function makePlaceholder(text) {
+    const span =
+      document.createElement("span");
+
+    span.className =
+      "movie-link-placeholder";
+
+    span.textContent = text;
+
+    return span;
+  }
+
+  document
+    .getElementById("prev")
+    .addEventListener("click", () => {
+      current = new Date(
+        current.getFullYear(),
+        current.getMonth() - 1,
+        1
       );
 
-      links.appendChild(
-        event.trendUrl
-          ? makeLink(event.trendUrl, "📈 Trend")
-          : makePlaceholder("📈 Trend")
-      );
-
-      card.append(main, meta, links);
-      return card;
-    }
-
-    function makeLink(url, text) {
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = text;
-      return link;
-    }
-    document.getElementById("prev").addEventListener("click", () => {
-      current = new Date(current.getFullYear(), current.getMonth() - 1, 1);
       saveCurrentMonth();
       renderTimeline();
     });
 
-    function makePlaceholder(text) {
-      const span = document.createElement("span");
-      span.className = "movie-link-placeholder";
-      span.textContent = text;
-      return span;
-    }
+  document
+    .getElementById("next")
+    .addEventListener("click", () => {
+      current = new Date(
+        current.getFullYear(),
+        current.getMonth() + 1,
+        1
+      );
 
-    document.getElementById("next").addEventListener("click", () => {
-      current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
       saveCurrentMonth();
       renderTimeline();
     });
 
-    loadEvents();
-  </script>
+  loadEvents();
+</script>
 </body>
 </html>
