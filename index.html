@@ -686,6 +686,27 @@
   .site-info-text p {
     font-size: 13px;
   }
+  .last-update {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  margin-left: 56px; /* タイトルアイコンと揃える */
+}
+
+.update-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: #9aa0aa;
+}
+
+.update-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6f7682;
+}
 }
   </style>
 </head>
@@ -696,6 +717,10 @@
     <div class="title-main">
       <span class="title-icon" aria-hidden="true">▦</span>
       <h1>映画公開カレンダー</h1>
+      <div class="last-update">
+  <span class="update-label">Last Update</span>
+  <span class="update-date">2026.08.01</span>
+</div>
     </div>
 
     <div class="title-decoration" aria-hidden="true">
