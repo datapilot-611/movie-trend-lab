@@ -707,6 +707,41 @@
   font-weight: 600;
   color: #6f7682;
 }
+  .title-area {
+  min-width: 0;
+}
+
+.last-update {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 7px;
+}
+
+.update-label {
+  display: inline-flex;
+  align-items: center;
+  color: #9aa0aa;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.update-label::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: #d9b56d;
+}
+
+.update-date {
+  color: #747b87;
+  font-size: 12px;
+  font-weight: 650;
+}
 }
   </style>
 </head>
@@ -716,7 +751,14 @@
   <div class="title-area">
     <div class="title-main">
       <span class="title-icon" aria-hidden="true">▦</span>
-      <h1>映画公開カレンダー</h1>
+      <div class="title-area">
+  <h1>映画公開カレンダー</h1>
+
+  <div class="last-update">
+    <span class="update-label">Last Update</span>
+    <time class="update-date" id="lastUpdate">----.--.--</time>
+  </div>
+</div>
       <div class="last-update">
   <span class="update-label">Last Update</span>
   <span class="update-date">2026.08.01</span>
@@ -813,61 +855,80 @@
   const filtersEl = document.getElementById("filters");
 
   async function loadEvents() {
-    try {
-      const response = await fetch("./data.json", {
-        cache: "no-store"
+  try {
+    const response = await fetch("./data.json", {
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `data.jsonの読み込みに失敗しました：${response.status}`
+      );
+    }
+
+    const loadedData = await response.json();
+
+    if (
+      !loadedData ||
+      typeof loadedData !== "object" ||
+      !Array.isArray(loadedData.movies)
+    ) {
+      throw new Error(
+        "data.jsonの形式が正しくありません"
+      );
+    }
+
+    const lastUpdateEl =
+      document.getElementById("lastUpdate");
+
+    if (lastUpdateEl) {
+      lastUpdateEl.textContent =
+        loadedData.lastUpdated || "----.--.--";
+    }
+
+    events = loadedData.movies
+      .filter(event => {
+        return (
+          event &&
+          event.date &&
+          event.title
+        );
+      })
+      .map(event => ({
+        date: String(event.date || ""),
+        title: String(event.title || ""),
+        category: String(event.category || ""),
+        tohoUrl: String(event.tohoUrl || ""),
+        dmmUrl: String(event.dmmUrl || ""),
+        trendUrl: String(event.trendUrl || ""),
+        dmmKeyword: String(event.dmmKeyword || ""),
+        dmmCount: normalizeCount(event.dmmCount),
+        relationType: String(event.relationType || ""),
+        newLabel: String(event.newLabel || "")
+      }))
+      .sort((a, b) => {
+        return (
+          a.date.localeCompare(b.date) ||
+          a.title.localeCompare(
+            b.title,
+            "ja"
+          )
+        );
       });
 
-      if (!response.ok) {
-        throw new Error(
-          `data.jsonの読み込みに失敗しました：${response.status}`
-        );
-      }
+    setInitialMonth();
+    renderFilters();
+    renderTimeline();
 
-      const loadedData = await response.json();
+  } catch (error) {
+    console.error(error);
 
-      if (!Array.isArray(loadedData)) {
-        throw new Error(
-          "data.jsonの形式が配列ではありません"
-        );
-      }
-
-      events = loadedData
-        .filter(event => {
-          return event && event.date && event.title;
-        })
-        .map(event => ({
-          date: String(event.date || ""),
-          title: String(event.title || ""),
-          category: String(event.category || ""),
-          tohoUrl: String(event.tohoUrl || ""),
-          dmmUrl: String(event.dmmUrl || ""),
-          trendUrl: String(event.trendUrl || ""),
-          dmmKeyword: String(event.dmmKeyword || ""),
-          dmmCount: normalizeCount(event.dmmCount),
-          relationType: String(event.relationType || ""),
-          newLabel: String(event.newLabel || "")
-        }))
-        .sort((a, b) => {
-          return (
-            a.date.localeCompare(b.date) ||
-            a.title.localeCompare(b.title, "ja")
-          );
-        });
-
-      setInitialMonth();
-      renderFilters();
-      renderTimeline();
-
-    } catch (error) {
-      console.error(error);
-
-      timelineEl.innerHTML =
-        '<div class="empty-message">' +
-        'data.jsonの読み込みに失敗しました' +
-        '</div>';
-    }
+    timelineEl.innerHTML =
+      '<div class="empty-message">' +
+      'data.jsonの読み込みに失敗しました' +
+      '</div>';
   }
+}
 
   function normalizeCount(value) {
     if (
