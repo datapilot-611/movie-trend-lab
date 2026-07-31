@@ -285,7 +285,7 @@
 
   let activeGenreFilter = "すべて";
   let activeRelationFilter = "すべて";
-  let activeSort = "公開日順";
+  let activeSort = "タイトル順";
 
   let current = new Date();
 
@@ -487,8 +487,8 @@
     const sortRow = createFilterRow(
       "並び順",
       [
-        "公開日順",
-        "関連数が多い順"
+        "タイトル順",
+        "関連数順"
       ],
       activeSort,
       value => {
@@ -497,15 +497,6 @@
         renderTimeline();
       }
     );
-
-    const note = document.createElement("span");
-    note.className = "sort-note";
-    note.textContent =
-      "※関連数順は、同じ公開日の作品内で並び替えます";
-
-    sortRow
-      .querySelector(".filter-buttons")
-      .appendChild(note);
 
     filtersEl.append(
       genreRow,
@@ -635,7 +626,7 @@
   function sortDayEvents(dayEvents) {
     const copied = [...dayEvents];
 
-    if (activeSort === "関連数が多い順") {
+    if (activeSort === "関連数順") {
       return copied.sort((a, b) => {
         const countA =
           a.dmmCount === null
