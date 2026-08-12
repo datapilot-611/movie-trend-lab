@@ -742,6 +742,19 @@
   font-size: 12px;
   font-weight: 650;
 }
+  .site-info-text .notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.notice-icon {
+  flex-shrink: 0;
+}
+
+.notice-text {
+  min-width: 0;
+}
 }
   </style>
 </head>
@@ -798,11 +811,14 @@
         TOHOシネマズの公開予定作品をもとに、DMM TV関連作品数やGoogleトレンドをあわせて確認できる映画公開カレンダーです。公開前の作品リサーチやコンテンツ企画にご活用ください！
       </strong>
 
-      <p>
-        ※本サイトはfelmatが独自に調査・作成した非公式の参考情報です。<br>
-        正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください。🙇🏻‍♀️<br>
-        また、メディア様向けの情報となりますので、URLを含む外部への共有・転載はなるべくお控えください。
-      </p>
+      <p class="notice">
+  <span class="notice-icon">⚠️</span>
+  <span class="notice-text">
+    本サイトはfelmatが独自に調査・作成した非公式の参考情報です。<br>
+    正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください。🙇🏻‍♀️<br>
+    また、メディア様向けの情報となりますので、URLを含む外部への共有・転載はなるべくお控えください。
+  </span>
+</p>
     </div>
   </div>
 
