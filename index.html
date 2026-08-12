@@ -743,18 +743,19 @@
   font-weight: 650;
 }
   .notice {
-  display: grid;
-  grid-template-columns: 18px 1fr;
-  column-gap: 4px;
-  align-items: start;
+  position: relative;
   margin-top: 14px;
+  padding-left: 22px;
+
   color: #858b95;
   font-size: 12px;
-  line-height: 1.7;
+  line-height: 1.8;
 }
 
 .notice-icon {
-  line-height: 1.7;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .notice-text {
