@@ -1182,13 +1182,35 @@
     });
 
     if (monthEvents.length === 0) {
-      timelineEl.innerHTML =
-        '<div class="empty-message">' +
-        'この月以降の公開予定作品はまだ情報が公開されていません。情報が確認でき次第順次更新します。' +
-        '</div>';
 
-      return;
-    }
+  // その月に作品データ自体が存在するか確認
+  const hasMonthData = events.some(event => {
+    const date = parseDate(event.date);
+
+    return (
+      date &&
+      date.getFullYear() === year &&
+      date.getMonth() === month
+    );
+  });
+
+  if (hasMonthData) {
+    // データはあるが、フィルター条件に該当する作品がない
+    timelineEl.innerHTML =
+      '<div class="empty-message">' +
+      'この条件に該当する作品はありません' +
+      '</div>';
+  } else {
+    // その月のデータ自体がまだない
+    timelineEl.innerHTML =
+      '<div class="empty-message">' +
+      'この月の公開予定作品は、まだ情報が公開されていません。<br>' +
+      '情報が確認でき次第、順次更新します。' +
+      '</div>';
+  }
+
+  return;
+}
 
     const grouped = new Map();
 
