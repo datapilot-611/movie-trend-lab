@@ -743,23 +743,15 @@
   font-weight: 650;
 }
   .notice {
-  position: relative;
   margin-top: 14px;
-  padding-left: 22px;
-
   color: #858b95;
   font-size: 12px;
   line-height: 1.8;
 }
 
-.notice-icon {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.notice-text {
-  min-width: 0;
+.notice-indent {
+  display: inline-block;
+  padding-left: 22px;
 }
 }
   </style>
@@ -818,13 +810,11 @@
       </strong>
 
       <div class="notice">
-  <span class="notice-icon">⚠️</span>
-
-  <div class="notice-text">
-    <div>本サイトはfelmatが独自に調査・作成した非公式の参考情報です。</div>
-    <div>正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください。🙇🏻‍♀️</div>
-    <div>また、メディア様向けの情報となりますので、URLを含む外部への共有・転載はなるべくお控えください。</div>
-  </div>
+  ⚠️ 本サイトはfelmatが独自に調査・作成した非公式の参考情報です。<br>
+  <span class="notice-indent">
+    正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください。🙇🏻‍♀️<br>
+    また、メディア様向けの情報となりますので、URLを含む外部への共有・転載はなるべくお控えください。
+  </span>
 </div>
     </div>
   </div>
