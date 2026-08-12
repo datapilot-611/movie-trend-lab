@@ -1013,68 +1013,85 @@
   }
 
   function renderFilters() {
-    filtersEl.innerHTML = "";
+  filtersEl.innerHTML = "";
 
-    const genres = [
-      "すべて",
-      ...new Set(
-        events
-          .map(event => event.category)
-          .filter(Boolean)
-      )
-    ];
+  const newOptions = [
+    "すべて",
+    "NEW"
+  ];
 
-    const relationTypes = [
-      "すべて",
-      ...new Set(
-        events
-          .map(event => event.relationType)
-          .filter(Boolean)
-      )
-    ];
+  const genres = [
+    "すべて",
+    ...new Set(
+      events
+        .map(event => event.category)
+        .filter(Boolean)
+    )
+  ];
 
-    const genreRow = createFilterRow(
-      "ジャンル",
-      genres,
-      activeGenreFilter,
-      value => {
-        activeGenreFilter = value;
-        renderFilters();
-        renderTimeline();
-      }
-    );
+  const relationTypes = [
+    "すべて",
+    ...new Set(
+      events
+        .map(event => event.relationType)
+        .filter(Boolean)
+    )
+  ];
 
-    const relationRow = createFilterRow(
-      "関連タイプ",
-      relationTypes,
-      activeRelationFilter,
-      value => {
-        activeRelationFilter = value;
-        renderFilters();
-        renderTimeline();
-      }
-    );
+  const newRow = createFilterRow(
+    "NEW",
+    newOptions,
+    activeNewFilter,
+    value => {
+      activeNewFilter = value;
+      renderFilters();
+      renderTimeline();
+    }
+  );
 
-    const sortRow = createFilterRow(
-      "並び順",
-      [
-        "タイトル順",
-        "関連数順"
-      ],
-      activeSort,
-      value => {
-        activeSort = value;
-        renderFilters();
-        renderTimeline();
-      }
-    );
+  const genreRow = createFilterRow(
+    "ジャンル",
+    genres,
+    activeGenreFilter,
+    value => {
+      activeGenreFilter = value;
+      renderFilters();
+      renderTimeline();
+    }
+  );
 
-    filtersEl.append(
-      genreRow,
-      relationRow,
-      sortRow
-    );
-  }
+  const relationRow = createFilterRow(
+    "関連タイプ",
+    relationTypes,
+    activeRelationFilter,
+    value => {
+      activeRelationFilter = value;
+      renderFilters();
+      renderTimeline();
+    }
+  );
+
+  const sortRow = createFilterRow(
+    "並び順",
+    [
+      "タイトル順",
+      "関連数順"
+    ],
+    activeSort,
+    value => {
+      activeSort = value;
+      renderFilters();
+      renderTimeline();
+    }
+  );
+
+  filtersEl.append(
+    newRow,
+    genreRow,
+    relationRow,
+    sortRow
+  );
+}
 
   function createFilterRow(
     labelText,
