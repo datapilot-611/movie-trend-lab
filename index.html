@@ -834,6 +834,7 @@
   <script>
   let events = [];
 
+  let activeNewFilter = "すべて";
   let activeGenreFilter = "すべて";
   let activeRelationFilter = "すべて";
   let activeSort = "タイトル順";
@@ -1159,6 +1160,12 @@
         return false;
       }
 
+      const matchesNew =
+        activeNewFilter === "すべて" ||
+        String(event.newLabel || "")
+          .trim()
+          .toUpperCase() === "NEW";
+
       const matchesGenre =
         activeGenreFilter === "すべて" ||
         event.category === activeGenreFilter;
@@ -1168,6 +1175,7 @@
         event.relationType === activeRelationFilter;
 
       return (
+        matchesNew &&
         matchesGenre &&
         matchesRelation
       );
