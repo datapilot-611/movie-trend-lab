@@ -806,6 +806,10 @@
    RESPONSIVE
 ========================================================= */
 
+/* =========================================================
+   TABLET
+========================================================= */
+
 @media (max-width: 980px) {
 
   .movie-hero-logo {
@@ -828,6 +832,7 @@
 
 @media (max-width: 800px) {
 
+  /* ヘッダー */
   .movie-hero {
     position: relative;
     width: 100%;
@@ -836,30 +841,43 @@
     overflow: hidden;
   }
 
+  /* スマホ用背景 */
   .movie-hero-bg {
+    content: url("./movie-header-bg-mobile.png");
+
     position: absolute;
     top: 0;
     left: 0;
+
     width: 100%;
     height: auto;
+
+    object-fit: initial;
+    object-position: initial;
   }
+
 
   /* ロゴ */
   .movie-hero-logo {
     position: absolute;
     z-index: 3;
+
     top: 38px;
     left: 50%;
+
     width: 92%;
     max-width: 520px;
     height: auto;
+
     transform: translateX(-50%);
   }
 
-  /* 月選択：ロゴのすぐ下 */
+
+  /* 月選択 */
   .movie-hero-nav {
     position: absolute;
     z-index: 6;
+
     top: 190px;
     left: 18px;
     right: 18px;
@@ -867,39 +885,48 @@
     display: grid;
     grid-template-columns: 72px 1fr 72px;
     align-items: center;
+
     gap: 8px;
     margin: 0;
   }
 
   .movie-hero-nav .month-label {
     min-width: 0;
+
     font-size: 17px;
     text-align: center;
   }
 
   .movie-hero-nav button {
-    min-width: 0;
     width: 100%;
+    min-width: 0;
+
     padding: 8px 6px;
+
     font-size: 11px;
   }
+
 
   /* このサイトについて */
   .movie-hero-info {
     position: absolute;
     z-index: 5;
+
     top: 230px;
     left: 14px;
     right: 14px;
     bottom: auto;
 
     display: block;
-    padding: 14px 14px;
+
+    padding: 14px;
+
     border-radius: 18px;
   }
 
   .movie-hero-info-title {
     margin-bottom: 5px;
+
     font-size: 15px;
   }
 
@@ -910,26 +937,34 @@
 
   .notice {
     margin-top: 6px;
+
     font-size: 9px;
     line-height: 1.45;
   }
 
   .movie-hero-update {
     margin-top: 9px;
+
     padding: 6px 10px;
   }
 
-  /* ヘッダー直後の本文 */
+
+  /* ヘッダー直後 */
   .wrap {
     width: calc(100% - 20px);
+
     margin: 5px auto 44px;
   }
 
-  /* フィルターも詰める */
+
+  /* フィルター */
   .filters {
     margin: 0 0 10px;
+
     padding: 11px 12px;
+
     gap: 7px;
+
     border-radius: 15px;
   }
 
@@ -939,7 +974,9 @@
 
   .filter-label {
     width: 100%;
+
     margin-bottom: 0;
+
     font-size: 11px;
   }
 
@@ -949,15 +986,12 @@
 
   .filter-row button {
     padding: 5px 9px;
+
     font-size: 10px;
   }
-}
 
 
-  /* =========================
-     日付
-  ========================= */
-
+  /* 日付 */
   .date-row {
     grid-template-columns: 1fr;
 
@@ -973,10 +1007,7 @@
   }
 
 
-  /* =========================
-     映画カード
-  ========================= */
-
+  /* 映画カード */
   .movie-card {
     grid-template-columns: 1fr;
 
@@ -1034,18 +1065,6 @@
     font-size: 11px;
   }
 }
-    /* PC */
-.movie-hero-bg {
-  content: url("./movie-header-bg.png");
-}
-
-/* スマホ */
-@media (max-width: 800px) {
-  .movie-hero-bg {
-    content: url("./movie-header-bg-mobile.png");
-  }
-}
-
   </style>
 </head>
 
