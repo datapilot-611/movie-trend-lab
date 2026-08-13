@@ -828,226 +828,130 @@
 
 @media (max-width: 800px) {
 
-  /* =========================
-     ヘッダー
-  ========================= */
-
   .movie-hero {
     position: relative;
     width: 100%;
-    height: 760px;
-    min-height: 760px;
+    height: 680px;
+    min-height: 680px;
     overflow: hidden;
   }
-
-
-  /* =========================
-     背景
-     ※いったんPC画像をそのまま使用
-  ========================= */
 
   .movie-hero-bg {
     position: absolute;
     top: 0;
     left: 0;
-
     width: 100%;
     height: auto;
-
-    object-fit: initial;
-    object-position: initial;
   }
 
-
-
-  /* =========================
-     ロゴ
-  ========================= */
-
+  /* ロゴ */
   .movie-hero-logo {
     position: absolute;
     z-index: 3;
-
-    top: 70px;
+    top: 38px;
     left: 50%;
-
-    width: min(94%, 520px);
-    max-height: 210px;
+    width: 92%;
+    max-width: 520px;
     height: auto;
-
     transform: translateX(-50%);
-
-    object-fit: contain;
-    object-position: center top;
   }
 
-
-  /* =========================
-     月選択
-  ========================= */
-
+  /* 月選択：ロゴのすぐ下 */
   .movie-hero-nav {
     position: absolute;
     z-index: 6;
-
-    top: 310px;
-    left: 20px;
-    right: 20px;
-
-    width: auto;
+    top: 245px;
+    left: 18px;
+    right: 18px;
 
     display: grid;
-    grid-template-columns: 76px 1fr 76px;
+    grid-template-columns: 72px 1fr 72px;
     align-items: center;
-
-    gap: 10px;
+    gap: 8px;
     margin: 0;
   }
 
   .movie-hero-nav .month-label {
     min-width: 0;
-
-    font-size: 18px;
+    font-size: 17px;
     text-align: center;
   }
 
   .movie-hero-nav button {
-    width: 100%;
     min-width: 0;
-
-    padding: 10px 8px;
-
-    font-size: 12px;
+    width: 100%;
+    padding: 8px 6px;
+    font-size: 11px;
   }
 
-
-  /* =========================
-     このサイトについて
-  ========================= */
-
+  /* このサイトについて */
   .movie-hero-info {
     position: absolute;
     z-index: 5;
-
-    top: 380px;
-    left: 16px;
-    right: 16px;
+    top: 295px;
+    left: 14px;
+    right: 14px;
     bottom: auto;
 
     display: block;
-
-    width: auto;
-
-    padding: 18px;
-
-    border-radius: 22px;
-  }
-
-  .movie-hero-info-main {
-    width: 100%;
-    max-width: none;
+    padding: 14px 14px;
+    border-radius: 18px;
   }
 
   .movie-hero-info-title {
-    margin-bottom: 8px;
-
-    font-size: 16px;
+    margin-bottom: 5px;
+    font-size: 15px;
   }
 
   .movie-hero-description {
-    font-size: 12px;
-    line-height: 1.65;
+    font-size: 11px;
+    line-height: 1.5;
   }
-
-
-  /* =========================
-     注意書き
-  ========================= */
 
   .notice {
-    display: flex;
-    align-items: flex-start;
-
-    gap: 5px;
-
-    margin-top: 8px;
-
-    font-size: 10px;
-    line-height: 1.55;
+    margin-top: 6px;
+    font-size: 9px;
+    line-height: 1.45;
   }
-
-  .notice-icon {
-    flex: 0 0 auto;
-  }
-
-  .notice-body {
-    min-width: 0;
-  }
-
-  .notice-body > div {
-    margin: 0;
-  }
-
-
-  /* =========================
-     最終更新
-  ========================= */
 
   .movie-hero-update {
-    width: fit-content;
-
-    margin-top: 14px;
-
-    padding: 8px 12px;
+    margin-top: 9px;
+    padding: 6px 10px;
   }
 
-
-  /* =========================
-     本文
-  ========================= */
-
+  /* ヘッダー直後の本文 */
   .wrap {
     width: calc(100% - 20px);
-
-    margin: 18px auto 48px;
+    margin: 12px auto 44px;
   }
 
-
-  /* =========================
-     フィルター
-  ========================= */
-
+  /* フィルターも詰める */
   .filters {
-    position: static;
-
-    width: 100%;
-
-    margin: 0 0 14px;
-
-    padding: 14px;
-
-    border-radius: 16px;
+    margin: 0 0 10px;
+    padding: 11px 12px;
+    gap: 7px;
+    border-radius: 15px;
   }
 
   .filter-row {
-    align-items: flex-start;
+    gap: 6px;
   }
 
   .filter-label {
     width: 100%;
-
-    margin-bottom: 2px;
+    margin-bottom: 0;
+    font-size: 11px;
   }
 
   .filter-buttons {
-    gap: 6px;
+    gap: 5px;
   }
 
   .filter-row button {
-    padding: 6px 10px;
-
-    font-size: 11px;
+    padding: 5px 9px;
+    font-size: 10px;
   }
+}
 
 
   /* =========================
