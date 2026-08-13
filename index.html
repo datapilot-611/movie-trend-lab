@@ -15,15 +15,36 @@
     }
 
     body {
-      margin: 0;
-      min-height: 100vh;
-      color: #5b2f1c;
-      background:
-        radial-gradient(ellipse at 15% 0%, rgba(255, 190, 180, 0.30) 0%, transparent 35%),
-        radial-gradient(ellipse at 88% 8%, rgba(255, 214, 170, 0.32) 0%, transparent 32%),
-        radial-gradient(ellipse at 50% 42%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 239, 0.55) 40%, transparent 70%),
-        linear-gradient(180deg, #fff1e7 0%, #fff5ee 12%, #fff8f2 55%, #fff3e9 100%);
-    }
+  margin: 0;
+  min-height: 100vh;
+  color: #5b2f1c;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(255, 174, 145, 0.34) 0%,
+      rgba(255, 205, 181, 0.20) 22%,
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at 10% 18%,
+      rgba(255, 177, 164, 0.20) 0%,
+      transparent 34%
+    ),
+    radial-gradient(
+      ellipse at 90% 18%,
+      rgba(255, 190, 151, 0.22) 0%,
+      transparent 34%
+    ),
+    linear-gradient(
+      180deg,
+      #ffe4d5 0%,
+      #ffede2 14%,
+      #fff5ee 36%,
+      #fff8f3 65%,
+      #fff3e9 100%
+    );
+}
 
     body::before {
       content: "";
@@ -43,21 +64,7 @@
       width: min(1180px, calc(100% - 32px));
       margin: 28px auto 56px;
     }
-    main.wrap {
-  position: relative;
-  z-index: 3;
-  margin-top: -18px;
-  padding-top: 40px;
-
-  background: linear-gradient(
-    180deg,
-    rgba(255, 239, 228, 0.96) 0%,
-    #fff5ee 100px,
-    transparent 260px
-  );
-
-  border-radius: 28px 28px 0 0;
-}
+    
 
     /* =========================================================
        MOVIE HERO
