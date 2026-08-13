@@ -364,50 +364,18 @@
     ========================================================= */
 
     .filters {
-      position: absolute;
-      z-index: 8;
-
-      left: max(
-        18px,
-        calc((100vw - 1180px) / 2)
-      );
-
-      right: max(
-        18px,
-        calc((100vw - 1180px) / 2)
-      );
-
-      /*
-       * ヘッダーの外へ出すことで
-       * 上下を橋渡しする
-       */
-      bottom: -195px;
-
-      display: flex;
-      flex-direction: column;
-
-      gap: 10px;
-
-      padding: 18px 20px;
-
-      border:
-        1px solid
-        rgba(231, 190, 160, 0.48);
-
-      border-radius: 20px;
-
-      background:
-        rgba(255, 252, 249, 0.92);
-
-      box-shadow:
-        0 14px 38px
-          rgba(126, 76, 48, 0.09),
-        0 3px 10px
-          rgba(126, 76, 48, 0.04);
-
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 16px 18px;
+  border: 1px solid rgba(231, 190, 160, 0.42);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 7px 22px rgba(126, 76, 48, 0.04);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
 
     .filter-row {
       display: flex;
@@ -1103,26 +1071,12 @@
          ヘッダーと本文の境界をまたぐ
     ====================================================== -->
 
-    <div
-      class="filters"
-      id="filters"
-    ></div>
+    </section>
 
-  </section>
-
-
-  <!-- =======================================================
-       MAIN
-  ======================================================== -->
-
-  <main class="wrap">
-
-    <section
-      class="timeline"
-      id="timeline"
-    ></section>
-
-  </main>
+<main class="wrap">
+  <div class="filters" id="filters"></div>
+  <section class="timeline" id="timeline"></section>
+</main>
 
 
   <!-- =======================================================
