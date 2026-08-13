@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>映画公開カレンダー</title>
-  <style>
 
+  <style>
     * {
       box-sizing: border-box;
     }
@@ -15,34 +15,35 @@
     }
 
     body {
-  margin: 0;
-  min-height: 100vh;
-  color: #5b2f1c;
-  background:
-    radial-gradient(
-      ellipse at 15% 0%,
-      rgba(255, 190, 180, 0.30) 0%,
-      transparent 35%
-    ),
-    radial-gradient(
-      ellipse at 88% 8%,
-      rgba(255, 214, 170, 0.32) 0%,
-      transparent 32%
-    ),
-    radial-gradient(
-      ellipse at 50% 42%,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 248, 239, 0.55) 40%,
-      transparent 70%
-    ),
-    linear-gradient(
-      180deg,
-      #fff8f2 0%,
-      #fff3e9 35%,
-      #fff8f2 70%,
-      #fff1e5 100%
-    );
-}
+      margin: 0;
+      min-height: 100vh;
+      color: #5b2f1c;
+
+      background:
+        radial-gradient(
+          ellipse at 15% 0%,
+          rgba(255, 190, 180, 0.30) 0%,
+          transparent 35%
+        ),
+        radial-gradient(
+          ellipse at 88% 8%,
+          rgba(255, 214, 170, 0.32) 0%,
+          transparent 32%
+        ),
+        radial-gradient(
+          ellipse at 50% 42%,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(255, 248, 239, 0.55) 40%,
+          transparent 70%
+        ),
+        linear-gradient(
+          180deg,
+          #fff8f2 0%,
+          #fff3e9 35%,
+          #fff8f2 70%,
+          #fff1e5 100%
+        );
+    }
 
     body::before {
       content: "";
@@ -50,144 +51,243 @@
       inset: 0;
       z-index: -1;
       pointer-events: none;
+
       background-image:
-        radial-gradient(circle, rgba(231, 154, 104, 0.18) 1px, transparent 1.5px),
-        radial-gradient(circle, rgba(255, 198, 120, 0.14) 1px, transparent 1.5px);
-      background-size: 95px 95px, 140px 140px;
-      background-position: 15px 20px, 60px 75px;
+        radial-gradient(
+          circle,
+          rgba(231, 154, 104, 0.18) 1px,
+          transparent 1.5px
+        ),
+        radial-gradient(
+          circle,
+          rgba(255, 198, 120, 0.14) 1px,
+          transparent 1.5px
+        );
+
+      background-size:
+        95px 95px,
+        140px 140px;
+
+      background-position:
+        15px 20px,
+        60px 75px;
+
       opacity: 0.45;
     }
 
     .wrap {
-  width: min(1180px, calc(100% - 32px));
-  margin: 48px auto 56px;
-}
-    
+      width: min(1180px, calc(100% - 32px));
+
+      /*
+       * フィルターがヘッダーから
+       * 下にはみ出しているので
+       * その分だけ余白を取る
+       */
+      margin: 225px auto 56px;
+    }
+
 
     /* =========================================================
        MOVIE HERO
-       ヘッダー + このサイトについて を一体化
-       背景画像: movie-header-bg.png
-       前景画像: movie-header-logo.png
     ========================================================= */
 
     .movie-hero {
-  position: relative;
-  width: 100%;
-  min-height: 430px;
-  overflow: hidden;
-}
-    .movie-hero::after {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  left: 0;
-  right: 0;
-  bottom: -35px;
-  height: 85px;
-  pointer-events: none;
+      position: relative;
+      width: 100%;
+      min-height: 430px;
+      overflow: visible;
+    }
 
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 241, 231, 0) 0%,
-    rgba(255, 241, 231, 0.55) 45%,
-    #fff1e7 82%,
-    #fff1e7 100%
-  );
-}
-    
-      
+    .movie-hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+
+      display: block;
+
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+      object-position: center top;
+    }
+
+
+    /* =========================================================
+       HERO LOGO
+    ========================================================= */
 
     .movie-hero-logo {
       position: absolute;
       z-index: 3;
+
       top: 70px;
-      left: 26px;
+      left: max(
+        26px,
+        calc((100vw - 1180px) / 2 + 26px)
+      );
+
       display: block;
+
       width: min(760px, 66%);
       max-height: 215px;
       height: auto;
+
       object-fit: contain;
       object-position: left top;
-      filter: drop-shadow(0 8px 12px rgba(90, 52, 34, 0.08));
+
+      filter:
+        drop-shadow(
+          0 8px 12px
+          rgba(90, 52, 34, 0.08)
+        );
+
       pointer-events: none;
       user-select: none;
     }
 
+
+    /* =========================================================
+       MONTH NAV
+    ========================================================= */
+
     .movie-hero-nav {
       position: absolute;
       z-index: 6;
+
       top: 220px;
-      right: 24px;
+
+      right: max(
+        24px,
+        calc((100vw - 1180px) / 2 + 24px)
+      );
+
       display: flex;
       align-items: center;
       justify-content: flex-end;
+
       gap: 9px;
       margin: 0;
     }
 
     .movie-hero-nav button {
       min-width: 66px;
+
       padding: 9px 11px;
-      border: 1px solid rgba(177, 111, 77, 0.20);
+
+      border:
+        1px solid
+        rgba(177, 111, 77, 0.20);
+
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.86);
+
+      background:
+        rgba(255, 255, 255, 0.86);
+
       color: #70402d;
+
       font-size: 11px;
       font-weight: 800;
       line-height: 1.2;
+
       cursor: pointer;
-      box-shadow: 0 5px 13px rgba(119, 67, 42, 0.07);
+
+      box-shadow:
+        0 5px 13px
+        rgba(119, 67, 42, 0.07);
+
       backdrop-filter: blur(7px);
       -webkit-backdrop-filter: blur(7px);
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+
+      transition:
+        transform .18s ease,
+        background .18s ease,
+        border-color .18s ease;
     }
 
     .movie-hero-nav button:hover {
-      border-color: rgba(177, 111, 77, 0.35);
+      border-color:
+        rgba(177, 111, 77, 0.35);
+
       background: #fffaf6;
-      transform: translateY(-1px);
+
+      transform:
+        translateY(-1px);
     }
 
     .movie-hero-nav .month-label {
       min-width: 104px;
+
       color: #70402d;
+
       font-size: 17px;
       font-weight: 900;
+
       text-align: center;
       white-space: nowrap;
     }
 
+
+    /* =========================================================
+       SITE INFO
+    ========================================================= */
+
     .movie-hero-info {
       position: absolute;
       z-index: 5;
-      left: 18px;
-      right: 18px;
-      bottom: 16px;
+
+      left: max(
+        18px,
+        calc((100vw - 1180px) / 2)
+      );
+
+      right: max(
+        18px,
+        calc((100vw - 1180px) / 2)
+      );
+
+      bottom: 22px;
+
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
+
       gap: 26px;
+
       padding: 15px 18px;
-      border: 1px solid rgba(255, 255, 255, 0.62);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.62);
+
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.80);
-      box-shadow: 0 7px 20px rgba(106, 63, 41, 0.06);
+
+      background:
+        rgba(255, 255, 255, 0.84);
+
+      box-shadow:
+        0 9px 24px
+        rgba(106, 63, 41, 0.07);
+
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
 
     .movie-hero-info-main {
       min-width: 0;
-      max-width: 830px;
+      max-width: 850px;
     }
 
     .movie-hero-info-title {
       display: flex;
       align-items: center;
+
       gap: 8px;
+
       margin-bottom: 6px;
+
       color: #5b3827;
+
       font-size: 15px;
       font-weight: 900;
       line-height: 1.3;
@@ -195,6 +295,7 @@
 
     .movie-hero-description {
       color: #56463f;
+
       font-size: 12px;
       font-weight: 700;
       line-height: 1.6;
@@ -202,54 +303,529 @@
 
     .movie-hero-notice {
       margin-top: 5px;
+
       color: #94847c;
+
       font-size: 10px;
       line-height: 1.5;
     }
 
     .movie-hero-update {
       flex-shrink: 0;
+
       display: flex;
       align-items: center;
+
       gap: 8px;
+
       padding: 7px 11px;
-      border: 1px solid rgba(212, 153, 116, 0.16);
+
+      border:
+        1px solid
+        rgba(212, 153, 116, 0.16);
+
       border-radius: 999px;
-      background: rgba(255, 247, 239, 0.94);
+
+      background:
+        rgba(255, 247, 239, 0.94);
+
       white-space: nowrap;
     }
 
     .movie-hero-update span {
       color: #a06c51;
+
       font-size: 8px;
       font-weight: 800;
       letter-spacing: .14em;
+
       text-transform: uppercase;
     }
 
     .movie-hero-update span::before {
       content: "✦";
+
       margin-right: 6px;
+
       color: #e4a04b;
     }
 
     .movie-hero-update time {
       color: #70452f;
+
       font-size: 11px;
       font-weight: 800;
     }
 
+
+    /* =========================================================
+       FILTERS
+       ヘッダーと本文の境界をまたぐ
+    ========================================================= */
+
+    .filters {
+      position: absolute;
+      z-index: 8;
+
+      left: max(
+        18px,
+        calc((100vw - 1180px) / 2)
+      );
+
+      right: max(
+        18px,
+        calc((100vw - 1180px) / 2)
+      );
+
+      /*
+       * ヘッダーの外へ出すことで
+       * 上下を橋渡しする
+       */
+      bottom: -195px;
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+
+      padding: 18px 20px;
+
+      border:
+        1px solid
+        rgba(231, 190, 160, 0.48);
+
+      border-radius: 20px;
+
+      background:
+        rgba(255, 252, 249, 0.92);
+
+      box-shadow:
+        0 14px 38px
+          rgba(126, 76, 48, 0.09),
+        0 3px 10px
+          rgba(126, 76, 48, 0.04);
+
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+
+      gap: 8px;
+    }
+
+    .filter-label {
+      width: 82px;
+      flex-shrink: 0;
+
+      color: #806d64;
+
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .filter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 8px;
+    }
+
+    .filter-row button {
+      padding: 7px 12px;
+
+      border:
+        1px solid
+        #eadfd7;
+
+      border-radius: 999px;
+
+      background:
+        rgba(255, 255, 255, 0.92);
+
+      color: #5f514a;
+
+      font-size: 12px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition:
+        background .18s ease,
+        transform .18s ease,
+        border-color .18s ease;
+    }
+
+    .filter-row button:hover {
+      border-color: #d9bca9;
+
+      background: #fff8f2;
+
+      transform:
+        translateY(-1px);
+    }
+
+    .filter-row button.active {
+      border-color: #70402d;
+
+      background: #70402d;
+
+      color: #fff;
+    }
+
+    .sort-note {
+      color: #9a8d86;
+
+      font-size: 11px;
+    }
+
+
+    /* =========================================================
+       TIMELINE
+    ========================================================= */
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+    }
+
+    .date-row {
+      display: grid;
+
+      grid-template-columns:
+        120px
+        minmax(0, 1fr);
+
+      gap: 14px;
+
+      align-items: start;
+
+      padding: 12px 14px;
+
+      border:
+        1px solid
+        rgba(231, 190, 160, 0.45);
+
+      border-radius: 18px;
+
+      background:
+        rgba(255, 255, 255, 0.72);
+
+      box-shadow:
+        0 8px 24px
+          rgba(157, 93, 55, 0.06),
+        inset 0 1px 0
+          rgba(255, 255, 255, 0.95);
+
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .date-label {
+      position: sticky;
+      top: 10px;
+
+      padding-top: 3px;
+
+      color: #5b3827;
+
+      font-size: 15px;
+      font-weight: 800;
+
+      white-space: nowrap;
+    }
+
+    .date-label .weekday {
+      margin-left: 4px;
+
+      color: #88756b;
+
+      font-size: 12px;
+    }
+
+    .movies {
+      display: flex;
+      flex-direction: column;
+
+      gap: 8px;
+
+      min-width: 0;
+    }
+
+
+    /* =========================================================
+       MOVIE CARD
+    ========================================================= */
+
+    .movie-card {
+      position: relative;
+
+      display: grid;
+
+      grid-template-columns:
+        1fr
+        320px
+        120px;
+
+      gap: 12px;
+
+      align-items: center;
+
+      min-width: 0;
+
+      padding: 9px 11px;
+
+      overflow: hidden;
+
+      border-left:
+        5px solid
+        var(
+          --category-color,
+          #dfe3ea
+        );
+
+      border-radius: 10px;
+
+      background:
+        color-mix(
+          in srgb,
+          var(
+            --category-color,
+            #e8ebf0
+          ) 24%,
+          white
+        );
+    }
+
+    .movie-main {
+      min-width: 0;
+
+      padding-left: 38px;
+    }
+
+    .movie-title {
+      display: block;
+
+      color: inherit;
+
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.4;
+
+      text-decoration: none;
+
+      overflow-wrap: anywhere;
+    }
+
+    .movie-title:hover {
+      text-decoration: underline;
+    }
+
+    .category-tag {
+      display: inline-block;
+
+      margin-top: 4px;
+
+      padding: 2px 7px;
+
+      border:
+        1px solid
+        rgba(0, 0, 0, .09);
+
+      border-radius: 999px;
+
+      background:
+        rgba(255, 255, 255, .7);
+
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+
+    /* =========================================================
+       MOVIE META
+    ========================================================= */
+
+    .movie-meta {
+      display: flex;
+      flex-direction: column;
+
+      gap: 2px;
+
+      min-width: 0;
+
+      padding-left: 18px;
+
+      color: #514a46;
+
+      font-size: 12px;
+      line-height: 1.45;
+
+      overflow-wrap: anywhere;
+    }
+
+    .meta-row {
+      display: grid;
+
+      grid-template-columns:
+        82px
+        12px
+        minmax(0, 1fr);
+
+      align-items: start;
+    }
+
+    .meta-label {
+      white-space: nowrap;
+    }
+
+    .meta-colon {
+      text-align: center;
+    }
+
+    .meta-value {
+      min-width: 0;
+
+      overflow-wrap: anywhere;
+    }
+
+
+    /* =========================================================
+       LINKS
+    ========================================================= */
+
+    .movie-links {
+      display: flex;
+
+      justify-content: flex-end;
+
+      gap: 10px;
+
+      width: 120px;
+
+      white-space: nowrap;
+    }
+
+    .movie-links a,
+    .movie-link-placeholder {
+      width: 55px;
+
+      color: #8e5138;
+
+      font-size: 11px;
+      font-weight: 800;
+
+      text-align: left;
+      text-decoration: none;
+    }
+
+    .movie-links a:hover {
+      text-decoration: underline;
+    }
+
+    .movie-link-placeholder {
+      visibility: hidden;
+    }
+
+
+    /* =========================================================
+       NEW RIBBON
+    ========================================================= */
+
+    .movie-new-ribbon {
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      z-index: 20;
+
+      width: 46px;
+      height: 46px;
+
+      overflow: hidden;
+
+      pointer-events: none;
+    }
+
+    .movie-new-ribbon::before {
+      content: "NEW";
+
+      position: absolute;
+
+      top: 9px;
+      left: -16px;
+
+      width: 70px;
+
+      padding: 2px 0;
+
+      background:
+        linear-gradient(
+          135deg,
+          #ff6f69,
+          #ed5268
+        );
+
+      color: #fff;
+
+      box-shadow:
+        0 2px 6px
+        rgba(0, 0, 0, .18);
+
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .8px;
+
+      text-align: center;
+
+      transform:
+        rotate(-45deg);
+    }
+
+
+    /* =========================================================
+       EMPTY MESSAGE
+    ========================================================= */
+
+    .empty-message {
+      padding: 28px;
+
+      border:
+        1px solid
+        rgba(231, 190, 160, 0.45);
+
+      border-radius: 18px;
+
+      background:
+        rgba(255, 255, 255, 0.72);
+
+      color: #806f67;
+
+      text-align: center;
+
+      box-shadow:
+        0 8px 24px
+        rgba(157, 93, 55, 0.05);
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
     @media (max-width: 980px) {
-      .movie-hero {
-        min-height: 400px;
-      }
 
       .movie-hero-logo {
         width: 70%;
       }
 
       .movie-hero-nav {
-        top: 168px;
         right: 18px;
       }
 
@@ -258,49 +834,67 @@
       }
     }
 
+
     @media (max-width: 800px) {
+
       .movie-hero {
-        min-height: 500px;
-        border-radius: 20px;
+        min-height: 700px;
+
+        overflow: hidden;
       }
 
       .movie-hero-bg {
-        object-position: center top;
+        object-position:
+          center top;
       }
 
       .movie-hero-logo {
         top: 20px;
         left: 50%;
+
         width: 94%;
         max-height: 215px;
-        transform: translateX(-50%);
+
+        transform:
+          translateX(-50%);
       }
 
       .movie-hero-nav {
         top: 222px;
+
         left: 16px;
         right: 16px;
-        justify-content: space-between;
+
+        justify-content:
+          space-between;
+
         width: auto;
       }
 
       .movie-hero-nav .month-label {
         min-width: 90px;
+
         font-size: 14px;
       }
 
       .movie-hero-nav button {
         min-width: 58px;
+
         padding: 8px 9px;
       }
 
       .movie-hero-info {
         left: 12px;
         right: 12px;
-        bottom: 12px;
+
+        bottom: 235px;
+
         flex-direction: column;
+
         align-items: stretch;
+
         gap: 9px;
+
         padding: 13px 14px;
       }
 
@@ -315,416 +909,25 @@
       .movie-hero-notice {
         font-size: 9px;
       }
-    }
 
-    @media (max-width: 560px) {
-      .movie-hero {
-        min-height: 520px;
-      }
-
-      .movie-hero-logo {
-        width: 98%;
-      }
-
-      .movie-hero-nav {
-        top: 218px;
-      }
-
-      .movie-hero-info-title {
-        font-size: 14px;
-      }
-    }
-
-
-    /* Full-bleed hero: background reaches both browser edges */
-    .movie-hero-info {
-      left: max(18px, calc((100vw - 1180px) / 2));
-      right: max(18px, calc((100vw - 1180px) / 2));
-    }
-
-    .movie-hero-logo {
-      left: max(26px, calc((100vw - 1180px) / 2 + 26px));
-    }
-
-    .movie-hero-nav {
-      right: max(24px, calc((100vw - 1180px) / 2 + 24px));
-    }
-
-
-    @media (max-width: 800px) {
-      .movie-hero-info {
+      .filters {
         left: 12px;
         right: 12px;
-      }
 
-      .movie-hero-logo {
-        left: 50%;
-      }
-
-      .movie-hero-nav {
-        left: 16px;
-        right: 16px;
-      }
-    }
-
-    /* =========================================================
-       FILTERS
-    ========================================================= */
-
-    .filters {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin: 0 0 18px;
-      padding: 16px 18px;
-      border: 1px solid rgba(231, 190, 160, 0.42);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.62);
-      box-shadow: 0 7px 22px rgba(126, 76, 48, 0.04);
-      backdrop-filter: blur(7px);
-      -webkit-backdrop-filter: blur(7px);
-    }
-
-    .filter-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .filter-label {
-      width: 82px;
-      flex-shrink: 0;
-      color: #806d64;
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .filter-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .filter-row button {
-      padding: 7px 12px;
-      border: 1px solid #eadfd7;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.86);
-      color: #5f514a;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .18s ease, transform .18s ease, border-color .18s ease;
-    }
-
-    .filter-row button:hover {
-      border-color: #d9bca9;
-      background: #fff8f2;
-      transform: translateY(-1px);
-    }
-
-    .filter-row button.active {
-      border-color: #70402d;
-      background: #70402d;
-      color: #fff;
-    }
-
-    .sort-note {
-      color: #9a8d86;
-      font-size: 11px;
-    }
-
-    /* =========================================================
-       TIMELINE
-    ========================================================= */
-
-    .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .date-row {
-      display: grid;
-      grid-template-columns: 120px minmax(0, 1fr);
-      gap: 14px;
-      align-items: start;
-      padding: 12px 14px;
-      border: 1px solid rgba(231, 190, 160, 0.45);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.72);
-      box-shadow:
-        0 8px 24px rgba(157, 93, 55, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-
-    .date-label {
-      position: sticky;
-      top: 10px;
-      padding-top: 3px;
-      color: #5b3827;
-      font-size: 15px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .date-label .weekday {
-      margin-left: 4px;
-      color: #88756b;
-      font-size: 12px;
-    }
-
-    .movies {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .movie-card {
-      position: relative;
-      display: grid;
-      grid-template-columns: 1fr 320px 120px;
-      gap: 12px;
-      align-items: center;
-      min-width: 0;
-      padding: 9px 11px;
-      overflow: hidden;
-      border-left: 5px solid var(--category-color, #dfe3ea);
-      border-radius: 10px;
-      background: color-mix(in srgb, var(--category-color, #e8ebf0) 24%, white);
-    }
-
-    .movie-main {
-      min-width: 0;
-      padding-left: 38px;
-    }
-
-    .movie-title {
-      display: block;
-      color: inherit;
-      font-size: 16px;
-      font-weight: 800;
-      line-height: 1.4;
-      text-decoration: none;
-      overflow-wrap: anywhere;
-    }
-
-    .movie-title:hover {
-      text-decoration: underline;
-    }
-
-    .category-tag {
-      display: inline-block;
-      margin-top: 4px;
-      padding: 2px 7px;
-      border: 1px solid rgba(0, 0, 0, .09);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .7);
-      font-size: 10px;
-      font-weight: 800;
-    }
-
-    .movie-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-      padding-left: 18px;
-      color: #514a46;
-      font-size: 12px;
-      line-height: 1.45;
-      overflow-wrap: anywhere;
-    }
-
-    .meta-row {
-      display: grid;
-      grid-template-columns: 82px 12px minmax(0, 1fr);
-      align-items: start;
-    }
-
-    .meta-label {
-      white-space: nowrap;
-    }
-
-    .meta-colon {
-      text-align: center;
-    }
-
-    .meta-value {
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-
-    .movie-links {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      width: 120px;
-      white-space: nowrap;
-    }
-
-    .movie-links a,
-    .movie-link-placeholder {
-      width: 55px;
-      color: #8e5138;
-      font-size: 11px;
-      font-weight: 800;
-      text-align: left;
-      text-decoration: none;
-    }
-
-    .movie-links a:hover {
-      text-decoration: underline;
-    }
-
-    .movie-link-placeholder {
-      visibility: hidden;
-    }
-
-    .movie-new-ribbon {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 20;
-      width: 46px;
-      height: 46px;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .movie-new-ribbon::before {
-      content: "NEW";
-      position: absolute;
-      top: 9px;
-      left: -16px;
-      width: 70px;
-      padding: 2px 0;
-      background: linear-gradient(135deg, #ff6f69, #ed5268);
-      color: #fff;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, .18);
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: .8px;
-      text-align: center;
-      transform: rotate(-45deg);
-    }
-
-    .empty-message {
-      padding: 28px;
-      border: 1px solid rgba(231, 190, 160, 0.45);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.72);
-      color: #806f67;
-      text-align: center;
-      box-shadow: 0 8px 24px rgba(157, 93, 55, 0.05);
-    }
-
-    /* =========================================================
-       RESPONSIVE
-    ========================================================= */
-
-    @media (max-width: 980px) {
-      .movie-header {
-        height: 260px;
-      }
-
-      .movie-header-logo {
-        left: 22px;
-        width: 72%;
-        max-height: 205px;
-      }
-
-      .movie-header-update {
-        left: 34px;
-      }
-
-      .movie-header-nav {
-        right: 18px;
-      }
-
-      .site-info {
-        padding-right: 190px;
-      }
-
-      .film-strip {
-        right: -150px;
-      }
-
-      .popcorn {
-        right: 30px;
-      }
-    }
-
-    @media (max-width: 800px) {
-      .wrap {
-        width: min(100% - 20px, 1180px);
-        margin-top: 18px;
-      }
-
-      .movie-header {
-        height: 330px;
-        border-radius: 20px;
-      }
-
-      .movie-header-bg {
-        object-position: center top;
-      }
-
-      .movie-header-logo {
-        top: 42%;
-        left: 50%;
-        width: 92%;
-        max-height: 210px;
-        transform: translate(-50%, -50%);
-      }
-
-      .movie-header-update {
-        bottom: 66px;
-        left: 50%;
-        transform: translateX(-50%);
-      }
-
-      .movie-header-nav {
-        right: 16px;
         bottom: 16px;
-        left: 16px;
-        justify-content: space-between;
-        width: auto;
+
+        padding: 14px 14px;
       }
 
-      .movie-header-nav .month-label {
-        min-width: 90px;
-        font-size: 14px;
-      }
+      .wrap {
+        width:
+          min(
+            100% - 20px,
+            1180px
+          );
 
-      .movie-header-nav button {
-        min-width: 58px;
-        padding: 8px 9px;
-      }
-
-      .site-info {
-        min-height: 0;
-        padding: 26px 30px;
-      }
-
-      .site-info-text {
-        padding-left: 0;
-      }
-
-      .site-info-decoration {
-        opacity: 0.38;
-      }
-
-      .film-strip {
-        right: -220px;
-      }
-
-      .popcorn {
-        display: none;
+        margin:
+          18px auto 48px;
       }
 
       .filter-row {
@@ -736,7 +939,9 @@
       }
 
       .date-row {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
+
         gap: 8px;
       }
 
@@ -745,7 +950,9 @@
       }
 
       .movie-card {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
+
         gap: 5px;
       }
 
@@ -754,811 +961,1656 @@
       }
 
       .movie-links {
-        justify-content: flex-start;
+        justify-content:
+          flex-start;
+
         width: auto;
+
         padding-left: 38px;
       }
     }
 
+
     @media (max-width: 560px) {
-      .movie-header {
-        height: 300px;
+
+      .movie-hero {
+        min-height: 760px;
       }
 
-      .movie-header-logo {
-        top: 39%;
-        width: 96%;
+      .movie-hero-logo {
+        width: 98%;
       }
 
-      .movie-header-update {
-        bottom: 62px;
+      .movie-hero-nav {
+        top: 218px;
       }
 
-      .site-info-heading {
-        gap: 13px;
+      .movie-hero-info {
+        bottom: 275px;
       }
 
-      .site-info-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 23px;
-      }
-
-      .site-info-title {
-        font-size: 18px;
-      }
-
-      .site-info-text strong {
+      .movie-hero-info-title {
         font-size: 14px;
       }
 
-      .site-info-text .notice,
-      .site-info-text .notice-body {
+      .filter-row button {
         font-size: 11px;
+
+        padding: 6px 10px;
       }
     }
 
   </style>
 </head>
+
+
 <body>
+
+  <!-- =======================================================
+       HERO
+  ======================================================== -->
+
   <section class="movie-hero">
 
-      <!-- 背景：カーテン＋ライト -->
-      <img
-        src="./movie-header-bg.png"
-        class="movie-hero-bg"
-        alt=""
-        aria-hidden="true"
+    <!-- 背景 -->
+    <img
+      src="./movie-header-bg.png"
+      class="movie-hero-bg"
+      alt=""
+      aria-hidden="true"
+    >
+
+
+    <!-- ロゴ -->
+    <img
+      src="./movie-header-logo.png"
+      class="movie-hero-logo"
+      alt="映画公開カレンダー"
+    >
+
+
+    <!-- 月移動 -->
+    <div class="movie-hero-nav">
+
+      <button
+        id="prev"
+        type="button"
       >
+        ‹ 前月
+      </button>
 
-      <!-- 前景：ロゴ＋MOVIE看板＋リール＋ポップコーン -->
-      <img
-        src="./movie-header-logo.png"
-        class="movie-hero-logo"
-        alt="映画公開カレンダー"
+      <span
+        class="month-label"
+        id="monthLabel"
+      ></span>
+
+      <button
+        id="next"
+        type="button"
       >
+        翌月 ›
+      </button>
 
-      <!-- 月移動 -->
-      <div class="month-nav movie-hero-nav">
-        <button id="prev" type="button">‹ 前月</button>
-        <span class="month-label" id="monthLabel"></span>
-        <button id="next" type="button">翌月 ›</button>
-      </div>
+    </div>
 
-      <!-- このサイトについて + 更新日 -->
-      <div class="movie-hero-info">
 
-        <div class="movie-hero-info-main">
-          <div class="movie-hero-info-title">
-            <span aria-hidden="true">🎥</span>
-            このサイトについて
-          </div>
+    <!-- このサイトについて -->
+    <div class="movie-hero-info">
 
-          <div class="movie-hero-description">
-            TOHOシネマズの公開予定作品をもとに、DMM TV関連作品数やGoogleトレンドをあわせて確認できる映画公開カレンダーです。<br>公開前の作品リサーチやコンテンツ企画にご活用ください！
-          </div>
+      <div class="movie-hero-info-main">
 
-          <div class="movie-hero-notice">
-            ⚠️ 本サイトはfelmatが独自に調査・作成した非公式の参考情報です。正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください。<br>また、メディア様向けの情報となりますので、URLを含む外部への共有・転載はなるべくお控えください。
-          </div>
+        <div class="movie-hero-info-title">
+          <span aria-hidden="true">
+            🎥
+          </span>
+
+          このサイトについて
         </div>
 
-        <div class="movie-hero-update">
-          <span>Last Update</span>
-          <time id="lastUpdate">----.--.--</time>
+
+        <div class="movie-hero-description">
+          TOHOシネマズの公開予定作品をもとに、DMM TV関連作品数やGoogleトレンドをあわせて確認できる映画公開カレンダーです。<br>
+          公開前の作品リサーチやコンテンツ企画にご活用ください！
+        </div>
+
+
+        <div class="movie-hero-notice">
+          ⚠️ 本サイトはfelmatが独自に調査・作成した非公式の参考情報です。正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください。<br>
+          また、メディア様向けの情報となりますので、URLを含む外部への共有・転載はなるべくお控えください。
         </div>
 
       </div>
 
-    </section>
+
+      <!-- 最終更新 -->
+      <div class="movie-hero-update">
+
+        <span>
+          Last Update
+        </span>
+
+        <time id="lastUpdate">
+          ----.--.--
+        </time>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILTERS
+         ヘッダーと本文の境界をまたぐ
+    ====================================================== -->
+
+    <div
+      class="filters"
+      id="filters"
+    ></div>
+
+  </section>
+
+
+  <!-- =======================================================
+       MAIN
+  ======================================================== -->
 
   <main class="wrap">
 
-    <div class="filters" id="filters"></div>
-    <section class="timeline" id="timeline"></section>
+    <section
+      class="timeline"
+      id="timeline"
+    ></section>
+
   </main>
 
+
+  <!-- =======================================================
+       JAVASCRIPT
+  ======================================================== -->
+
   <script>
-  let events = [];
 
-  let activeNewFilter = "すべて";
-  let activeGenreFilter = "すべて";
-  let activeRelationFilter = "すべて";
-  let activeSort = "タイトル順";
+    let events = [];
 
-  let current = new Date();
+    let activeNewFilter = "すべて";
+    let activeGenreFilter = "すべて";
+    let activeRelationFilter = "すべて";
+    let activeSort = "タイトル順";
 
-  const categoryColors = {
-    "アニメ": "#b9dcf3",
-    "洋画": "#f3c7c7",
-    "邦画": "#c9e8ce",
-    "特撮": "#f7e5a8",
-    "音楽コンテンツ": "#e6cff2"
-  };
+    let current = new Date();
 
-  const timelineEl = document.getElementById("timeline");
-  const monthLabelEl = document.getElementById("monthLabel");
-  const filtersEl = document.getElementById("filters");
 
-  async function loadEvents() {
-  try {
-    const response = await fetch("./data.json", {
-      cache: "no-store"
-    });
+    const categoryColors = {
+      "アニメ": "#b9dcf3",
+      "洋画": "#f3c7c7",
+      "邦画": "#c9e8ce",
+      "特撮": "#f7e5a8",
+      "音楽コンテンツ": "#e6cff2"
+    };
 
-    if (!response.ok) {
-      throw new Error(
-        `data.jsonの読み込みに失敗しました：${response.status}`
+
+    const timelineEl =
+      document.getElementById(
+        "timeline"
       );
-    }
 
-    const loadedData = await response.json();
-
-    if (
-      !loadedData ||
-      typeof loadedData !== "object" ||
-      !Array.isArray(loadedData.movies)
-    ) {
-      throw new Error(
-        "data.jsonの形式が正しくありません"
+    const monthLabelEl =
+      document.getElementById(
+        "monthLabel"
       );
-    }
 
-    const lastUpdateEl =
-      document.getElementById("lastUpdate");
+    const filtersEl =
+      document.getElementById(
+        "filters"
+      );
 
-    if (lastUpdateEl) {
-      lastUpdateEl.textContent =
-        loadedData.lastUpdated || "----.--.--";
-    }
 
-    events = loadedData.movies
-      .filter(event => {
-        return (
-          event &&
-          event.date &&
-          event.title
-        );
-      })
-      .map(event => ({
-        date: String(event.date || ""),
-        title: String(event.title || ""),
-        category: String(event.category || ""),
-        tohoUrl: String(event.tohoUrl || ""),
-        dmmUrl: String(event.dmmUrl || ""),
-        trendUrl: String(event.trendUrl || ""),
-        dmmKeyword: String(event.dmmKeyword || ""),
-        dmmCount: normalizeCount(event.dmmCount),
-        relationType: String(event.relationType || ""),
-        newLabel: String(event.newLabel || "")
-      }))
-      .sort((a, b) => {
-        return (
-          a.date.localeCompare(b.date) ||
-          a.title.localeCompare(
-            b.title,
-            "ja"
+    /* =======================================================
+       DATA LOAD
+    ======================================================== */
+
+    async function loadEvents() {
+
+      try {
+
+        const response =
+          await fetch(
+            "./data.json",
+            {
+              cache: "no-store"
+            }
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            `data.jsonの読み込みに失敗しました：${response.status}`
+          );
+        }
+
+
+        const loadedData =
+          await response.json();
+
+
+        if (
+          !loadedData ||
+          typeof loadedData !== "object" ||
+          !Array.isArray(
+            loadedData.movies
           )
-        );
-      });
+        ) {
 
-    setInitialMonth();
-    renderFilters();
-    renderTimeline();
+          throw new Error(
+            "data.jsonの形式が正しくありません"
+          );
+        }
 
-  } catch (error) {
-    console.error(error);
 
-    timelineEl.innerHTML =
-      '<div class="empty-message">' +
-      'data.jsonの読み込みに失敗しました' +
-      '</div>';
-  }
-}
+        const lastUpdateEl =
+          document.getElementById(
+            "lastUpdate"
+          );
 
-  function normalizeCount(value) {
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-      return null;
-    }
 
-    const number = Number(value);
+        if (lastUpdateEl) {
 
-    return Number.isFinite(number)
-      ? number
-      : null;
-  }
+          lastUpdateEl.textContent =
+            loadedData.lastUpdated ||
+            "----.--.--";
+        }
 
-  function parseDate(dateString) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-      return null;
-    }
 
-    const [year, month, day] =
-      dateString.split("-").map(Number);
+        events =
+          loadedData.movies
 
-    return new Date(
-      year,
-      month - 1,
-      day
-    );
-  }
+            .filter(event => {
 
-  function setInitialMonth() {
-    const saved =
-      localStorage.getItem("movieCalendarMonth");
+              return (
+                event &&
+                event.date &&
+                event.title
+              );
 
-    if (
-      saved &&
-      /^\d{4}-\d{2}$/.test(saved)
-    ) {
-      const [year, month] =
-        saved.split("-").map(Number);
+            })
 
-      current = new Date(
-        year,
-        month - 1,
-        1
-      );
+            .map(event => ({
 
-      return;
-    }
+              date:
+                String(
+                  event.date || ""
+                ),
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+              title:
+                String(
+                  event.title || ""
+                ),
 
-    const firstFuture = events.find(event => {
-      const date = parseDate(event.date);
+              category:
+                String(
+                  event.category || ""
+                ),
 
-      return date && date >= today;
-    });
+              tohoUrl:
+                String(
+                  event.tohoUrl || ""
+                ),
 
-    const base = firstFuture
-      ? parseDate(firstFuture.date)
-      : parseDate(events[0]?.date || "");
+              dmmUrl:
+                String(
+                  event.dmmUrl || ""
+                ),
 
-    if (base) {
-      current = new Date(
-        base.getFullYear(),
-        base.getMonth(),
-        1
-      );
-    }
-  }
+              trendUrl:
+                String(
+                  event.trendUrl || ""
+                ),
 
-  function saveCurrentMonth() {
-    const value =
-      `${current.getFullYear()}-` +
-      `${String(current.getMonth() + 1).padStart(2, "0")}`;
+              dmmKeyword:
+                String(
+                  event.dmmKeyword || ""
+                ),
 
-    localStorage.setItem(
-      "movieCalendarMonth",
-      value
-    );
-  }
+              dmmCount:
+                normalizeCount(
+                  event.dmmCount
+                ),
 
-  function renderFilters() {
-  filtersEl.innerHTML = "";
+              relationType:
+                String(
+                  event.relationType ||
+                  ""
+                ),
 
-  const newOptions = [
-    "すべて",
-    "NEW"
-  ];
+              newLabel:
+                String(
+                  event.newLabel || ""
+                )
 
-  const genres = [
-    "すべて",
-    ...new Set(
-      events
-        .map(event => event.category)
-        .filter(Boolean)
-    )
-  ];
+            }))
 
-  const relationTypes = [
-    "すべて",
-    ...new Set(
-      events
-        .map(event => event.relationType)
-        .filter(Boolean)
-    )
-  ];
+            .sort(
+              (a, b) => {
 
-  const newRow = createFilterRow(
-    "NEW",
-    newOptions,
-    activeNewFilter,
-    value => {
-      activeNewFilter = value;
-      renderFilters();
-      renderTimeline();
-    }
-  );
+                return (
 
-  const genreRow = createFilterRow(
-    "ジャンル",
-    genres,
-    activeGenreFilter,
-    value => {
-      activeGenreFilter = value;
-      renderFilters();
-      renderTimeline();
-    }
-  );
+                  a.date.localeCompare(
+                    b.date
+                  )
 
-  const relationRow = createFilterRow(
-    "関連タイプ",
-    relationTypes,
-    activeRelationFilter,
-    value => {
-      activeRelationFilter = value;
-      renderFilters();
-      renderTimeline();
-    }
-  );
+                  ||
 
-  const sortRow = createFilterRow(
-    "並び順",
-    [
-      "タイトル順",
-      "関連数順"
-    ],
-    activeSort,
-    value => {
-      activeSort = value;
-      renderFilters();
-      renderTimeline();
-    }
-  );
+                  a.title.localeCompare(
+                    b.title,
+                    "ja"
+                  )
 
-  filtersEl.append(
-    newRow,
-    genreRow,
-    relationRow,
-    sortRow
-  );
-}
+                );
 
-  function createFilterRow(
-    labelText,
-    options,
-    activeValue,
-    onSelect
-  ) {
-    const row = document.createElement("div");
-    row.className = "filter-row";
+              }
+            );
 
-    const label = document.createElement("div");
-    label.className = "filter-label";
-    label.textContent = labelText;
 
-    const buttons = document.createElement("div");
-    buttons.className = "filter-buttons";
+        setInitialMonth();
 
-    options.forEach(option => {
-      const button =
-        document.createElement("button");
+        renderFilters();
 
-      button.textContent = option;
+        renderTimeline();
 
-      button.className =
-        option === activeValue
-          ? "active"
-          : "";
 
-      button.addEventListener(
-        "click",
-        () => onSelect(option)
-      );
+      } catch (error) {
 
-      buttons.appendChild(button);
-    });
+        console.error(error);
 
-    row.append(
-      label,
-      buttons
-    );
 
-    return row;
-  }
+        timelineEl.innerHTML =
+          '<div class="empty-message">' +
+          'data.jsonの読み込みに失敗しました' +
+          '</div>';
 
-  function renderTimeline() {
-    timelineEl.innerHTML = "";
-
-    const year = current.getFullYear();
-    const month = current.getMonth();
-
-    monthLabelEl.textContent =
-      `${year}年${month + 1}月`;
-
-    const monthEvents = events.filter(event => {
-      const date = parseDate(event.date);
-
-      if (!date) {
-        return false;
       }
+
+    }
+
+
+    /* =======================================================
+       HELPERS
+    ======================================================== */
+
+    function normalizeCount(
+      value
+    ) {
 
       if (
-        date.getFullYear() !== year ||
-        date.getMonth() !== month
+        value === null ||
+        value === undefined ||
+        value === ""
       ) {
-        return false;
+
+        return null;
       }
 
-      const matchesNew =
-        activeNewFilter === "すべて" ||
-        String(event.newLabel || "")
-          .trim()
-          .toUpperCase() === "NEW";
 
-      const matchesGenre =
-        activeGenreFilter === "すべて" ||
-        event.category === activeGenreFilter;
+      const number =
+        Number(value);
 
-      const matchesRelation =
-        activeRelationFilter === "すべて" ||
-        event.relationType === activeRelationFilter;
 
-      return (
-        matchesNew &&
-        matchesGenre &&
-        matchesRelation
-      );
-    });
-
-    if (monthEvents.length === 0) {
-  const hasMonthData = events.some(event => {
-    const date = parseDate(event.date);
-
-    return (
-      date &&
-      date.getFullYear() === year &&
-      date.getMonth() === month
-    );
-  });
-
-  const dataStartDate = new Date(2026, 5, 1); // 2026年6月
-  const viewingMonth = new Date(year, month, 1);
-
-  if (hasMonthData) {
-    timelineEl.innerHTML =
-      '<div class="empty-message">' +
-      'この条件に該当する作品はありません' +
-      '</div>';
-
-  } else if (viewingMonth < dataStartDate) {
-    timelineEl.innerHTML =
-      '<div class="empty-message">' +
-      'この期間のデータは掲載していません' +
-      '</div>';
-
-  } else {
-    timelineEl.innerHTML =
-      '<div class="empty-message">' +
-      'この月以降の公開予定作品は、まだ情報が公開されていません。<br>' +
-      '情報が確認でき次第、順次更新します。' +
-      '</div>';
-  }
-
-  return;
-}
-
-    const grouped = new Map();
-
-    monthEvents.forEach(event => {
-      if (!grouped.has(event.date)) {
-        grouped.set(event.date, []);
-      }
-
-      grouped
-        .get(event.date)
-        .push(event);
-    });
-
-    [...grouped.entries()]
-      .sort((a, b) => {
-        return a[0].localeCompare(b[0]);
-      })
-      .forEach(([dateKey, dayEvents]) => {
-        const sortedEvents =
-          sortDayEvents(dayEvents);
-
-        timelineEl.appendChild(
-          createDateRow(
-            dateKey,
-            sortedEvents
-          )
-        );
-      });
-  }
-
-  function sortDayEvents(dayEvents) {
-    const copied = [...dayEvents];
-
-    if (activeSort === "関連数順") {
-      return copied.sort((a, b) => {
-        const countA =
-          a.dmmCount === null
-            ? -1
-            : a.dmmCount;
-
-        const countB =
-          b.dmmCount === null
-            ? -1
-            : b.dmmCount;
-
-        return (
-          countB - countA ||
-          a.title.localeCompare(
-            b.title,
-            "ja"
-          )
-        );
-      });
+      return Number.isFinite(number)
+        ? number
+        : null;
     }
 
-    return copied.sort((a, b) => {
-      return a.title.localeCompare(
-        b.title,
-        "ja"
-      );
-    });
-  }
 
-  function createDateRow(
-    dateKey,
-    dayEvents
-  ) {
-    const row =
-      document.createElement("article");
-
-    row.className = "date-row";
-
-    const date = parseDate(dateKey);
-
-    const label =
-      document.createElement("div");
-
-    label.className = "date-label";
-
-    label.innerHTML =
-      `${date.getMonth() + 1}/${date.getDate()}` +
-      `<span class="weekday">` +
-      `（${["日", "月", "火", "水", "木", "金", "土"][date.getDay()]}）` +
-      `</span>`;
-
-    const movies =
-      document.createElement("div");
-
-    movies.className = "movies";
-
-    dayEvents.forEach(event => {
-      movies.appendChild(
-        createMovieCard(event)
-      );
-    });
-
-    row.append(
-      label,
-      movies
-    );
-
-    return row;
-  }
-
-  function createMovieCard(event) {
-    const card =
-      document.createElement("div");
-
-    card.className = "movie-card";
-
-    card.style.setProperty(
-      "--category-color",
-      categoryColors[event.category] ||
-      "#dfe3ea"
-    );
-
-    if (
-      String(event.newLabel || "")
-        .trim()
-        .toUpperCase() === "NEW"
+    function parseDate(
+      dateString
     ) {
-      const badge =
-        document.createElement("div");
 
-      badge.className =
-        "movie-new-ribbon";
+      if (
+        !/^\d{4}-\d{2}-\d{2}$/
+          .test(dateString)
+      ) {
 
-      card.appendChild(badge);
-    }
+        return null;
+      }
 
-    const main =
-      document.createElement("div");
 
-    main.className = "movie-main";
+      const [
+        year,
+        month,
+        day
+      ] =
+        dateString
+          .split("-")
+          .map(Number);
 
-    const title =
-      document.createElement(
-        event.tohoUrl
-          ? "a"
-          : "div"
+
+      return new Date(
+        year,
+        month - 1,
+        day
       );
-
-    title.className = "movie-title";
-    title.textContent = event.title;
-
-    if (event.tohoUrl) {
-      title.href = event.tohoUrl;
-      title.target = "_blank";
-      title.rel =
-        "noopener noreferrer";
     }
 
-    main.appendChild(title);
 
-    if (event.category) {
-      const tag =
-        document.createElement("span");
+    /* =======================================================
+       INITIAL MONTH
+    ======================================================== */
 
-      tag.className = "category-tag";
-      tag.textContent = event.category;
+    function setInitialMonth() {
 
-      main.appendChild(tag);
-    }
-
-    const meta =
-      document.createElement("div");
-
-    meta.className = "movie-meta";
-
-    const metaItems = [];
-
-    if (event.dmmKeyword) {
-      metaItems.push([
-        "DMM検索KW",
-        event.dmmKeyword
-      ]);
-    }
-
-    if (event.dmmCount !== null) {
-      metaItems.push([
-        "関連作品数",
-        `${event.dmmCount}件`
-      ]);
-    }
-
-    if (event.relationType) {
-      metaItems.push([
-        "関連タイプ",
-        event.relationType
-      ]);
-    }
-
-    metaItems.forEach(
-      ([labelText, valueText]) => {
-        const row =
-          document.createElement("div");
-
-        row.className = "meta-row";
-
-        const label =
-          document.createElement("span");
-
-        label.className = "meta-label";
-        label.textContent = labelText;
-
-        const colon =
-          document.createElement("span");
-
-        colon.className = "meta-colon";
-        colon.textContent = "：";
-
-        const value =
-          document.createElement("span");
-
-        value.className = "meta-value";
-        value.textContent = valueText;
-
-        row.append(
-          label,
-          colon,
-          value
+      const saved =
+        localStorage.getItem(
+          "movieCalendarMonth"
         );
 
-        meta.appendChild(row);
+
+      if (
+        saved &&
+        /^\d{4}-\d{2}$/.test(saved)
+      ) {
+
+        const [
+          year,
+          month
+        ] =
+          saved
+            .split("-")
+            .map(Number);
+
+
+        current =
+          new Date(
+            year,
+            month - 1,
+            1
+          );
+
+
+        return;
       }
-    );
 
-    const links =
-      document.createElement("div");
 
-    links.className = "movie-links";
+      const today =
+        new Date();
 
-    links.appendChild(
-      event.dmmUrl
-        ? makeLink(
-            event.dmmUrl,
-            "🎬 DMM"
-          )
-        : makePlaceholder(
-            "🎬 DMM"
-          )
-    );
 
-    links.appendChild(
-      event.trendUrl
-        ? makeLink(
-            event.trendUrl,
-            "📈 Trend"
-          )
-        : makePlaceholder(
-            "📈 Trend"
-          )
-    );
-
-    card.append(
-      main,
-      meta,
-      links
-    );
-
-    return card;
-  }
-
-  function makeLink(url, text) {
-    const link =
-      document.createElement("a");
-
-    link.href = url;
-    link.target = "_blank";
-    link.rel =
-      "noopener noreferrer";
-    link.textContent = text;
-
-    return link;
-  }
-
-  function makePlaceholder(text) {
-    const span =
-      document.createElement("span");
-
-    span.className =
-      "movie-link-placeholder";
-
-    span.textContent = text;
-
-    return span;
-  }
-
-  document
-    .getElementById("prev")
-    .addEventListener("click", () => {
-      current = new Date(
-        current.getFullYear(),
-        current.getMonth() - 1,
-        1
+      today.setHours(
+        0,
+        0,
+        0,
+        0
       );
 
-      saveCurrentMonth();
-      renderTimeline();
-    });
 
-  document
-    .getElementById("next")
-    .addEventListener("click", () => {
-      current = new Date(
-        current.getFullYear(),
-        current.getMonth() + 1,
-        1
+      const firstFuture =
+        events.find(
+          event => {
+
+            const date =
+              parseDate(
+                event.date
+              );
+
+
+            return (
+              date &&
+              date >= today
+            );
+
+          }
+        );
+
+
+      const base =
+        firstFuture
+
+          ? parseDate(
+              firstFuture.date
+            )
+
+          : parseDate(
+              events[0]?.date ||
+              ""
+            );
+
+
+      if (base) {
+
+        current =
+          new Date(
+            base.getFullYear(),
+            base.getMonth(),
+            1
+          );
+      }
+
+    }
+
+
+    function saveCurrentMonth() {
+
+      const value =
+        `${current.getFullYear()}-` +
+        `${String(
+          current.getMonth() + 1
+        ).padStart(
+          2,
+          "0"
+        )}`;
+
+
+      localStorage.setItem(
+        "movieCalendarMonth",
+        value
+      );
+    }
+
+
+    /* =======================================================
+       FILTERS
+    ======================================================== */
+
+    function renderFilters() {
+
+      filtersEl.innerHTML = "";
+
+
+      const newOptions = [
+        "すべて",
+        "NEW"
+      ];
+
+
+      const genres = [
+        "すべて",
+
+        ...new Set(
+
+          events
+
+            .map(
+              event =>
+                event.category
+            )
+
+            .filter(Boolean)
+
+        )
+      ];
+
+
+      const relationTypes = [
+        "すべて",
+
+        ...new Set(
+
+          events
+
+            .map(
+              event =>
+                event.relationType
+            )
+
+            .filter(Boolean)
+
+        )
+      ];
+
+
+      const newRow =
+        createFilterRow(
+
+          "NEW",
+
+          newOptions,
+
+          activeNewFilter,
+
+          value => {
+
+            activeNewFilter =
+              value;
+
+            renderFilters();
+
+            renderTimeline();
+
+          }
+
+        );
+
+
+      const genreRow =
+        createFilterRow(
+
+          "ジャンル",
+
+          genres,
+
+          activeGenreFilter,
+
+          value => {
+
+            activeGenreFilter =
+              value;
+
+            renderFilters();
+
+            renderTimeline();
+
+          }
+
+        );
+
+
+      const relationRow =
+        createFilterRow(
+
+          "関連タイプ",
+
+          relationTypes,
+
+          activeRelationFilter,
+
+          value => {
+
+            activeRelationFilter =
+              value;
+
+            renderFilters();
+
+            renderTimeline();
+
+          }
+
+        );
+
+
+      const sortRow =
+        createFilterRow(
+
+          "並び順",
+
+          [
+            "タイトル順",
+            "関連数順"
+          ],
+
+          activeSort,
+
+          value => {
+
+            activeSort =
+              value;
+
+            renderFilters();
+
+            renderTimeline();
+
+          }
+
+        );
+
+
+      filtersEl.append(
+        newRow,
+        genreRow,
+        relationRow,
+        sortRow
       );
 
-      saveCurrentMonth();
-      renderTimeline();
-    });
+    }
 
-  loadEvents();
-</script>
+
+    function createFilterRow(
+      labelText,
+      options,
+      activeValue,
+      onSelect
+    ) {
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+
+      row.className =
+        "filter-row";
+
+
+      const label =
+        document.createElement(
+          "div"
+        );
+
+
+      label.className =
+        "filter-label";
+
+
+      label.textContent =
+        labelText;
+
+
+      const buttons =
+        document.createElement(
+          "div"
+        );
+
+
+      buttons.className =
+        "filter-buttons";
+
+
+      options.forEach(
+        option => {
+
+          const button =
+            document.createElement(
+              "button"
+            );
+
+
+          button.textContent =
+            option;
+
+
+          button.className =
+            option === activeValue
+              ? "active"
+              : "";
+
+
+          button.addEventListener(
+            "click",
+            () =>
+              onSelect(option)
+          );
+
+
+          buttons.appendChild(
+            button
+          );
+
+        }
+      );
+
+
+      row.append(
+        label,
+        buttons
+      );
+
+
+      return row;
+    }
+
+
+    /* =======================================================
+       TIMELINE
+    ======================================================== */
+
+    function renderTimeline() {
+
+      timelineEl.innerHTML = "";
+
+
+      const year =
+        current.getFullYear();
+
+
+      const month =
+        current.getMonth();
+
+
+      monthLabelEl.textContent =
+        `${year}年${month + 1}月`;
+
+
+      const monthEvents =
+        events.filter(
+          event => {
+
+            const date =
+              parseDate(
+                event.date
+              );
+
+
+            if (!date) {
+
+              return false;
+            }
+
+
+            if (
+              date.getFullYear() !==
+                year
+
+              ||
+
+              date.getMonth() !==
+                month
+            ) {
+
+              return false;
+            }
+
+
+            const matchesNew =
+
+              activeNewFilter ===
+                "すべて"
+
+              ||
+
+              String(
+                event.newLabel || ""
+              )
+                .trim()
+                .toUpperCase() ===
+                "NEW";
+
+
+            const matchesGenre =
+
+              activeGenreFilter ===
+                "すべて"
+
+              ||
+
+              event.category ===
+                activeGenreFilter;
+
+
+            const matchesRelation =
+
+              activeRelationFilter ===
+                "すべて"
+
+              ||
+
+              event.relationType ===
+                activeRelationFilter;
+
+
+            return (
+              matchesNew &&
+              matchesGenre &&
+              matchesRelation
+            );
+
+          }
+        );
+
+
+      /* =====================================================
+         NO RESULT
+      ====================================================== */
+
+      if (
+        monthEvents.length === 0
+      ) {
+
+        const hasMonthData =
+          events.some(
+            event => {
+
+              const date =
+                parseDate(
+                  event.date
+                );
+
+
+              return (
+
+                date
+
+                &&
+
+                date.getFullYear() ===
+                  year
+
+                &&
+
+                date.getMonth() ===
+                  month
+
+              );
+
+            }
+          );
+
+
+        const dataStartDate =
+          new Date(
+            2026,
+            5,
+            1
+          );
+
+
+        const viewingMonth =
+          new Date(
+            year,
+            month,
+            1
+          );
+
+
+        if (hasMonthData) {
+
+          timelineEl.innerHTML =
+            '<div class="empty-message">' +
+            'この条件に該当する作品はありません' +
+            '</div>';
+
+        }
+
+        else if (
+          viewingMonth <
+          dataStartDate
+        ) {
+
+          timelineEl.innerHTML =
+            '<div class="empty-message">' +
+            'この期間のデータは掲載していません' +
+            '</div>';
+
+        }
+
+        else {
+
+          timelineEl.innerHTML =
+            '<div class="empty-message">' +
+            'この月以降の公開予定作品は、まだ情報が公開されていません。<br>' +
+            '情報が確認でき次第、順次更新します。' +
+            '</div>';
+
+        }
+
+
+        return;
+      }
+
+
+      /* =====================================================
+         GROUP BY DATE
+      ====================================================== */
+
+      const grouped =
+        new Map();
+
+
+      monthEvents.forEach(
+        event => {
+
+          if (
+            !grouped.has(
+              event.date
+            )
+          ) {
+
+            grouped.set(
+              event.date,
+              []
+            );
+          }
+
+
+          grouped
+            .get(
+              event.date
+            )
+            .push(event);
+
+        }
+      );
+
+
+      [...grouped.entries()]
+
+        .sort(
+          (a, b) => {
+
+            return (
+              a[0]
+                .localeCompare(
+                  b[0]
+                )
+            );
+
+          }
+        )
+
+        .forEach(
+          ([
+            dateKey,
+            dayEvents
+          ]) => {
+
+            const sortedEvents =
+              sortDayEvents(
+                dayEvents
+              );
+
+
+            timelineEl.appendChild(
+
+              createDateRow(
+                dateKey,
+                sortedEvents
+              )
+
+            );
+
+          }
+        );
+
+    }
+
+
+    /* =======================================================
+       SORT
+    ======================================================== */
+
+    function sortDayEvents(
+      dayEvents
+    ) {
+
+      const copied =
+        [...dayEvents];
+
+
+      if (
+        activeSort ===
+        "関連数順"
+      ) {
+
+        return copied.sort(
+          (a, b) => {
+
+            const countA =
+              a.dmmCount === null
+                ? -1
+                : a.dmmCount;
+
+
+            const countB =
+              b.dmmCount === null
+                ? -1
+                : b.dmmCount;
+
+
+            return (
+
+              countB - countA
+
+              ||
+
+              a.title.localeCompare(
+                b.title,
+                "ja"
+              )
+
+            );
+
+          }
+        );
+
+      }
+
+
+      return copied.sort(
+        (a, b) => {
+
+          return (
+            a.title.localeCompare(
+              b.title,
+              "ja"
+            )
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =======================================================
+       DATE ROW
+    ======================================================== */
+
+    function createDateRow(
+      dateKey,
+      dayEvents
+    ) {
+
+      const row =
+        document.createElement(
+          "article"
+        );
+
+
+      row.className =
+        "date-row";
+
+
+      const date =
+        parseDate(
+          dateKey
+        );
+
+
+      const label =
+        document.createElement(
+          "div"
+        );
+
+
+      label.className =
+        "date-label";
+
+
+      label.innerHTML =
+
+        `${date.getMonth() + 1}/${date.getDate()}`
+
+        +
+
+        `<span class="weekday">`
+
+        +
+
+        `（${
+          [
+            "日",
+            "月",
+            "火",
+            "水",
+            "木",
+            "金",
+            "土"
+          ][
+            date.getDay()
+          ]
+        }）`
+
+        +
+
+        `</span>`;
+
+
+      const movies =
+        document.createElement(
+          "div"
+        );
+
+
+      movies.className =
+        "movies";
+
+
+      dayEvents.forEach(
+        event => {
+
+          movies.appendChild(
+
+            createMovieCard(
+              event
+            )
+
+          );
+
+        }
+      );
+
+
+      row.append(
+        label,
+        movies
+      );
+
+
+      return row;
+    }
+
+
+    /* =======================================================
+       MOVIE CARD
+    ======================================================== */
+
+    function createMovieCard(
+      event
+    ) {
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "movie-card";
+
+
+      card.style.setProperty(
+
+        "--category-color",
+
+        categoryColors[
+          event.category
+        ]
+
+        ||
+
+        "#dfe3ea"
+
+      );
+
+
+      /* NEW */
+
+      if (
+
+        String(
+          event.newLabel || ""
+        )
+          .trim()
+          .toUpperCase() ===
+          "NEW"
+
+      ) {
+
+        const badge =
+          document.createElement(
+            "div"
+          );
+
+
+        badge.className =
+          "movie-new-ribbon";
+
+
+        card.appendChild(
+          badge
+        );
+
+      }
+
+
+      /* MAIN */
+
+      const main =
+        document.createElement(
+          "div"
+        );
+
+
+      main.className =
+        "movie-main";
+
+
+      const title =
+        document.createElement(
+
+          event.tohoUrl
+            ? "a"
+            : "div"
+
+        );
+
+
+      title.className =
+        "movie-title";
+
+
+      title.textContent =
+        event.title;
+
+
+      if (
+        event.tohoUrl
+      ) {
+
+        title.href =
+          event.tohoUrl;
+
+
+        title.target =
+          "_blank";
+
+
+        title.rel =
+          "noopener noreferrer";
+
+      }
+
+
+      main.appendChild(
+        title
+      );
+
+
+      if (
+        event.category
+      ) {
+
+        const tag =
+          document.createElement(
+            "span"
+          );
+
+
+        tag.className =
+          "category-tag";
+
+
+        tag.textContent =
+          event.category;
+
+
+        main.appendChild(
+          tag
+        );
+
+      }
+
+
+      /* META */
+
+      const meta =
+        document.createElement(
+          "div"
+        );
+
+
+      meta.className =
+        "movie-meta";
+
+
+      const metaItems = [];
+
+
+      if (
+        event.dmmKeyword
+      ) {
+
+        metaItems.push([
+          "DMM検索KW",
+          event.dmmKeyword
+        ]);
+
+      }
+
+
+      if (
+        event.dmmCount !== null
+      ) {
+
+        metaItems.push([
+          "関連作品数",
+          `${event.dmmCount}件`
+        ]);
+
+      }
+
+
+      if (
+        event.relationType
+      ) {
+
+        metaItems.push([
+          "関連タイプ",
+          event.relationType
+        ]);
+
+      }
+
+
+      metaItems.forEach(
+        ([
+          labelText,
+          valueText
+        ]) => {
+
+          const row =
+            document.createElement(
+              "div"
+            );
+
+
+          row.className =
+            "meta-row";
+
+
+          const label =
+            document.createElement(
+              "span"
+            );
+
+
+          label.className =
+            "meta-label";
+
+
+          label.textContent =
+            labelText;
+
+
+          const colon =
+            document.createElement(
+              "span"
+            );
+
+
+          colon.className =
+            "meta-colon";
+
+
+          colon.textContent =
+            "：";
+
+
+          const value =
+            document.createElement(
+              "span"
+            );
+
+
+          value.className =
+            "meta-value";
+
+
+          value.textContent =
+            valueText;
+
+
+          row.append(
+            label,
+            colon,
+            value
+          );
+
+
+          meta.appendChild(
+            row
+          );
+
+        }
+      );
+
+
+      /* LINKS */
+
+      const links =
+        document.createElement(
+          "div"
+        );
+
+
+      links.className =
+        "movie-links";
+
+
+      links.appendChild(
+
+        event.dmmUrl
+
+          ? makeLink(
+              event.dmmUrl,
+              "🎬 DMM"
+            )
+
+          : makePlaceholder(
+              "🎬 DMM"
+            )
+
+      );
+
+
+      links.appendChild(
+
+        event.trendUrl
+
+          ? makeLink(
+              event.trendUrl,
+              "📈 Trend"
+            )
+
+          : makePlaceholder(
+              "📈 Trend"
+            )
+
+      );
+
+
+      card.append(
+        main,
+        meta,
+        links
+      );
+
+
+      return card;
+    }
+
+
+    /* =======================================================
+       LINKS
+    ======================================================== */
+
+    function makeLink(
+      url,
+      text
+    ) {
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+
+      link.href =
+        url;
+
+
+      link.target =
+        "_blank";
+
+
+      link.rel =
+        "noopener noreferrer";
+
+
+      link.textContent =
+        text;
+
+
+      return link;
+    }
+
+
+    function makePlaceholder(
+      text
+    ) {
+
+      const span =
+        document.createElement(
+          "span"
+        );
+
+
+      span.className =
+        "movie-link-placeholder";
+
+
+      span.textContent =
+        text;
+
+
+      return span;
+    }
+
+
+    /* =======================================================
+       MONTH BUTTONS
+    ======================================================== */
+
+    document
+      .getElementById("prev")
+      .addEventListener(
+        "click",
+        () => {
+
+          current =
+            new Date(
+              current.getFullYear(),
+              current.getMonth() - 1,
+              1
+            );
+
+
+          saveCurrentMonth();
+
+          renderTimeline();
+
+        }
+      );
+
+
+    document
+      .getElementById("next")
+      .addEventListener(
+        "click",
+        () => {
+
+          current =
+            new Date(
+              current.getFullYear(),
+              current.getMonth() + 1,
+              1
+            );
+
+
+          saveCurrentMonth();
+
+          renderTimeline();
+
+        }
+      );
+
+
+    /* =======================================================
+       START
+    ======================================================== */
+
+    loadEvents();
+
+  </script>
+
 </body>
 </html>
