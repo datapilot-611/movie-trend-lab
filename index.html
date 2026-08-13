@@ -295,15 +295,30 @@
       line-height: 1.6;
     }
 
-    .movie-hero-notice {
-      margin-top: 5px;
+    .notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin-top: 5px;
 
-      color: #94847c;
+  color: #94847c;
+  font-size: 10px;
+  line-height: 1.5;
+}
 
-      font-size: 10px;
-      line-height: 1.5;
-    }
+.notice-icon {
+  flex: 0 0 auto;
+  line-height: 1.5;
+}
 
+.notice-body {
+  min-width: 0;
+}
+
+.notice-body > div {
+  margin: 0;
+}
+    
     .movie-hero-update {
       flex-shrink: 0;
 
@@ -1036,11 +1051,15 @@
         </div>
 
 
-        <div class="movie-hero-notice">
-          ⚠️ 本サイトはfelmatが独自に調査・作成した非公式の参考情報です。正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください。<br>
-          また、メディア様向けの情報となりますので、URLを含む外部への共有・転載はなるべくお控えください。
-        </div>
+        <div class="notice">
+  <span class="notice-icon">⚠️</span>
 
+  <div class="notice-body">
+    <div>本サイトはfelmatが独自に調査・作成した非公式の参考情報です。</div>
+    <div>正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください。🙇🏻‍♀️</div>
+    <div>また、メディア様向けの情報となりますので、URLを含む外部への共有・転載はなるべくお控えください。</div>
+  </div>
+</div>
       </div>
 
 
