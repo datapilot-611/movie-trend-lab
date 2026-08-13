@@ -57,8 +57,8 @@
       min-height: 380px;
       margin: 0 0 22px;
       overflow: hidden;
-      border: 1px solid rgba(221, 157, 120, 0.30);
-      border-radius: 24px;
+      border: 0;
+      border-radius: 0 0 24px 24px;
       background: #fff4e9;
       box-shadow: 0 14px 34px rgba(125, 70, 43, 0.10);
     }
@@ -309,6 +309,38 @@
 
       .movie-hero-info-title {
         font-size: 14px;
+      }
+    }
+
+
+    /* Full-bleed hero: background reaches both browser edges */
+    .movie-hero-info {
+      left: max(18px, calc((100vw - 1180px) / 2));
+      right: max(18px, calc((100vw - 1180px) / 2));
+    }
+
+    .movie-hero-logo {
+      left: max(26px, calc((100vw - 1180px) / 2 + 26px));
+    }
+
+    .movie-hero-nav {
+      right: max(24px, calc((100vw - 1180px) / 2 + 24px));
+    }
+
+
+    @media (max-width: 800px) {
+      .movie-hero-info {
+        left: 12px;
+        right: 12px;
+      }
+
+      .movie-hero-logo {
+        left: 50%;
+      }
+
+      .movie-hero-nav {
+        left: 16px;
+        right: 16px;
       }
     }
 
@@ -746,8 +778,7 @@
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <section class="movie-hero">
+  <section class="movie-hero">
 
       <!-- 背景：カーテン＋ライト -->
       <img
@@ -798,7 +829,9 @@
 
     </section>
 
-<div class="filters" id="filters"></div>
+  <main class="wrap">
+
+    <div class="filters" id="filters"></div>
     <section class="timeline" id="timeline"></section>
   </main>
 
