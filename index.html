@@ -7,11 +7,64 @@
   <style>
     * { box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f6f7fb;
-      color: #20242c;
-    }
+  margin: 0;
+  min-height: 100vh;
+
+  background:
+    /* 上部のピンクの光 */
+    radial-gradient(
+      ellipse at 15% 0%,
+      rgba(255, 190, 180, 0.30) 0%,
+      transparent 35%
+    ),
+
+    /* 右上のオレンジ系の光 */
+    radial-gradient(
+      ellipse at 88% 8%,
+      rgba(255, 214, 170, 0.32) 0%,
+      transparent 32%
+    ),
+
+    /* 中央のやわらかい光 */
+    radial-gradient(
+      ellipse at 50% 42%,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 248, 239, 0.55) 40%,
+      transparent 70%
+    ),
+
+    /* ページ全体のベース */
+    linear-gradient(
+      180deg,
+      #fff8f2 0%,
+      #fff3e9 35%,
+      #fff8f2 70%,
+      #fff1e5 100%
+    );
+
+  color: #5b2f1c;
+}
+    body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background-image:
+    radial-gradient(circle, rgba(231, 154, 104, 0.20) 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(255, 198, 120, 0.16) 1px, transparent 1.5px);
+
+  background-size:
+    95px 95px,
+    140px 140px;
+
+  background-position:
+    15px 20px,
+    60px 75px;
+
+  opacity: 0.55;
+}
     .wrap {
       width: min(1180px, calc(100% - 32px));
       margin: 28px auto 56px;
@@ -71,16 +124,24 @@
       gap: 10px;
     }
     .date-row {
-      display: grid;
-      grid-template-columns: 120px minmax(0, 1fr);
-      gap: 14px;
-      align-items: start;
-      padding: 12px 14px;
-      background: #fff;
-      border: 1px solid #e4e7ed;
-      border-radius: 14px;
-      box-shadow: 0 2px 8px rgba(34, 42, 53, 0.04);
-    }
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 12px 14px;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  border: 1px solid rgba(231, 190, 160, 0.45);
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 24px rgba(157, 93, 55, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
     .date-label {
       position: sticky;
       top: 10px;
@@ -835,7 +896,7 @@
 
   <div class="notice-body">
     <div>本サイトはfelmatが独自に調査・作成した非公式の参考情報です。</div>
-    <div>正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください。🙇🏻‍♀️</div>
+    <div>正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください🙇🏻‍♀️</div>
     <div>また、メディア様向けの情報となりますので、URLを含む外部への共有・転載はなるべくお控えください。</div>
   </div>
 </div>
