@@ -1102,6 +1102,17 @@
         padding: 6px 10px;
       }
     }
+    /* PCでは今までの背景 */
+.movie-hero-bg {
+  content: url("./movie-header-bg.png");
+}
+
+/* スマホではスマホ用背景に切り替える */
+@media (max-width: 800px) {
+  .movie-hero-bg {
+    content: url("./movie-header-bg-mobile.png");
+  }
+}
 
   </style>
 </head>
