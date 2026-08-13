@@ -43,6 +43,21 @@
       width: min(1180px, calc(100% - 32px));
       margin: 28px auto 56px;
     }
+    main.wrap {
+  position: relative;
+  z-index: 3;
+  margin-top: -18px;
+  padding-top: 40px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 239, 228, 0.96) 0%,
+    #fff5ee 100px,
+    transparent 260px
+  );
+
+  border-radius: 28px 28px 0 0;
+}
 
     /* =========================================================
        MOVIE HERO
@@ -57,26 +72,7 @@
   min-height: 430px;
   overflow: hidden;
 }
-    .movie-hero::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 90px;
-  z-index: 2;
-  pointer-events: none;
-
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 228, 210, 0),
-    rgba(255, 228, 210, 0.35) 55%,
-    #fff3e9 100%
-  );
-}
-    .movie-hero-info {
-  z-index: 5;
-}
+    
       
 
     .movie-hero-logo {
