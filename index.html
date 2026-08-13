@@ -1430,106 +1430,327 @@
   font-size: inherit;
   line-height: inherit;
 }
+    /* =========================================
+   IMAGE HEADER FINAL
+   これを </style> の直前に追加
+========================================= */
+
+.movie-header {
+  position: relative;
+  min-height: 300px;
+  margin-bottom: 32px;
+  padding: 0;
+
+  overflow: hidden;
+  border-radius: 26px;
+
+  background: #fff5eb;
+
+  box-shadow:
+    0 14px 34px rgba(125, 70, 43, 0.10);
+}
+
+
+/* 背景画像
+   カーテン＋ライト
+----------------------------------------- */
+
+.movie-header-bg {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  z-index: 1;
+
+  pointer-events: none;
+}
+
+
+/* ロゴ＋映画装飾
+----------------------------------------- */
+
+.movie-header-logo {
+  position: absolute;
+
+  left: 32px;
+  top: 50%;
+
+  width: 72%;
+  max-width: 820px;
+  height: auto;
+
+  transform: translateY(-50%);
+
+  object-fit: contain;
+  object-position: left center;
+
+  z-index: 3;
+
+  filter:
+    drop-shadow(
+      0 8px 12px
+      rgba(90, 52, 34, 0.10)
+    );
+}
+
+
+/* Last Update
+----------------------------------------- */
+
+.movie-header-update {
+  position: absolute;
+
+  left: 155px;
+  bottom: 24px;
+
+  z-index: 5;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 7px 12px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,0.72);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  box-shadow:
+    0 4px 12px
+    rgba(112, 65, 42, 0.06);
+}
+
+.movie-header-update span {
+  color: #9b684e;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+
+  text-transform: uppercase;
+}
+
+.movie-header-update span::before {
+  content: "✦";
+
+  margin-right: 7px;
+
+  color: #e5a04b;
+}
+
+.movie-header-update time {
+  color: #70452f;
+
+  font-size: 12px;
+  font-weight: 750;
+}
+
+
+/* 月移動
+----------------------------------------- */
+
+.movie-header-nav {
+  position: absolute;
+
+  right: 28px;
+  bottom: 24px;
+
+  z-index: 5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  margin: 0;
+}
+
+.movie-header-nav button {
+  min-width: 68px;
+
+  padding: 9px 12px;
+
+  border:
+    1px solid
+    rgba(177, 111, 77, 0.20);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,0.82);
+
+  color: #70402d;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 13px
+    rgba(119, 67, 42, 0.07);
+
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+
+  transition:
+    transform .18s ease,
+    background .18s ease;
+}
+
+.movie-header-nav button:hover {
+  background: #fffaf6;
+
+  transform:
+    translateY(-1px);
+}
+
+.movie-header-nav .month-label {
+  min-width: 105px;
+
+  color: #70402d;
+
+  font-size: 17px;
+  font-weight: 900;
+
+  text-align: center;
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   Tablet
+========================================= */
+
+@media (max-width: 900px) {
+
+  .movie-header {
+    min-height: 260px;
+  }
+
+  .movie-header-logo {
+    left: 22px;
+
+    width: 78%;
+  }
+
+  .movie-header-update {
+    left: 90px;
+    bottom: 18px;
+  }
+
+  .movie-header-nav {
+    right: 18px;
+    bottom: 18px;
+  }
+
+  .movie-header-nav .month-label {
+    min-width: 90px;
+
+    font-size: 15px;
+  }
+
+  .movie-header-nav button {
+    min-width: 58px;
+
+    padding:
+      8px
+      9px;
+  }
+}
+
+
+/* =========================================
+   Mobile
+========================================= */
+
+@media (max-width: 700px) {
+
+  .movie-header {
+    min-height: 340px;
+
+    border-radius: 20px;
+  }
+
+  .movie-header-bg {
+    object-position: center top;
+  }
+
+  .movie-header-logo {
+    left: 50%;
+    top: 46px;
+
+    width: 92%;
+
+    transform: translateX(-50%);
+  }
+
+  .movie-header-update {
+    left: 50%;
+    bottom: 67px;
+
+    transform:
+      translateX(-50%);
+
+    white-space: nowrap;
+  }
+
+  .movie-header-nav {
+    left: 16px;
+    right: 16px;
+    bottom: 17px;
+
+    width: auto;
+
+    justify-content: space-between;
+  }
+
+  .movie-header-nav .month-label {
+    min-width: 90px;
+
+    font-size: 14px;
+  }
+}
   </style>
 </head>
 <body>
   <main class="wrap">
-　<div class="header">
+　<div class="header movie-header">
 
-  <!-- 上のカーテン -->
-  <div class="header-curtain" aria-hidden="true"></div>
+  <!-- カーテン＋ライト背景 -->
+  <img
+    src="./movie-header-bg.png"
+    class="movie-header-bg"
+    alt=""
+    aria-hidden="true"
+  >
 
-  <!-- 映画館のライト -->
-  <div class="header-lights" aria-hidden="true">
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
+  <!-- ロゴ＋映画装飾 -->
+  <img
+    src="./movie-header-logo.png"
+    class="movie-header-logo"
+    alt="映画公開カレンダー"
+  >
+
+  <!-- 自動更新 -->
+  <div class="movie-header-update">
+    <span>Last Update</span>
+    <time id="lastUpdate">----.--.--</time>
   </div>
-
-
-  <!-- 左側：ロゴ -->
-  <div class="title-area">
-
-    <div class="movie-logo">
-
-      <!-- カレンダー風アイコン -->
-      <div class="movie-logo-icon" aria-hidden="true">
-        🎥
-      </div>
-
-      <!-- 2段ロゴ -->
-      <div>
-
-        <div class="logo-copy">
-
-          <div class="logo-row">
-            <span class="logo-char">映</span>
-            <span class="logo-char">画</span>
-            <span class="logo-char hot">公</span>
-            <span class="logo-char hot">開</span>
-          </div>
-
-          <div class="logo-row second">
-            <span class="logo-char">カ</span>
-            <span class="logo-char">レ</span>
-            <span class="logo-char">ン</span>
-            <span class="logo-char">ダ</span>
-            <span class="logo-char">ー</span>
-          </div>
-
-        </div>
-
-        <div class="logo-swoosh" aria-hidden="true"></div>
-
-      </div>
-
-    </div>
-
-
-    <!-- 自動更新日はそのまま -->
-    <div class="last-update">
-      <span class="update-label">Last Update</span>
-
-      <time
-        class="update-date"
-        id="lastUpdate"
-      >
-        ----.--.--
-      </time>
-    </div>
-
-  </div>
-
-
-  <!-- キラキラ -->
-  <span class="header-sparkle one" aria-hidden="true">✦</span>
-  <span class="header-sparkle two" aria-hidden="true">✧</span>
-  <span class="header-sparkle three" aria-hidden="true">✦</span>
-
-
-  <!-- 右側：映画館 -->
-  <div class="movie-stage" aria-hidden="true">
-
-    <div class="movie-marquee">
-      MOVIE
-    </div>
-
-    <div class="movie-reel"></div>
-
-    <div class="header-film"></div>
-
-    <div class="header-popcorn"></div>
-
-  </div>
-
 
   <!-- 月移動 -->
-  <div class="month-nav">
+  <div class="month-nav movie-header-nav">
 
     <button id="prev" type="button">
       ‹ 前月
