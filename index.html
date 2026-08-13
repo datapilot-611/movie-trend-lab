@@ -814,138 +814,264 @@
 
     @media (max-width: 800px) {
 
-      .movie-hero {
-        min-height: 700px;
+  /* =========================
+     ヘッダー全体
+  ========================= */
 
-        overflow: hidden;
-      }
+  .movie-hero {
+    min-height: 0;
+    height: auto;
+    padding: 110px 16px 24px;
+    overflow: hidden;
+  }
 
-      .movie-hero-bg {
-        object-position:
-          center top;
-      }
+  .movie-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
 
-      .movie-hero-logo {
-        top: 20px;
-        left: 50%;
 
-        width: 94%;
-        max-height: 215px;
+  /* =========================
+     ロゴ
+  ========================= */
 
-        transform:
-          translateX(-50%);
-      }
+  .movie-hero-logo {
+    position: relative;
+    top: auto;
+    left: auto;
 
-      .movie-hero-nav {
-        top: 222px;
+    display: block;
 
-        left: 16px;
-        right: 16px;
+    width: 100%;
+    max-width: 520px;
+    max-height: none;
 
-        justify-content:
-          space-between;
+    margin: 0 auto 42px;
 
-        width: auto;
-      }
+    transform: none;
+    object-fit: contain;
+  }
 
-      .movie-hero-nav .month-label {
-        min-width: 90px;
 
-        font-size: 14px;
-      }
+  /* =========================
+     月選択
+  ========================= */
 
-      .movie-hero-nav button {
-        min-width: 58px;
+  .movie-hero-nav {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
 
-        padding: 8px 9px;
-      }
+    width: 100%;
 
-      .movie-hero-info {
-        left: 12px;
-        right: 12px;
+    display: grid;
+    grid-template-columns: 76px 1fr 76px;
+    align-items: center;
 
-        bottom: 235px;
+    gap: 10px;
 
-        flex-direction: column;
+    margin: 0 auto 18px;
+  }
 
-        align-items: stretch;
+  .movie-hero-nav .month-label {
+    min-width: 0;
 
-        gap: 9px;
+    font-size: 18px;
+    text-align: center;
+  }
 
-        padding: 13px 14px;
-      }
+  .movie-hero-nav button {
+    min-width: 0;
+    width: 100%;
 
-      .movie-hero-update {
-        align-self: flex-start;
-      }
+    padding: 10px 8px;
 
-      .movie-hero-description {
-        font-size: 11px;
-      }
+    font-size: 12px;
+  }
 
-      .movie-hero-notice {
-        font-size: 9px;
-      }
 
-      .filters {
-        left: 12px;
-        right: 12px;
+  /* =========================
+     このサイトについて
+  ========================= */
 
-        bottom: 16px;
+  .movie-hero-info {
+    position: relative;
 
-        padding: 14px 14px;
-      }
+    left: auto;
+    right: auto;
+    bottom: auto;
 
-      .wrap {
-        width:
-          min(
-            100% - 20px,
-            1180px
-          );
+    display: block;
 
-        margin:
-          18px auto 48px;
-      }
+    width: 100%;
 
-      .filter-row {
-        align-items: flex-start;
-      }
+    padding: 18px 18px;
 
-      .filter-label {
-        width: 100%;
-      }
+    border-radius: 22px;
+  }
 
-      .date-row {
-        grid-template-columns:
-          1fr;
+  .movie-hero-info-main {
+    width: 100%;
+    max-width: none;
+  }
 
-        gap: 8px;
-      }
+  .movie-hero-info-title {
+    margin-bottom: 8px;
 
-      .date-label {
-        position: static;
-      }
+    font-size: 16px;
+  }
 
-      .movie-card {
-        grid-template-columns:
-          1fr;
+  .movie-hero-description {
+    font-size: 12px;
+    line-height: 1.65;
+  }
 
-        gap: 5px;
-      }
 
-      .movie-meta {
-        padding-left: 38px;
-      }
+  /* =========================
+     注意書き
+  ========================= */
 
-      .movie-links {
-        justify-content:
-          flex-start;
+  .notice {
+    display: flex;
+    align-items: flex-start;
 
-        width: auto;
+    gap: 5px;
 
-        padding-left: 38px;
-      }
-    }
+    margin-top: 8px;
+
+    font-size: 10px;
+    line-height: 1.55;
+  }
+
+  .notice-icon {
+    flex: 0 0 auto;
+  }
+
+  .notice-body {
+    min-width: 0;
+  }
+
+
+  /* =========================
+     最終更新
+  ========================= */
+
+  .movie-hero-update {
+    width: fit-content;
+
+    margin-top: 14px;
+
+    padding: 8px 12px;
+  }
+
+
+  /* =========================
+     本文
+  ========================= */
+
+  .wrap {
+    width: calc(100% - 20px);
+
+    margin: 18px auto 48px;
+  }
+
+
+  /* =========================
+     フィルター
+  ========================= */
+
+  .filters {
+    position: static;
+
+    width: 100%;
+
+    margin: 0 0 14px;
+
+    padding: 14px;
+
+    border-radius: 16px;
+  }
+
+  .filter-row {
+    align-items: flex-start;
+  }
+
+  .filter-label {
+    width: 100%;
+
+    margin-bottom: 2px;
+  }
+
+  .filter-buttons {
+    gap: 6px;
+  }
+
+  .filter-row button {
+    padding: 6px 10px;
+
+    font-size: 11px;
+  }
+
+
+  /* =========================
+     日付
+  ========================= */
+
+  .date-row {
+    grid-template-columns: 1fr;
+
+    gap: 8px;
+
+    padding: 10px;
+  }
+
+  .date-label {
+    position: static;
+
+    padding: 0 2px;
+  }
+
+
+  /* =========================
+     映画カード
+  ========================= */
+
+  .movie-card {
+    grid-template-columns: 1fr;
+
+    gap: 7px;
+
+    padding: 11px 10px;
+  }
+
+  .movie-main {
+    padding-left: 38px;
+  }
+
+  .movie-title {
+    font-size: 14px;
+  }
+
+  .movie-meta {
+    padding-left: 38px;
+
+    font-size: 11px;
+  }
+
+  .movie-links {
+    justify-content: flex-start;
+
+    width: auto;
+
+    padding-left: 38px;
+  }
+
+}
 
 
     @media (max-width: 560px) {
