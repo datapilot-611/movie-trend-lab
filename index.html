@@ -91,17 +91,7 @@
       min-height: 430px;
       overflow: visible;
     }
-    .movie-hero-bg-picture {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
+  
 .movie-hero-bg {
   display: block;
 
@@ -813,45 +803,58 @@
 
 
     /* =========================================================
-       RESPONSIVE
-    ========================================================= */
+   RESPONSIVE
+========================================================= */
 
-    @media (max-width: 980px) {
+@media (max-width: 980px) {
 
-      .movie-hero-logo {
-        width: 70%;
-      }
+  .movie-hero-logo {
+    width: 70%;
+  }
 
-      .movie-hero-nav {
-        right: 18px;
-      }
+  .movie-hero-nav {
+    right: 18px;
+  }
 
-      .movie-hero-info {
-        gap: 18px;
-      }
-    }
+  .movie-hero-info {
+    gap: 18px;
+  }
+}
 
 
-    @media (max-width: 800px) {
+/* =========================================================
+   SMARTPHONE
+========================================================= */
+
+@media (max-width: 800px) {
 
   /* =========================
-     ヘッダー全体
+     ヘッダー
   ========================= */
 
   .movie-hero {
     position: relative;
     width: 100%;
-    min-height: 610px;
-    height: 610px;
+    min-height: 760px;
     overflow: hidden;
   }
-}
+
+
+  /* =========================
+     背景
+     ※いったんPC画像をそのまま使用
+  ========================= */
 
   .movie-hero-bg {
     position: absolute;
     inset: 0;
+    z-index: 0;
+
+    display: block;
+
     width: 100%;
     height: 100%;
+
     object-fit: cover;
     object-position: center top;
   }
@@ -865,17 +868,17 @@
     position: absolute;
     z-index: 3;
 
-    top: 45px;
+    top: 70px;
     left: 50%;
 
-    width: 94%;
-    max-width: 520px;
-    height: auto;
+    width: min(94%, 520px);
     max-height: 210px;
+    height: auto;
 
     transform: translateX(-50%);
 
     object-fit: contain;
+    object-position: center top;
   }
 
 
@@ -884,20 +887,21 @@
   ========================= */
 
   .movie-hero-nav {
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
+    position: absolute;
+    z-index: 6;
 
-    width: 100%;
+    top: 310px;
+    left: 20px;
+    right: 20px;
+
+    width: auto;
 
     display: grid;
     grid-template-columns: 76px 1fr 76px;
     align-items: center;
 
     gap: 10px;
-
-    margin: 0 auto 18px;
+    margin: 0;
   }
 
   .movie-hero-nav .month-label {
@@ -908,8 +912,8 @@
   }
 
   .movie-hero-nav button {
-    min-width: 0;
     width: 100%;
+    min-width: 0;
 
     padding: 10px 8px;
 
@@ -922,17 +926,19 @@
   ========================= */
 
   .movie-hero-info {
-    position: relative;
+    position: absolute;
+    z-index: 5;
 
-    left: auto;
-    right: auto;
+    top: 380px;
+    left: 16px;
+    right: 16px;
     bottom: auto;
 
     display: block;
 
-    width: 100%;
+    width: auto;
 
-    padding: 18px 18px;
+    padding: 18px;
 
     border-radius: 22px;
   }
@@ -976,6 +982,10 @@
 
   .notice-body {
     min-width: 0;
+  }
+
+  .notice-body > div {
+    margin: 0;
   }
 
 
@@ -1092,39 +1102,32 @@
 
     padding-left: 38px;
   }
-
 }
 
 
-    @media (max-width: 560px) {
+/* =========================================================
+   SMALL SMARTPHONE
+========================================================= */
 
-      .movie-hero {
-        min-height: 760px;
-      }
+@media (max-width: 560px) {
 
-      .movie-hero-logo {
-        width: 98%;
-      }
+  .movie-hero {
+    min-height: 760px;
+  }
 
-      .movie-hero-nav {
-        top: 218px;
-      }
+  .movie-hero-logo {
+    width: 94%;
+  }
 
-      .movie-hero-info {
-        bottom: 275px;
-      }
+  .movie-hero-info-title {
+    font-size: 14px;
+  }
 
-      .movie-hero-info-title {
-        font-size: 14px;
-      }
+  .filter-row button {
+    padding: 6px 10px;
 
-      .filter-row button {
-        font-size: 11px;
-
-        padding: 6px 10px;
-      }
-    }
-    
+    font-size: 11px;
+  }
 }
 
   </style>
@@ -1139,19 +1142,13 @@
 
   <section class="movie-hero">
 
-    <picture class="movie-hero-bg-picture">
-  <source
-    media="(max-width: 800px)"
-    srcset="./movie-header-bg-mobile.png"
-  >
-
-  <img
-    src="./movie-header-bg.png"
-    class="movie-hero-bg"
-    alt=""
-    aria-hidden="true"
-  >
-</picture>
+    <!-- 背景 -->
+<img
+  src="./movie-header-bg.png"
+  class="movie-hero-bg"
+  alt=""
+  aria-hidden="true"
+>
 
 
     <!-- ロゴ -->
