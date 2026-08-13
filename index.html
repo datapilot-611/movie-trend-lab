@@ -22,7 +22,7 @@
         radial-gradient(ellipse at 15% 0%, rgba(255, 190, 180, 0.30) 0%, transparent 35%),
         radial-gradient(ellipse at 88% 8%, rgba(255, 214, 170, 0.32) 0%, transparent 32%),
         radial-gradient(ellipse at 50% 42%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 239, 0.55) 40%, transparent 70%),
-        linear-gradient(180deg, #fff8f2 0%, #fff3e9 35%, #fff8f2 70%, #fff1e5 100%);
+        linear-gradient(180deg, #fff8f2 0%, #fff3e9 12%, #fff8f2 55%, #fff1e5 100%);
     }
 
     body::before {
@@ -56,6 +56,26 @@
   width: 100%;
   min-height: 430px;
   overflow: hidden;
+}
+    .movie-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 70px;
+  z-index: 2;
+  pointer-events: none;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 244, 232, 0),
+    rgba(255, 244, 232, 0.65) 55%,
+    #fff3e9 100%
+  );
+}
+    .movie-hero-info {
+  z-index: 5;
 }
       
 
