@@ -18,31 +18,29 @@
   margin: 0;
   min-height: 100vh;
   color: #5b2f1c;
-
   background:
     radial-gradient(
-      ellipse at 50% 0%,
-      rgba(255, 174, 145, 0.34) 0%,
-      rgba(255, 205, 181, 0.20) 22%,
-      transparent 48%
+      ellipse at 15% 0%,
+      rgba(255, 190, 180, 0.30) 0%,
+      transparent 35%
     ),
     radial-gradient(
-      ellipse at 10% 18%,
-      rgba(255, 177, 164, 0.20) 0%,
-      transparent 34%
+      ellipse at 88% 8%,
+      rgba(255, 214, 170, 0.32) 0%,
+      transparent 32%
     ),
     radial-gradient(
-      ellipse at 90% 18%,
-      rgba(255, 190, 151, 0.22) 0%,
-      transparent 34%
+      ellipse at 50% 42%,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 248, 239, 0.55) 40%,
+      transparent 70%
     ),
     linear-gradient(
       180deg,
-      #ffe4d5 0%,
-      #ffede2 14%,
-      #fff5ee 36%,
-      #fff8f3 65%,
-      #fff3e9 100%
+      #fff8f2 0%,
+      #fff3e9 35%,
+      #fff8f2 70%,
+      #fff1e5 100%
     );
 }
 
@@ -61,9 +59,9 @@
     }
 
     .wrap {
-      width: min(1180px, calc(100% - 32px));
-      margin: 28px auto 56px;
-    }
+  width: min(1180px, calc(100% - 32px));
+  margin: 48px auto 56px;
+}
     
 
     /* =========================================================
@@ -78,6 +76,24 @@
   width: 100%;
   min-height: 430px;
   overflow: hidden;
+}
+    .movie-hero::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: -35px;
+  height: 85px;
+  pointer-events: none;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 241, 231, 0) 0%,
+    rgba(255, 241, 231, 0.55) 45%,
+    #fff1e7 82%,
+    #fff1e7 100%
+  );
 }
     
       
