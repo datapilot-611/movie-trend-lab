@@ -1,1 +1,2622 @@
 
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>映画公開カレンダー</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #5b2f1c;
+      background-color: #fbe2b7;
+    }
+
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+
+    /* =========================================================
+       PAGE BACKGROUNDS
+       上部は固定 / 中間だけ伸びる / 下部は固定
+    ========================================================= */
+
+    .movie-hero {
+      position: relative;
+      width: 100%;
+      min-height: 430px;
+      overflow: visible;
+
+      background-image: url("./movie-bg-top.webp");
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-size: cover;
+      background-color: #fbe2b7;
+    }
+
+    .page-middle {
+      width: 100%;
+      padding: 28px 0 56px;
+
+      background-image: url("./movie-bg-middle.webp");
+      background-repeat: repeat-y;
+      background-position: center top;
+      background-size: 100% auto;
+      background-color: #fbe2b7;
+    }
+
+    .page-bottom {
+      width: 100%;
+      height: 760px;
+
+      background-image: url("./movie-bg-bottom.webp");
+      background-repeat: no-repeat;
+      background-position: center bottom;
+      background-size: cover;
+      background-color: #fbe2b7;
+    }
+
+
+    /* =========================================================
+       HERO LOGO
+    ========================================================= */
+
+    .movie-hero-logo {
+      position: absolute;
+      z-index: 3;
+
+      top: 70px;
+      left: max(
+        26px,
+        calc((100vw - 1180px) / 2 + 26px)
+      );
+
+      display: block;
+
+      width: min(760px, 66%);
+      max-height: 215px;
+      height: auto;
+
+      object-fit: contain;
+      object-position: left top;
+
+      filter:
+        drop-shadow(
+          0 8px 12px
+          rgba(90, 52, 34, 0.08)
+        );
+
+      pointer-events: none;
+      user-select: none;
+    }
+
+
+    /* =========================================================
+       MONTH NAV
+    ========================================================= */
+
+    .movie-hero-nav {
+      position: absolute;
+      z-index: 6;
+
+      top: 220px;
+
+      right: max(
+        24px,
+        calc((100vw - 1180px) / 2 + 24px)
+      );
+
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      gap: 9px;
+      margin: 0;
+    }
+
+    .movie-hero-nav button {
+      min-width: 66px;
+
+      padding: 9px 11px;
+
+      border:
+        1px solid
+        rgba(177, 111, 77, 0.20);
+
+      border-radius: 999px;
+
+      background:
+        rgba(255, 255, 255, 0.86);
+
+      color: #70402d;
+
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.2;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 5px 13px
+        rgba(119, 67, 42, 0.07);
+
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+
+      transition:
+        transform .18s ease,
+        background .18s ease,
+        border-color .18s ease;
+    }
+
+    .movie-hero-nav button:hover {
+      border-color:
+        rgba(177, 111, 77, 0.35);
+
+      background: #fffaf6;
+
+      transform:
+        translateY(-1px);
+    }
+
+    .movie-hero-nav .month-label {
+      min-width: 104px;
+
+      color: #70402d;
+
+      font-size: 17px;
+      font-weight: 900;
+
+      text-align: center;
+      white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       SITE INFO
+    ========================================================= */
+
+    .movie-hero-info {
+      position: absolute;
+      z-index: 5;
+
+      left: max(
+        18px,
+        calc((100vw - 1180px) / 2)
+      );
+
+      right: max(
+        18px,
+        calc((100vw - 1180px) / 2)
+      );
+
+      bottom: 22px;
+
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+
+      gap: 26px;
+
+      padding: 15px 18px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.62);
+
+      border-radius: 18px;
+
+      background:
+        rgba(255, 255, 255, 0.84);
+
+      box-shadow:
+        0 9px 24px
+        rgba(106, 63, 41, 0.07);
+
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .movie-hero-info-main {
+      min-width: 0;
+      max-width: 850px;
+    }
+
+    .movie-hero-info-title {
+      display: flex;
+      align-items: center;
+
+      gap: 8px;
+
+      margin-bottom: 6px;
+
+      color: #5b3827;
+
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.3;
+    }
+
+    .movie-hero-description {
+      color: #56463f;
+
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin-top: 5px;
+
+  color: #94847c;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.notice-icon {
+  flex: 0 0 auto;
+  line-height: 1.5;
+}
+
+.notice-body {
+  min-width: 0;
+}
+
+.notice-body > div {
+  margin: 0;
+}
+    
+    .movie-hero-update {
+      flex-shrink: 0;
+
+      display: flex;
+      align-items: center;
+
+      gap: 8px;
+
+      padding: 7px 11px;
+
+      border:
+        1px solid
+        rgba(212, 153, 116, 0.16);
+
+      border-radius: 999px;
+
+      background:
+        rgba(255, 247, 239, 0.94);
+
+      white-space: nowrap;
+    }
+
+    .movie-hero-update span {
+      color: #a06c51;
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: .14em;
+
+      text-transform: uppercase;
+    }
+
+    .movie-hero-update span::before {
+      content: "✦";
+
+      margin-right: 6px;
+
+      color: #e4a04b;
+    }
+
+    .movie-hero-update time {
+      color: #70452f;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+
+    /* =========================================================
+       FILTERS
+       ヘッダーと本文の境界をまたぐ
+    ========================================================= */
+
+    .filters {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 16px 18px;
+  border: 1px solid rgba(231, 190, 160, 0.42);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 7px 22px rgba(126, 76, 48, 0.04);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+
+      gap: 8px;
+    }
+
+    .filter-label {
+      width: 82px;
+      flex-shrink: 0;
+
+      color: #806d64;
+
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .filter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 8px;
+    }
+
+    .filter-row button {
+      padding: 7px 12px;
+
+      border:
+        1px solid
+        #eadfd7;
+
+      border-radius: 999px;
+
+      background:
+        rgba(255, 255, 255, 0.92);
+
+      color: #5f514a;
+
+      font-size: 12px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition:
+        background .18s ease,
+        transform .18s ease,
+        border-color .18s ease;
+    }
+
+    .filter-row button:hover {
+      border-color: #d9bca9;
+
+      background: #fff8f2;
+
+      transform:
+        translateY(-1px);
+    }
+
+    .filter-row button.active {
+      border-color: #70402d;
+
+      background: #70402d;
+
+      color: #fff;
+    }
+
+    .sort-note {
+      color: #9a8d86;
+
+      font-size: 11px;
+    }
+
+
+    /* =========================================================
+       TIMELINE
+    ========================================================= */
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+    }
+
+    .date-row {
+      display: grid;
+
+      grid-template-columns:
+        120px
+        minmax(0, 1fr);
+
+      gap: 14px;
+
+      align-items: start;
+
+      padding: 12px 14px;
+
+      border:
+        1px solid
+        rgba(231, 190, 160, 0.45);
+
+      border-radius: 18px;
+
+      background:
+        rgba(255, 255, 255, 0.72);
+
+      box-shadow:
+        0 8px 24px
+          rgba(157, 93, 55, 0.06),
+        inset 0 1px 0
+          rgba(255, 255, 255, 0.95);
+
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .date-label {
+      position: sticky;
+      top: 10px;
+
+      padding-top: 3px;
+
+      color: #5b3827;
+
+      font-size: 15px;
+      font-weight: 800;
+
+      white-space: nowrap;
+    }
+
+    .date-label .weekday {
+      margin-left: 4px;
+
+      color: #88756b;
+
+      font-size: 12px;
+    }
+
+    .movies {
+      display: flex;
+      flex-direction: column;
+
+      gap: 8px;
+
+      min-width: 0;
+    }
+
+
+    /* =========================================================
+       MOVIE CARD
+    ========================================================= */
+
+    .movie-card {
+      position: relative;
+
+      display: grid;
+
+      grid-template-columns:
+        1fr
+        320px
+        120px;
+
+      gap: 12px;
+
+      align-items: center;
+
+      min-width: 0;
+
+      padding: 9px 11px;
+
+      overflow: hidden;
+
+      border-left:
+        5px solid
+        var(
+          --category-color,
+          #dfe3ea
+        );
+
+      border-radius: 10px;
+
+      background:
+        color-mix(
+          in srgb,
+          var(
+            --category-color,
+            #e8ebf0
+          ) 24%,
+          white
+        );
+    }
+
+    .movie-main {
+      min-width: 0;
+
+      padding-left: 38px;
+    }
+
+    .movie-title {
+      display: block;
+
+      color: inherit;
+
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.4;
+
+      text-decoration: none;
+
+      overflow-wrap: anywhere;
+    }
+
+    .movie-title:hover {
+      text-decoration: underline;
+    }
+
+    .category-tag {
+      display: inline-block;
+
+      margin-top: 4px;
+
+      padding: 2px 7px;
+
+      border:
+        1px solid
+        rgba(0, 0, 0, .09);
+
+      border-radius: 999px;
+
+      background:
+        rgba(255, 255, 255, .7);
+
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+
+    /* =========================================================
+       MOVIE META
+    ========================================================= */
+
+    .movie-meta {
+      display: flex;
+      flex-direction: column;
+
+      gap: 2px;
+
+      min-width: 0;
+
+      padding-left: 18px;
+
+      color: #514a46;
+
+      font-size: 12px;
+      line-height: 1.45;
+
+      overflow-wrap: anywhere;
+    }
+
+    .meta-row {
+      display: grid;
+
+      grid-template-columns:
+        82px
+        12px
+        minmax(0, 1fr);
+
+      align-items: start;
+    }
+
+    .meta-label {
+      white-space: nowrap;
+    }
+
+    .meta-colon {
+      text-align: center;
+    }
+
+    .meta-value {
+      min-width: 0;
+
+      overflow-wrap: anywhere;
+    }
+
+
+    /* =========================================================
+       LINKS
+    ========================================================= */
+
+    .movie-links {
+      display: flex;
+
+      justify-content: flex-end;
+
+      gap: 10px;
+
+      width: 120px;
+
+      white-space: nowrap;
+    }
+
+    .movie-links a,
+    .movie-link-placeholder {
+      width: 55px;
+
+      color: #8e5138;
+
+      font-size: 11px;
+      font-weight: 800;
+
+      text-align: left;
+      text-decoration: none;
+    }
+
+    .movie-links a:hover {
+      text-decoration: underline;
+    }
+
+    .movie-link-placeholder {
+      visibility: hidden;
+    }
+
+
+    /* =========================================================
+       NEW RIBBON
+    ========================================================= */
+
+    .movie-new-ribbon {
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      z-index: 20;
+
+      width: 46px;
+      height: 46px;
+
+      overflow: hidden;
+
+      pointer-events: none;
+    }
+
+    .movie-new-ribbon::before {
+      content: "NEW";
+
+      position: absolute;
+
+      top: 9px;
+      left: -16px;
+
+      width: 70px;
+
+      padding: 2px 0;
+
+      background:
+        linear-gradient(
+          135deg,
+          #ff6f69,
+          #ed5268
+        );
+
+      color: #fff;
+
+      box-shadow:
+        0 2px 6px
+        rgba(0, 0, 0, .18);
+
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .8px;
+
+      text-align: center;
+
+      transform:
+        rotate(-45deg);
+    }
+
+
+    /* =========================================================
+       EMPTY MESSAGE
+    ========================================================= */
+
+    .empty-message {
+      padding: 28px;
+
+      border:
+        1px solid
+        rgba(231, 190, 160, 0.45);
+
+      border-radius: 18px;
+
+      background:
+        rgba(255, 255, 255, 0.72);
+
+      color: #806f67;
+
+      text-align: center;
+
+      box-shadow:
+        0 8px 24px
+        rgba(157, 93, 55, 0.05);
+    }
+
+
+    /* =========================================================
+   RESPONSIVE
+========================================================= */
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 980px) {
+
+  .movie-hero-logo {
+    width: 70%;
+  }
+
+  .movie-hero-nav {
+    right: 18px;
+  }
+
+  .movie-hero-info {
+    gap: 18px;
+  }
+}
+
+
+/* =========================================================
+   SMARTPHONE
+========================================================= */
+
+@media (max-width: 800px) {
+
+  /* ヘッダー */
+  .movie-hero {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    min-height: 500px;
+    overflow: hidden;
+  }
+
+  /* スマホでは上部背景を中央基準でトリミング */
+  .movie-hero {
+    background-position: center top;
+    background-size: auto 500px;
+  }
+
+  .page-middle {
+    padding: 5px 0 44px;
+    background-size: auto 1000px;
+  }
+
+  .page-bottom {
+    height: 560px;
+    background-size: auto 820px;
+    background-position: center bottom;
+  }
+
+
+  /* ロゴ */
+  .movie-hero-logo {
+    position: absolute;
+    z-index: 3;
+
+    top: 38px;
+    left: 50%;
+
+    width: 92%;
+    max-width: 520px;
+    height: auto;
+
+    transform: translateX(-50%);
+  }
+
+
+  /* 月選択 */
+  .movie-hero-nav {
+    position: absolute;
+    z-index: 6;
+
+    top: 190px;
+    left: 18px;
+    right: 18px;
+
+    display: grid;
+    grid-template-columns: 72px 1fr 72px;
+    align-items: center;
+
+    gap: 8px;
+    margin: 0;
+  }
+
+  .movie-hero-nav .month-label {
+    min-width: 0;
+
+    font-size: 17px;
+    text-align: center;
+  }
+
+  .movie-hero-nav button {
+    width: 100%;
+    min-width: 0;
+
+    padding: 8px 6px;
+
+    font-size: 11px;
+  }
+
+
+  /* このサイトについて */
+  .movie-hero-info {
+    position: absolute;
+    z-index: 5;
+
+    top: 230px;
+    left: 14px;
+    right: 14px;
+    bottom: auto;
+
+    display: block;
+
+    padding: 14px;
+
+    border-radius: 18px;
+  }
+
+  .movie-hero-info-title {
+    margin-bottom: 5px;
+
+    font-size: 15px;
+  }
+
+  .movie-hero-description {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .notice {
+    margin-top: 6px;
+
+    font-size: 9px;
+    line-height: 1.45;
+  }
+
+  .movie-hero-update {
+    margin-top: 9px;
+
+    padding: 6px 10px;
+  }
+
+
+  /* ヘッダー直後 */
+  .wrap {
+    width: calc(100% - 20px);
+    margin: 0 auto;
+  }
+
+
+  /* フィルター */
+  .filters {
+    margin: 0 0 10px;
+
+    padding: 11px 12px;
+
+    gap: 7px;
+
+    border-radius: 15px;
+  }
+
+  .filter-row {
+    gap: 6px;
+  }
+
+  .filter-label {
+    width: 100%;
+
+    margin-bottom: 0;
+
+    font-size: 11px;
+  }
+
+  .filter-buttons {
+    gap: 5px;
+  }
+
+  .filter-row button {
+    padding: 5px 9px;
+
+    font-size: 10px;
+  }
+
+
+  /* 日付 */
+  .date-row {
+    grid-template-columns: 1fr;
+
+    gap: 8px;
+
+    padding: 10px;
+  }
+
+  .date-label {
+    position: static;
+
+    padding: 0 2px;
+  }
+
+
+  /* 映画カード */
+  .movie-card {
+    grid-template-columns: 1fr;
+
+    gap: 7px;
+
+    padding: 11px 10px;
+  }
+
+  .movie-main {
+    padding-left: 38px;
+  }
+
+  .movie-title {
+    font-size: 14px;
+  }
+
+  .movie-meta {
+    padding-left: 38px;
+
+    font-size: 11px;
+  }
+
+  .movie-links {
+    justify-content: flex-start;
+
+    width: auto;
+
+    padding-left: 38px;
+  }
+}
+
+
+/* =========================================================
+   SMALL SMARTPHONE
+========================================================= */
+
+@media (max-width: 560px) {
+
+  .movie-hero {
+    height: 500px;
+    min-height: 500px;
+  }
+
+  .movie-hero-logo {
+    width: 94%;
+  }
+
+  .movie-hero-info-title {
+    font-size: 14px;
+  }
+
+  .filter-row button {
+    padding: 6px 10px;
+
+    font-size: 11px;
+  }
+}
+  </style>
+</head>
+
+
+<body>
+
+  <!-- =======================================================
+       HERO
+  ======================================================== -->
+
+  <section class="movie-hero">
+
+
+
+    <!-- ロゴ -->
+    <img
+      src="./movie-header-logo.png"
+      class="movie-hero-logo"
+      alt="映画公開カレンダー"
+    >
+
+
+    <!-- 月移動 -->
+    <div class="movie-hero-nav">
+
+      <button
+        id="prev"
+        type="button"
+      >
+        ‹ 前月
+      </button>
+
+      <span
+        class="month-label"
+        id="monthLabel"
+      ></span>
+
+      <button
+        id="next"
+        type="button"
+      >
+        翌月 ›
+      </button>
+
+    </div>
+
+
+    <!-- このサイトについて -->
+    <div class="movie-hero-info">
+
+      <div class="movie-hero-info-main">
+
+        <div class="movie-hero-info-title">
+          <span aria-hidden="true">
+            🎥
+          </span>
+
+          このサイトについて
+        </div>
+
+
+        <div class="movie-hero-description">
+          TOHOシネマズの公開予定作品をもとに、DMM TV関連作品数やGoogleトレンドをあわせて確認できる映画公開カレンダーです。<br>
+          公開前の作品リサーチやコンテンツ企画にご活用ください！
+        </div>
+
+
+        <div class="notice">
+  <span class="notice-icon">⚠️</span>
+
+  <div class="notice-body">
+    <div>本サイトはfelmatが独自に調査・作成した非公式の参考情報です。</div>
+    <div>正確性・最新性を保証するものではないため、ご利用の際は各公式サイトもあわせてご確認ください。🙇🏻‍♀️</div>
+    <div>また、メディア様向けの情報となりますので、URLを含む外部への共有・転載はなるべくお控えください。</div>
+  </div>
+</div>
+      </div>
+
+
+      <!-- 最終更新 -->
+      <div class="movie-hero-update">
+
+        <span>
+          Last Update
+        </span>
+
+        <time id="lastUpdate">
+          ----.--.--
+        </time>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILTERS
+         ヘッダーと本文の境界をまたぐ
+    ====================================================== -->
+
+    </section>
+
+<div class="page-middle">
+  <main class="wrap">
+    <div class="filters" id="filters"></div>
+    <section class="timeline" id="timeline"></section>
+  </main>
+</div>
+
+<div class="page-bottom" aria-hidden="true"></div>
+
+
+  <!-- =======================================================
+       JAVASCRIPT
+  ======================================================== -->
+
+  <script>
+
+    let events = [];
+
+    let activeNewFilter = "すべて";
+    let activeGenreFilter = "すべて";
+    let activeRelationFilter = "すべて";
+    let activeSort = "タイトル順";
+
+    let current = new Date();
+
+
+    const categoryColors = {
+      "アニメ": "#b9dcf3",
+      "洋画": "#f3c7c7",
+      "邦画": "#c9e8ce",
+      "特撮": "#f7e5a8",
+      "音楽コンテンツ": "#e6cff2"
+    };
+
+
+    const timelineEl =
+      document.getElementById(
+        "timeline"
+      );
+
+    const monthLabelEl =
+      document.getElementById(
+        "monthLabel"
+      );
+
+    const filtersEl =
+      document.getElementById(
+        "filters"
+      );
+
+
+    /* =======================================================
+       DATA LOAD
+    ======================================================== */
+
+    async function loadEvents() {
+
+      try {
+
+        const response =
+          await fetch(
+            "./data.json",
+            {
+              cache: "no-store"
+            }
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            `data.jsonの読み込みに失敗しました：${response.status}`
+          );
+        }
+
+
+        const loadedData =
+          await response.json();
+
+
+        if (
+          !loadedData ||
+          typeof loadedData !== "object" ||
+          !Array.isArray(
+            loadedData.movies
+          )
+        ) {
+
+          throw new Error(
+            "data.jsonの形式が正しくありません"
+          );
+        }
+
+
+        const lastUpdateEl =
+          document.getElementById(
+            "lastUpdate"
+          );
+
+
+        if (lastUpdateEl) {
+
+          lastUpdateEl.textContent =
+            loadedData.lastUpdated ||
+            "----.--.--";
+        }
+
+
+        events =
+          loadedData.movies
+
+            .filter(event => {
+
+              return (
+                event &&
+                event.date &&
+                event.title
+              );
+
+            })
+
+            .map(event => ({
+
+              date:
+                String(
+                  event.date || ""
+                ),
+
+              title:
+                String(
+                  event.title || ""
+                ),
+
+              category:
+                String(
+                  event.category || ""
+                ),
+
+              tohoUrl:
+                String(
+                  event.tohoUrl || ""
+                ),
+
+              dmmUrl:
+                String(
+                  event.dmmUrl || ""
+                ),
+
+              trendUrl:
+                String(
+                  event.trendUrl || ""
+                ),
+
+              dmmKeyword:
+                String(
+                  event.dmmKeyword || ""
+                ),
+
+              dmmCount:
+                normalizeCount(
+                  event.dmmCount
+                ),
+
+              relationType:
+                String(
+                  event.relationType ||
+                  ""
+                ),
+
+              newLabel:
+                String(
+                  event.newLabel || ""
+                )
+
+            }))
+
+            .sort(
+              (a, b) => {
+
+                return (
+
+                  a.date.localeCompare(
+                    b.date
+                  )
+
+                  ||
+
+                  a.title.localeCompare(
+                    b.title,
+                    "ja"
+                  )
+
+                );
+
+              }
+            );
+
+
+        setInitialMonth();
+
+        renderFilters();
+
+        renderTimeline();
+
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        timelineEl.innerHTML =
+          '<div class="empty-message">' +
+          'data.jsonの読み込みに失敗しました' +
+          '</div>';
+
+      }
+
+    }
+
+
+    /* =======================================================
+       HELPERS
+    ======================================================== */
+
+    function normalizeCount(
+      value
+    ) {
+
+      if (
+        value === null ||
+        value === undefined ||
+        value === ""
+      ) {
+
+        return null;
+      }
+
+
+      const number =
+        Number(value);
+
+
+      return Number.isFinite(number)
+        ? number
+        : null;
+    }
+
+
+    function parseDate(
+      dateString
+    ) {
+
+      if (
+        !/^\d{4}-\d{2}-\d{2}$/
+          .test(dateString)
+      ) {
+
+        return null;
+      }
+
+
+      const [
+        year,
+        month,
+        day
+      ] =
+        dateString
+          .split("-")
+          .map(Number);
+
+
+      return new Date(
+        year,
+        month - 1,
+        day
+      );
+    }
+
+
+    /* =======================================================
+       INITIAL MONTH
+    ======================================================== */
+
+    function setInitialMonth() {
+
+      const saved =
+        localStorage.getItem(
+          "movieCalendarMonth"
+        );
+
+
+      if (
+        saved &&
+        /^\d{4}-\d{2}$/.test(saved)
+      ) {
+
+        const [
+          year,
+          month
+        ] =
+          saved
+            .split("-")
+            .map(Number);
+
+
+        current =
+          new Date(
+            year,
+            month - 1,
+            1
+          );
+
+
+        return;
+      }
+
+
+      const today =
+        new Date();
+
+
+      today.setHours(
+        0,
+        0,
+        0,
+        0
+      );
+
+
+      const firstFuture =
+        events.find(
+          event => {
+
+            const date =
+              parseDate(
+                event.date
+              );
+
+
+            return (
+              date &&
+              date >= today
+            );
+
+          }
+        );
+
+
+      const base =
+        firstFuture
+
+          ? parseDate(
+              firstFuture.date
+            )
+
+          : parseDate(
+              events[0]?.date ||
+              ""
+            );
+
+
+      if (base) {
+
+        current =
+          new Date(
+            base.getFullYear(),
+            base.getMonth(),
+            1
+          );
+      }
+
+    }
+
+
+    function saveCurrentMonth() {
+
+      const value =
+        `${current.getFullYear()}-` +
+        `${String(
+          current.getMonth() + 1
+        ).padStart(
+          2,
+          "0"
+        )}`;
+
+
+      localStorage.setItem(
+        "movieCalendarMonth",
+        value
+      );
+    }
+
+
+    /* =======================================================
+       FILTERS
+    ======================================================== */
+
+    function renderFilters() {
+
+      filtersEl.innerHTML = "";
+
+
+      const newOptions = [
+        "すべて",
+        "NEW"
+      ];
+
+
+      const genres = [
+        "すべて",
+
+        ...new Set(
+
+          events
+
+            .map(
+              event =>
+                event.category
+            )
+
+            .filter(Boolean)
+
+        )
+      ];
+
+
+      const relationTypes = [
+        "すべて",
+
+        ...new Set(
+
+          events
+
+            .map(
+              event =>
+                event.relationType
+            )
+
+            .filter(Boolean)
+
+        )
+      ];
+
+
+      const newRow =
+        createFilterRow(
+
+          "NEW",
+
+          newOptions,
+
+          activeNewFilter,
+
+          value => {
+
+            activeNewFilter =
+              value;
+
+            renderFilters();
+
+            renderTimeline();
+
+          }
+
+        );
+
+
+      const genreRow =
+        createFilterRow(
+
+          "ジャンル",
+
+          genres,
+
+          activeGenreFilter,
+
+          value => {
+
+            activeGenreFilter =
+              value;
+
+            renderFilters();
+
+            renderTimeline();
+
+          }
+
+        );
+
+
+      const relationRow =
+        createFilterRow(
+
+          "関連タイプ",
+
+          relationTypes,
+
+          activeRelationFilter,
+
+          value => {
+
+            activeRelationFilter =
+              value;
+
+            renderFilters();
+
+            renderTimeline();
+
+          }
+
+        );
+
+
+      const sortRow =
+        createFilterRow(
+
+          "並び順",
+
+          [
+            "タイトル順",
+            "関連数順"
+          ],
+
+          activeSort,
+
+          value => {
+
+            activeSort =
+              value;
+
+            renderFilters();
+
+            renderTimeline();
+
+          }
+
+        );
+
+
+      filtersEl.append(
+        newRow,
+        genreRow,
+        relationRow,
+        sortRow
+      );
+
+    }
+
+
+    function createFilterRow(
+      labelText,
+      options,
+      activeValue,
+      onSelect
+    ) {
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+
+      row.className =
+        "filter-row";
+
+
+      const label =
+        document.createElement(
+          "div"
+        );
+
+
+      label.className =
+        "filter-label";
+
+
+      label.textContent =
+        labelText;
+
+
+      const buttons =
+        document.createElement(
+          "div"
+        );
+
+
+      buttons.className =
+        "filter-buttons";
+
+
+      options.forEach(
+        option => {
+
+          const button =
+            document.createElement(
+              "button"
+            );
+
+
+          button.textContent =
+            option;
+
+
+          button.className =
+            option === activeValue
+              ? "active"
+              : "";
+
+
+          button.addEventListener(
+            "click",
+            () =>
+              onSelect(option)
+          );
+
+
+          buttons.appendChild(
+            button
+          );
+
+        }
+      );
+
+
+      row.append(
+        label,
+        buttons
+      );
+
+
+      return row;
+    }
+
+
+    /* =======================================================
+       TIMELINE
+    ======================================================== */
+
+    function renderTimeline() {
+
+      timelineEl.innerHTML = "";
+
+
+      const year =
+        current.getFullYear();
+
+
+      const month =
+        current.getMonth();
+
+
+      monthLabelEl.textContent =
+        `${year}年${month + 1}月`;
+
+
+      const monthEvents =
+        events.filter(
+          event => {
+
+            const date =
+              parseDate(
+                event.date
+              );
+
+
+            if (!date) {
+
+              return false;
+            }
+
+
+            if (
+              date.getFullYear() !==
+                year
+
+              ||
+
+              date.getMonth() !==
+                month
+            ) {
+
+              return false;
+            }
+
+
+            const matchesNew =
+
+              activeNewFilter ===
+                "すべて"
+
+              ||
+
+              String(
+                event.newLabel || ""
+              )
+                .trim()
+                .toUpperCase() ===
+                "NEW";
+
+
+            const matchesGenre =
+
+              activeGenreFilter ===
+                "すべて"
+
+              ||
+
+              event.category ===
+                activeGenreFilter;
+
+
+            const matchesRelation =
+
+              activeRelationFilter ===
+                "すべて"
+
+              ||
+
+              event.relationType ===
+                activeRelationFilter;
+
+
+            return (
+              matchesNew &&
+              matchesGenre &&
+              matchesRelation
+            );
+
+          }
+        );
+
+
+      /* =====================================================
+         NO RESULT
+      ====================================================== */
+
+      if (
+        monthEvents.length === 0
+      ) {
+
+        const hasMonthData =
+          events.some(
+            event => {
+
+              const date =
+                parseDate(
+                  event.date
+                );
+
+
+              return (
+
+                date
+
+                &&
+
+                date.getFullYear() ===
+                  year
+
+                &&
+
+                date.getMonth() ===
+                  month
+
+              );
+
+            }
+          );
+
+
+        const dataStartDate =
+          new Date(
+            2026,
+            5,
+            1
+          );
+
+
+        const viewingMonth =
+          new Date(
+            year,
+            month,
+            1
+          );
+
+
+        if (hasMonthData) {
+
+          timelineEl.innerHTML =
+            '<div class="empty-message">' +
+            'この条件に該当する作品はありません' +
+            '</div>';
+
+        }
+
+        else if (
+          viewingMonth <
+          dataStartDate
+        ) {
+
+          timelineEl.innerHTML =
+            '<div class="empty-message">' +
+            'この期間のデータは掲載していません' +
+            '</div>';
+
+        }
+
+        else {
+
+          timelineEl.innerHTML =
+            '<div class="empty-message">' +
+            'この月以降の公開予定作品は、まだ情報が公開されていません。<br>' +
+            '情報が確認でき次第、順次更新します。' +
+            '</div>';
+
+        }
+
+
+        return;
+      }
+
+
+      /* =====================================================
+         GROUP BY DATE
+      ====================================================== */
+
+      const grouped =
+        new Map();
+
+
+      monthEvents.forEach(
+        event => {
+
+          if (
+            !grouped.has(
+              event.date
+            )
+          ) {
+
+            grouped.set(
+              event.date,
+              []
+            );
+          }
+
+
+          grouped
+            .get(
+              event.date
+            )
+            .push(event);
+
+        }
+      );
+
+
+      [...grouped.entries()]
+
+        .sort(
+          (a, b) => {
+
+            return (
+              a[0]
+                .localeCompare(
+                  b[0]
+                )
+            );
+
+          }
+        )
+
+        .forEach(
+          ([
+            dateKey,
+            dayEvents
+          ]) => {
+
+            const sortedEvents =
+              sortDayEvents(
+                dayEvents
+              );
+
+
+            timelineEl.appendChild(
+
+              createDateRow(
+                dateKey,
+                sortedEvents
+              )
+
+            );
+
+          }
+        );
+
+    }
+
+
+    /* =======================================================
+       SORT
+    ======================================================== */
+
+    function sortDayEvents(
+      dayEvents
+    ) {
+
+      const copied =
+        [...dayEvents];
+
+
+      if (
+        activeSort ===
+        "関連数順"
+      ) {
+
+        return copied.sort(
+          (a, b) => {
+
+            const countA =
+              a.dmmCount === null
+                ? -1
+                : a.dmmCount;
+
+
+            const countB =
+              b.dmmCount === null
+                ? -1
+                : b.dmmCount;
+
+
+            return (
+
+              countB - countA
+
+              ||
+
+              a.title.localeCompare(
+                b.title,
+                "ja"
+              )
+
+            );
+
+          }
+        );
+
+      }
+
+
+      return copied.sort(
+        (a, b) => {
+
+          return (
+            a.title.localeCompare(
+              b.title,
+              "ja"
+            )
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =======================================================
+       DATE ROW
+    ======================================================== */
+
+    function createDateRow(
+      dateKey,
+      dayEvents
+    ) {
+
+      const row =
+        document.createElement(
+          "article"
+        );
+
+
+      row.className =
+        "date-row";
+
+
+      const date =
+        parseDate(
+          dateKey
+        );
+
+
+      const label =
+        document.createElement(
+          "div"
+        );
+
+
+      label.className =
+        "date-label";
+
+
+      label.innerHTML =
+
+        `${date.getMonth() + 1}/${date.getDate()}`
+
+        +
+
+        `<span class="weekday">`
+
+        +
+
+        `（${
+          [
+            "日",
+            "月",
+            "火",
+            "水",
+            "木",
+            "金",
+            "土"
+          ][
+            date.getDay()
+          ]
+        }）`
+
+        +
+
+        `</span>`;
+
+
+      const movies =
+        document.createElement(
+          "div"
+        );
+
+
+      movies.className =
+        "movies";
+
+
+      dayEvents.forEach(
+        event => {
+
+          movies.appendChild(
+
+            createMovieCard(
+              event
+            )
+
+          );
+
+        }
+      );
+
+
+      row.append(
+        label,
+        movies
+      );
+
+
+      return row;
+    }
+
+
+    /* =======================================================
+       MOVIE CARD
+    ======================================================== */
+
+    function createMovieCard(
+      event
+    ) {
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "movie-card";
+
+
+      card.style.setProperty(
+
+        "--category-color",
+
+        categoryColors[
+          event.category
+        ]
+
+        ||
+
+        "#dfe3ea"
+
+      );
+
+
+      /* NEW */
+
+      if (
+
+        String(
+          event.newLabel || ""
+        )
+          .trim()
+          .toUpperCase() ===
+          "NEW"
+
+      ) {
+
+        const badge =
+          document.createElement(
+            "div"
+          );
+
+
+        badge.className =
+          "movie-new-ribbon";
+
+
+        card.appendChild(
+          badge
+        );
+
+      }
+
+
+      /* MAIN */
+
+      const main =
+        document.createElement(
+          "div"
+        );
+
+
+      main.className =
+        "movie-main";
+
+
+      const title =
+        document.createElement(
+
+          event.tohoUrl
+            ? "a"
+            : "div"
+
+        );
+
+
+      title.className =
+        "movie-title";
+
+
+      title.textContent =
+        event.title;
+
+
+      if (
+        event.tohoUrl
+      ) {
+
+        title.href =
+          event.tohoUrl;
+
+
+        title.target =
+          "_blank";
+
+
+        title.rel =
+          "noopener noreferrer";
+
+      }
+
+
+      main.appendChild(
+        title
+      );
+
+
+      if (
+        event.category
+      ) {
+
+        const tag =
+          document.createElement(
+            "span"
+          );
+
+
+        tag.className =
+          "category-tag";
+
+
+        tag.textContent =
+          event.category;
+
+
+        main.appendChild(
+          tag
+        );
+
+      }
+
+
+      /* META */
+
+      const meta =
+        document.createElement(
+          "div"
+        );
+
+
+      meta.className =
+        "movie-meta";
+
+
+      const metaItems = [];
+
+
+      if (
+        event.dmmKeyword
+      ) {
+
+        metaItems.push([
+          "DMM検索KW",
+          event.dmmKeyword
+        ]);
+
+      }
+
+
+      if (
+        event.dmmCount !== null
+      ) {
+
+        metaItems.push([
+          "関連作品数",
+          `${event.dmmCount}件`
+        ]);
+
+      }
+
+
+      if (
+        event.relationType
+      ) {
+
+        metaItems.push([
+          "関連タイプ",
+          event.relationType
+        ]);
+
+      }
+
+
+      metaItems.forEach(
+        ([
+          labelText,
+          valueText
+        ]) => {
+
+          const row =
+            document.createElement(
+              "div"
+            );
+
+
+          row.className =
+            "meta-row";
+
+
+          const label =
+            document.createElement(
+              "span"
+            );
+
+
+          label.className =
+            "meta-label";
+
+
+          label.textContent =
+            labelText;
+
+
+          const colon =
+            document.createElement(
+              "span"
+            );
+
+
+          colon.className =
+            "meta-colon";
+
+
+          colon.textContent =
+            "：";
+
+
+          const value =
+            document.createElement(
+              "span"
+            );
+
+
+          value.className =
+            "meta-value";
+
+
+          value.textContent =
+            valueText;
+
+
+          row.append(
+            label,
+            colon,
+            value
+          );
+
+
+          meta.appendChild(
+            row
+          );
+
+        }
+      );
+
+
+      /* LINKS */
+
+      const links =
+        document.createElement(
+          "div"
+        );
+
+
+      links.className =
+        "movie-links";
+
+
+      links.appendChild(
+
+        event.dmmUrl
+
+          ? makeLink(
+              event.dmmUrl,
+              "🎬 DMM"
+            )
+
+          : makePlaceholder(
+              "🎬 DMM"
+            )
+
+      );
+
+
+      links.appendChild(
+
+        event.trendUrl
+
+          ? makeLink(
+              event.trendUrl,
+              "📈 Trend"
+            )
+
+          : makePlaceholder(
+              "📈 Trend"
+            )
+
+      );
+
+
+      card.append(
+        main,
+        meta,
+        links
+      );
+
+
+      return card;
+    }
+
+
+    /* =======================================================
+       LINKS
+    ======================================================== */
+
+    function makeLink(
+      url,
+      text
+    ) {
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+
+      link.href =
+        url;
+
+
+      link.target =
+        "_blank";
+
+
+      link.rel =
+        "noopener noreferrer";
+
+
+      link.textContent =
+        text;
+
+
+      return link;
+    }
+
+
+    function makePlaceholder(
+      text
+    ) {
+
+      const span =
+        document.createElement(
+          "span"
+        );
+
+
+      span.className =
+        "movie-link-placeholder";
+
+
+      span.textContent =
+        text;
+
+
+      return span;
+    }
+
+
+    /* =======================================================
+       MONTH BUTTONS
+    ======================================================== */
+
+    document
+      .getElementById("prev")
+      .addEventListener(
+        "click",
+        () => {
+
+          current =
+            new Date(
+              current.getFullYear(),
+              current.getMonth() - 1,
+              1
+            );
+
+
+          saveCurrentMonth();
+
+          renderTimeline();
+
+        }
+      );
+
+
+    document
+      .getElementById("next")
+      .addEventListener(
+        "click",
+        () => {
+
+          current =
+            new Date(
+              current.getFullYear(),
+              current.getMonth() + 1,
+              1
+            );
+
+
+          saveCurrentMonth();
+
+          renderTimeline();
+
+        }
+      );
+
+
+    /* =======================================================
+       START
+    ======================================================== */
+
+    loadEvents();
+
+  </script>
+
+</body>
+</html>
