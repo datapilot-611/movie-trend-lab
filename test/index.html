@@ -38,6 +38,7 @@
     :root {
       --movie-seam-color: #fbe2b7;
       --middle-fade: clamp(90px, 8vw, 150px);
+      --bottom-fade: clamp(140px, 11vw, 220px);
 
       /* 上部画像の実寸比率から算出 */
       --top-image-height: calc(100vw * 916 / 1717);
@@ -102,18 +103,63 @@
       user-select: none;
     }
 
-    /* 下部画像：同じく画像全体を一切切らず表示 */
-    .bg-bottom-image {
+    /* 下部画像：画像自体は一切フェード・トリミングしない */
+    .bg-bottom-wrap {
       position: absolute;
       z-index: 2;
       left: 0;
+      right: 0;
       bottom: 0;
+      width: 100%;
+      pointer-events: none;
+    }
+
+    .bg-bottom-image {
+      position: relative;
+      z-index: 1;
       display: block;
       width: 100%;
       height: auto;
       max-width: none;
       pointer-events: none;
       user-select: none;
+    }
+
+    /*
+      下部画像の上端に「中間背景」を重ね、その中間背景だけを
+      上から下へ透明にする。下部画像そのものは100%残る。
+    */
+    .bg-bottom-wrap::before {
+      content: "";
+      position: absolute;
+      z-index: 3;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--bottom-fade);
+
+      background-image: url("./movie-bg-middle.webp");
+      background-repeat: repeat-y;
+      background-position: center bottom;
+      background-size: 100% auto;
+
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        #000 0%,
+        rgba(0,0,0,.92) 22%,
+        rgba(0,0,0,.62) 50%,
+        rgba(0,0,0,.28) 76%,
+        transparent 100%
+      );
+
+      mask-image: linear-gradient(
+        to bottom,
+        #000 0%,
+        rgba(0,0,0,.92) 22%,
+        rgba(0,0,0,.62) 50%,
+        rgba(0,0,0,.28) 76%,
+        transparent 100%
+      );
     }
 
     /*
@@ -141,20 +187,19 @@
       background-position: center top;
       background-size: 100% auto;
 
+      /* 上部との接続だけ中間背景をフェード。下部側は専用ブレンドで接続する */
       -webkit-mask-image: linear-gradient(
         to bottom,
         transparent 0,
         #000 var(--middle-fade),
-        #000 calc(100% - var(--middle-fade)),
-        transparent 100%
+        #000 100%
       );
 
       mask-image: linear-gradient(
         to bottom,
         transparent 0,
         #000 var(--middle-fade),
-        #000 calc(100% - var(--middle-fade)),
-        transparent 100%
+        #000 100%
       );
     }
 
@@ -180,8 +225,8 @@
       position: relative;
       z-index: 11;
       width: 100%;
-      height: clamp(540px, 36vw, 620px);
-      min-height: 540px;
+      height: clamp(560px, 35vw, 610px);
+      min-height: 560px;
       overflow: visible;
       background: transparent;
     }
@@ -192,7 +237,7 @@
       z-index: 12;
       width: 100%;
       padding: 0 0 80px;
-      margin: 0;
+      margin: -55px 0 0;
       background: transparent;
     }
 
@@ -214,7 +259,7 @@
       position: absolute;
       z-index: 3;
 
-      top: 70px;
+      top: 120px;
       left: max(
         26px,
         calc((100vw - 1180px) / 2 + 26px)
@@ -248,7 +293,7 @@
       position: absolute;
       z-index: 6;
 
-      top: 205px;
+      top: 255px;
 
       right: max(
         24px,
@@ -339,7 +384,7 @@
         calc((100vw - 1180px) / 2)
       );
 
-      top: 275px;
+      top: 325px;
       bottom: auto;
 
       display: flex;
@@ -936,6 +981,7 @@
 
   :root {
     --middle-fade: clamp(42px, 12vw, 72px);
+    --bottom-fade: clamp(80px, 24vw, 130px);
     --middle-min-height: 520px;
     --bottom-reserve: 420px;
   }
@@ -954,14 +1000,14 @@
   .movie-hero {
     position: relative;
     width: 100%;
-    height: 540px;
-    min-height: 540px;
+    height: 590px;
+    min-height: 590px;
     overflow: visible;
     background: transparent;
   }
 
   .page-middle {
-    margin: 0;
+    margin: -35px 0 0;
     padding: 0 0 50px;
     background: transparent;
   }
@@ -972,7 +1018,7 @@
     position: absolute;
     z-index: 3;
 
-    top: 38px;
+    top: 72px;
     left: 50%;
 
     width: 92%;
@@ -988,7 +1034,7 @@
     position: absolute;
     z-index: 6;
 
-    top: 190px;
+    top: 225px;
     left: 18px;
     right: 18px;
 
@@ -1022,7 +1068,7 @@
     position: absolute;
     z-index: 5;
 
-    top: 230px;
+    top: 275px;
     left: 14px;
     right: 14px;
     bottom: auto;
@@ -1186,7 +1232,9 @@
     <div class="background-stage" aria-hidden="true">
       <img class="bg-top-image" src="./movie-bg-top.webp" alt="">
       <div class="bg-middle-layer"></div>
-      <img class="bg-bottom-image" src="./movie-bg-bottom.webp" alt="">
+      <div class="bg-bottom-wrap">
+        <img class="bg-bottom-image" src="./movie-bg-bottom.webp" alt="">
+      </div>
     </div>
 
     <!-- ロゴ・サイト説明・フィルター・カードは全部この前面 -->
