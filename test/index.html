@@ -15,11 +15,16 @@
       min-height: 100%;
     }
 
+    :root {
+      /* 3枚の画像の境界色に合わせたつなぎ色 */
+      --movie-seam-color: #fcd091;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
       color: #5b2f1c;
-      background-color: #fbe2b7;
+      background-color: var(--movie-seam-color);
     }
 
 
@@ -31,45 +36,53 @@
 
     /* =========================================================
        PAGE BACKGROUNDS
-       上部・下部は画像をそのまま表示
-       中間背景だけを上下フェードさせて接続
+       ・上部画像：一切トリミングしない
+       ・中間画像：中間部の内側だけ相対幅でフェード
+       ・下部画像：一切トリミングしない
     ========================================================= */
 
     .movie-hero {
       position: relative;
       z-index: 1;
       width: 100%;
+
+      /* 元画像 1717 x 916 の比率を保つ */
+      aspect-ratio: 1717 / 916;
       min-height: 430px;
       overflow: visible;
 
       background-image: url("./movie-bg-top.webp");
       background-repeat: no-repeat;
       background-position: center top;
-      background-size: cover;
-      background-color: #fbe2b7;
+
+      /* cover は使わない。横幅100%で画像全体を表示 */
+      background-size: 100% auto;
+      background-color: var(--movie-seam-color);
     }
+
+
+    /* =========================================================
+       MIDDLE
+       上部・下部には重ねず、中間背景だけをフェード
+    ========================================================= */
 
     .page-middle {
       position: relative;
       z-index: 2;
       width: 100%;
 
-      /* 上部・下部に中間背景を少し食い込ませる */
-      margin-top: -120px;
-      margin-bottom: -120px;
+      /* 中間部を必要以上に長くしない */
+      padding: 48px 0;
 
-      /* コンテンツはフェード領域の内側に収める */
-      padding: 148px 0 176px;
-
-      background: transparent;
+      /* フェードの透明部分から見える色 */
+      background-color: var(--movie-seam-color);
     }
 
-    /* 中間背景だけを別レイヤーにしてフェード */
     .page-middle::before {
       content: "";
       position: absolute;
-      z-index: 0;
       inset: 0;
+      z-index: 0;
       pointer-events: none;
 
       background-image: url("./movie-bg-middle.webp");
@@ -77,48 +90,51 @@
       background-position: center top;
       background-size: 100% auto;
 
+      /*
+        固定pxではなく、中間部自身の高さに対する割合でフェード。
+        上部・下部画像には一切マスクを掛けない。
+      */
       -webkit-mask-image: linear-gradient(
         to bottom,
-        transparent 0px,
-        rgba(0, 0, 0, 0.15) 35px,
-        rgba(0, 0, 0, 0.55) 75px,
-        #000 120px,
-        #000 calc(100% - 120px),
-        rgba(0, 0, 0, 0.55) calc(100% - 75px),
-        rgba(0, 0, 0, 0.15) calc(100% - 35px),
+        transparent 0%,
+        #000 7%,
+        #000 93%,
         transparent 100%
       );
 
       mask-image: linear-gradient(
         to bottom,
-        transparent 0px,
-        rgba(0, 0, 0, 0.15) 35px,
-        rgba(0, 0, 0, 0.55) 75px,
-        #000 120px,
-        #000 calc(100% - 120px),
-        rgba(0, 0, 0, 0.55) calc(100% - 75px),
-        rgba(0, 0, 0, 0.15) calc(100% - 35px),
+        transparent 0%,
+        #000 7%,
+        #000 93%,
         transparent 100%
       );
     }
 
-    /* フィルター・映画カードなどは常に100%表示 */
+    /* フィルター・映画カード等にはフェードを掛けない */
     .page-middle > .wrap {
       position: relative;
-      z-index: 2;
+      z-index: 1;
     }
+
 
     .page-bottom {
       position: relative;
       z-index: 1;
       width: 100%;
-      height: 760px;
+
+      /* 元画像 887 x 1774 の比率を保つ */
+      aspect-ratio: 887 / 1774;
+      height: auto;
+      min-height: 0;
 
       background-image: url("./movie-bg-bottom.webp");
       background-repeat: no-repeat;
-      background-position: center bottom;
-      background-size: cover;
-      background-color: #fbe2b7;
+      background-position: center top;
+
+      /* cover は使わない。画像全体を100%表示 */
+      background-size: 100% auto;
+      background-color: var(--movie-seam-color);
     }
 
 
@@ -837,51 +853,58 @@
 
 @media (max-width: 800px) {
 
-  /* ヘッダー */
+  /* =======================================================
+     背景画像：スマホでも一切トリミングしない
+  ======================================================= */
+
   .movie-hero {
     position: relative;
     width: 100%;
-    height: 500px;
-    min-height: 500px;
-    overflow: hidden;
-  }
 
-  /* スマホでは上部背景を中央基準でトリミング */
-  .movie-hero {
+    /* 画像の全体表示を優先しつつ、UI用の高さも確保 */
+    aspect-ratio: 1717 / 916;
+    height: auto;
+    min-height: 500px;
+    overflow: visible;
+
     background-position: center top;
-    background-size: auto 500px;
+    background-size: 100% auto;
   }
 
   .page-middle {
-    margin-top: -70px;
-    margin-bottom: -70px;
-    padding: 85px 0 100px;
+    margin: 0;
+    padding: 36px 0;
   }
 
   .page-middle::before {
-    background-size: auto 1000px;
+    background-position: center top;
+    background-size: 100% auto;
 
+    /* スマホも固定pxではなく中間部の割合でフェード */
     -webkit-mask-image: linear-gradient(
       to bottom,
-      transparent 0,
-      #000 70px,
-      #000 calc(100% - 70px),
+      transparent 0%,
+      #000 7%,
+      #000 93%,
       transparent 100%
     );
 
     mask-image: linear-gradient(
       to bottom,
-      transparent 0,
-      #000 70px,
-      #000 calc(100% - 70px),
+      transparent 0%,
+      #000 7%,
+      #000 93%,
       transparent 100%
     );
   }
 
   .page-bottom {
-    height: 560px;
-    background-size: auto 820px;
-    background-position: center bottom;
+    width: 100%;
+    aspect-ratio: 887 / 1774;
+    height: auto;
+    min-height: 0;
+    background-position: center top;
+    background-size: 100% auto;
   }
 
 
@@ -1074,8 +1097,10 @@
 @media (max-width: 560px) {
 
   .movie-hero {
-    height: 500px;
+    height: auto;
     min-height: 500px;
+    aspect-ratio: 1717 / 916;
+    background-size: 100% auto;
   }
 
   .movie-hero-logo {
