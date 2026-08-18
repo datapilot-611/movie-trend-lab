@@ -36,9 +36,12 @@
 
     /* =========================================================
        PAGE BACKGROUND LAYERS
-       背景とコンテンツを分離。
-       上部・下部画像は一切切らず、中間背景だけを重ねてフェード。
-       フィルターやカレンダーカードは3つの背景をまたいで表示できる。
+
+       背景3枚はコンテンツから完全に独立。
+       上部・下部は一切トリミングせず固定配置。
+       中間背景だけが上下でフェードして接続する。
+       ヘッダー・サイト説明・フィルター・カードはすべて
+       背景レイヤーより前面に表示される。
     ========================================================= */
 
     .page-stage {
@@ -55,31 +58,41 @@
       pointer-events: none;
     }
 
-    /* 上部画像：元画像比率のまま100%表示 */
+    /* 上部：画像全体を横幅100%で表示。coverは使わない */
     .bg-top {
       z-index: 0;
       top: 0;
+      height: auto;
       aspect-ratio: 1717 / 916;
-      background: url("./movie-bg-top.webp") center top / 100% auto no-repeat;
+      background-image: url("./movie-bg-top.webp");
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-size: 100% auto;
     }
 
-    /* 下部画像：元画像比率のまま100%表示 */
+    /* 下部：画像全体を横幅100%で表示。coverは使わない */
     .bg-bottom {
       z-index: 0;
       bottom: 0;
+      height: auto;
       aspect-ratio: 887 / 1774;
-      background: url("./movie-bg-bottom.webp") center bottom / 100% auto no-repeat;
+      background-image: url("./movie-bg-bottom.webp");
+      background-repeat: no-repeat;
+      background-position: center bottom;
+      background-size: 100% auto;
     }
 
     /*
-      中間背景だけを上部・下部に少し重ねる。
-      mask が掛かるのはこのレイヤーだけなので、
-      上部・下部の柄も、カードや文字も薄くならない。
+      中間背景は上部画像の終端より少し前から開始し、
+      その重なり部分だけ透明→不透明へフェード。
+      上部画像そのものにはmaskを掛けない。
     */
     .bg-middle {
+      --seam: clamp(80px, 8vw, 150px);
+
       z-index: 1;
-      top: calc((100vw * 916 / 1717) - clamp(56px, 6vw, 120px));
-      bottom: calc((100vw * 1774 / 887) - clamp(56px, 6vw, 120px));
+      top: calc((100vw * 916 / 1717) - var(--seam));
+      bottom: calc((100vw * 1774 / 887) - var(--seam));
 
       background-image: url("./movie-bg-middle.webp");
       background-repeat: repeat-y;
@@ -89,48 +102,53 @@
       -webkit-mask-image: linear-gradient(
         to bottom,
         transparent 0,
-        #000 clamp(56px, 6vw, 120px),
-        #000 calc(100% - clamp(56px, 6vw, 120px)),
+        #000 var(--seam),
+        #000 calc(100% - var(--seam)),
         transparent 100%
       );
 
       mask-image: linear-gradient(
         to bottom,
         transparent 0,
-        #000 clamp(56px, 6vw, 120px),
-        #000 calc(100% - clamp(56px, 6vw, 120px)),
+        #000 var(--seam),
+        #000 calc(100% - var(--seam)),
         transparent 100%
       );
     }
 
-    /* コンテンツは背景より常に前面 */
+    /* 全UIを背景より前面へ */
     .page-content {
       position: relative;
-      z-index: 2;
+      z-index: 10;
+      min-height: 100vh;
+      padding-bottom: calc(100vw * 1774 / 887 * 0.38);
     }
 
+    /*
+      ここはもう「上部画像の高さ」ではない。
+      ロゴ・月移動・サイト説明を置くためのUI領域だけ確保。
+      そのためフィルターとカードが上部画像の上から始まる。
+    */
     .movie-hero {
       position: relative;
       width: 100%;
-      aspect-ratio: 1717 / 916;
-      min-height: 430px;
+      height: 405px;
+      min-height: 405px;
       overflow: visible;
       background: transparent;
     }
 
-    /*
-      フィルターと映画一覧は背景領域から独立。
-      上部画像・中間背景・下部画像のどこに来てもそのまま表示される。
-    */
     .calendar-content {
       position: relative;
+      z-index: 12;
       width: 100%;
       padding: 0 0 80px;
+      background: transparent;
     }
 
     .calendar-content .wrap {
       position: relative;
-      z-index: 3;
+      z-index: 13;
     }
 
     /* =========================================================
@@ -860,32 +878,21 @@
   }
 
   .bg-middle {
-    top: calc((100vw * 916 / 1717) - 48px);
-    bottom: calc((100vw * 1774 / 887) - 48px);
+    --seam: clamp(48px, 12vw, 80px);
+    top: calc((100vw * 916 / 1717) - var(--seam));
+    bottom: calc((100vw * 1774 / 887) - var(--seam));
     background-size: 100% auto;
+  }
 
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      transparent 0,
-      #000 48px,
-      #000 calc(100% - 48px),
-      transparent 100%
-    );
-
-    mask-image: linear-gradient(
-      to bottom,
-      transparent 0,
-      #000 48px,
-      #000 calc(100% - 48px),
-      transparent 100%
-    );
+  .page-content {
+    padding-bottom: calc(100vw * 1774 / 887 * 0.30);
   }
 
   .movie-hero {
     width: 100%;
-    height: auto;
+    height: 500px;
     min-height: 500px;
-    aspect-ratio: 1717 / 916;
+    aspect-ratio: auto;
     overflow: visible;
     background: transparent;
   }
@@ -2699,16 +2706,4 @@
           renderTimeline();
 
         }
-      );
-
-
-    /* =======================================================
-       START
-    ======================================================== */
-
-    loadEvents();
-
-  </script>
-
-</body>
-</html>
+    
