@@ -123,11 +123,38 @@
       max-width: none;
       pointer-events: none;
       user-select: none;
+
+      /*
+        下部画像そのものも上端をフェードイン。
+        中間背景のフェードアウトと同じ範囲でクロスフェードさせる。
+      */
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0,
+        rgba(0,0,0,.08) calc(var(--bottom-fade) * .12),
+        rgba(0,0,0,.30) calc(var(--bottom-fade) * .32),
+        rgba(0,0,0,.62) calc(var(--bottom-fade) * .56),
+        rgba(0,0,0,.88) calc(var(--bottom-fade) * .78),
+        #000 var(--bottom-fade),
+        #000 100%
+      );
+
+      mask-image: linear-gradient(
+        to bottom,
+        transparent 0,
+        rgba(0,0,0,.08) calc(var(--bottom-fade) * .12),
+        rgba(0,0,0,.30) calc(var(--bottom-fade) * .32),
+        rgba(0,0,0,.62) calc(var(--bottom-fade) * .56),
+        rgba(0,0,0,.88) calc(var(--bottom-fade) * .78),
+        #000 var(--bottom-fade),
+        #000 100%
+      );
     }
 
     /*
-      下部画像の上端に「中間背景」を重ね、その中間背景だけを
-      上から下へ透明にする。下部画像そのものは100%残る。
+      下部との接続はクロスフェード。
+      この疑似要素の中間背景は上から下へフェードアウトし、
+      同じ範囲で .bg-bottom-image が透明から100%へフェードインする。
     */
     .bg-bottom-wrap::before {
       content: "";
@@ -146,18 +173,20 @@
       -webkit-mask-image: linear-gradient(
         to bottom,
         #000 0%,
-        rgba(0,0,0,.92) 22%,
-        rgba(0,0,0,.62) 50%,
-        rgba(0,0,0,.28) 76%,
+        rgba(0,0,0,.92) 18%,
+        rgba(0,0,0,.70) 38%,
+        rgba(0,0,0,.42) 60%,
+        rgba(0,0,0,.16) 82%,
         transparent 100%
       );
 
       mask-image: linear-gradient(
         to bottom,
         #000 0%,
-        rgba(0,0,0,.92) 22%,
-        rgba(0,0,0,.62) 50%,
-        rgba(0,0,0,.28) 76%,
+        rgba(0,0,0,.92) 18%,
+        rgba(0,0,0,.70) 38%,
+        rgba(0,0,0,.42) 60%,
+        rgba(0,0,0,.16) 82%,
         transparent 100%
       );
     }
