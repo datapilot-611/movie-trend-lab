@@ -147,8 +147,8 @@
       position: relative;
       z-index: 11;
       width: 100%;
-      height: 405px;
-      min-height: 405px;
+      height: clamp(540px, 36vw, 620px);
+      min-height: 540px;
       overflow: visible;
       background: transparent;
     }
@@ -215,7 +215,7 @@
       position: absolute;
       z-index: 6;
 
-      top: 220px;
+      top: 205px;
 
       right: max(
         24px,
@@ -306,7 +306,8 @@
         calc((100vw - 1180px) / 2)
       );
 
-      bottom: 22px;
+      top: 275px;
+      bottom: auto;
 
       display: flex;
       align-items: flex-end;
@@ -868,6 +869,11 @@
 
 @media (max-width: 980px) {
 
+  .movie-hero {
+    height: 560px;
+    min-height: 560px;
+  }
+
   .movie-hero-logo {
     width: 70%;
   }
@@ -910,8 +916,8 @@
   .movie-hero {
     position: relative;
     width: 100%;
-    height: 500px;
-    min-height: 500px;
+    height: 540px;
+    min-height: 540px;
     overflow: visible;
     background: transparent;
   }
