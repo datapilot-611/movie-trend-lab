@@ -38,6 +38,18 @@
     :root {
       --movie-seam-color: #fbe2b7;
       --middle-fade: clamp(90px, 8vw, 150px);
+
+      /* 上部画像の実寸比率から算出 */
+      --top-image-height: calc(100vw * 916 / 1717);
+
+      /*
+        中間部は、検索結果が少なくても必ずこの高さを確保。
+        カードが増えたときだけページ全体と一緒に自然に伸びる。
+      */
+      --middle-min-height: clamp(680px, 48vw, 920px);
+
+      /* 下部背景とカードを重ねたまま見せるための最低余白 */
+      --bottom-reserve: clamp(520px, 42vw, 760px);
     }
 
     body {
@@ -49,7 +61,20 @@
 
     .page-stage {
       position: relative;
-      min-height: 100vh;
+
+      /*
+        コンテンツが少なくても「上部 + 中間 + 下部」の骨格は崩さない。
+        コンテンツが多い場合は通常フローによってこの高さを超えて伸びる。
+      */
+      min-height: max(
+        100vh,
+        calc(
+          var(--top-image-height)
+          + var(--middle-min-height)
+          + var(--bottom-reserve)
+        )
+      );
+
       overflow: hidden;
       isolation: isolate;
       background-color: var(--movie-seam-color);
@@ -80,7 +105,7 @@
     /* 下部画像：同じく画像全体を一切切らず表示 */
     .bg-bottom-image {
       position: absolute;
-      z-index: 0;
+      z-index: 2;
       left: 0;
       bottom: 0;
       display: block;
@@ -103,8 +128,13 @@
       left: 0;
       right: 0;
 
-      top: calc((100vw * 916 / 1717) - var(--middle-fade));
-      bottom: calc((100vw * 1774 / 887) - var(--middle-fade));
+      /*
+        上部画像の終端付近からスタート。
+        下側はページ最下部まで伸ばすので、検索結果が減っても中間背景が消えない。
+        下部画像は z-index:2 でこの上に重なる。
+      */
+      top: calc(var(--top-image-height) - var(--middle-fade));
+      bottom: 0;
 
       background-image: url("./movie-bg-middle.webp");
       background-repeat: repeat-y;
@@ -134,8 +164,11 @@
       z-index: 10;
       min-height: 100vh;
 
-      /* 下部画像の絵を最後まで見せるための余白 */
-      padding-bottom: max(260px, calc(100vw * 1774 / 887 * 0.42));
+      /*
+        カードが少ない月でも下部背景まで急激に詰まらない。
+        カードが多い月はコンテンツ量に合わせてページ全体が伸びる。
+      */
+      padding-bottom: var(--bottom-reserve);
     }
 
     /*
@@ -901,15 +934,20 @@
     height: auto;
   }
 
-  .bg-middle-layer {
+  :root {
     --middle-fade: clamp(42px, 12vw, 72px);
-    top: calc((100vw * 916 / 1717) - var(--middle-fade));
-    bottom: calc((100vw * 1774 / 887) - var(--middle-fade));
+    --middle-min-height: 520px;
+    --bottom-reserve: 420px;
+  }
+
+  .bg-middle-layer {
+    top: calc(var(--top-image-height) - var(--middle-fade));
+    bottom: 0;
     background-size: 100% auto;
   }
 
   .page-content {
-    padding-bottom: max(220px, calc(100vw * 1774 / 887 * 0.32));
+    padding-bottom: var(--bottom-reserve);
   }
 
   /* ヘッダーは背景の高さとは独立 */
