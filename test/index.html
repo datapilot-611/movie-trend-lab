@@ -109,7 +109,8 @@
       z-index: 2;
       left: 0;
       right: 0;
-      bottom: 0;
+      bottom: auto;
+      top: var(--bottom-top, auto);
       width: 100%;
       pointer-events: none;
     }
@@ -2188,6 +2189,7 @@
         }
 
 
+        syncBackgroundLayout();
         return;
       }
 
@@ -2264,6 +2266,8 @@
 
           }
         );
+
+      syncBackgroundLayout();
 
     }
 
@@ -2810,6 +2814,89 @@
       return span;
     }
 
+
+    /* =======================================================
+       BACKGROUND LAYOUT SYNC
+       カード描画後・絞り込み後・月変更後・リサイズ後に、
+       実際のコンテンツ高さから下部背景の開始位置を再計算する。
+       CSSだけの初期高さに戻らないよう、ResizeObserverでも追従する。
+    ======================================================== */
+
+    const pageStageEl = document.querySelector(".page-stage");
+    const pageContentEl = document.querySelector(".page-content");
+    const bottomWrapEl = document.querySelector(".bg-bottom-wrap");
+    const bottomImageEl = document.querySelector(".bg-bottom-image");
+    const topImageEl = document.querySelector(".bg-top-image");
+
+    let backgroundLayoutFrame = 0;
+
+    function syncBackgroundLayout() {
+      cancelAnimationFrame(backgroundLayoutFrame);
+
+      backgroundLayoutFrame = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (!pageStageEl || !pageContentEl || !bottomWrapEl || !bottomImageEl) {
+            return;
+          }
+
+          const stageRect = pageStageEl.getBoundingClientRect();
+          const contentRect = pageContentEl.getBoundingClientRect();
+          const topHeight = topImageEl ? topImageEl.getBoundingClientRect().height : 0;
+          const bottomHeight = bottomImageEl.getBoundingClientRect().height;
+
+          const rootStyle = getComputedStyle(document.documentElement);
+          const fadePx = parseFloat(rootStyle.getPropertyValue("--bottom-fade")) || 180;
+          const minMiddlePx = parseFloat(rootStyle.getPropertyValue("--middle-min-height")) || 680;
+
+          /*
+            下部画像はカードの末尾へ少し重ねる。
+            ただし中間部は必ず最低高さを残す。
+          */
+          const contentBottom = contentRect.bottom - stageRect.top;
+          const minimumBottomTop = topHeight + minMiddlePx;
+          const overlap = Math.min(fadePx * 0.55, 120);
+          const bottomTop = Math.max(
+            minimumBottomTop,
+            contentBottom - overlap
+          );
+
+          /* 下部画像を置くためにstage自体の高さも確定 */
+          const requiredStageHeight = bottomTop + bottomHeight;
+          pageStageEl.style.minHeight = `${Math.ceil(requiredStageHeight)}px`;
+          pageStageEl.style.setProperty("--bottom-top", `${Math.round(bottomTop)}px`);
+
+          /*
+            中間背景は下部フェード領域の最後まで必ず存在させる。
+            下部画像のフェードインと同じ場所でクロスフェードする。
+          */
+          const middleLayer = document.querySelector(".bg-middle-layer");
+          if (middleLayer) {
+            middleLayer.style.bottom = "auto";
+            middleLayer.style.height = `${Math.ceil(bottomTop + fadePx - Math.max(0, topHeight - 150))}px`;
+          }
+        });
+      });
+    }
+
+    /* 画像の実寸が確定したタイミングでも再計算 */
+    [topImageEl, bottomImageEl].forEach(img => {
+      if (!img) return;
+      if (img.complete) {
+        syncBackgroundLayout();
+      } else {
+        img.addEventListener("load", syncBackgroundLayout, { once: true });
+      }
+    });
+
+    window.addEventListener("resize", syncBackgroundLayout);
+
+    if ("ResizeObserver" in window && pageContentEl) {
+      const backgroundResizeObserver = new ResizeObserver(() => {
+        syncBackgroundLayout();
+      });
+      backgroundResizeObserver.observe(pageContentEl);
+      if (timelineEl) backgroundResizeObserver.observe(timelineEl);
+    }
 
     /* =======================================================
        MONTH BUTTONS
