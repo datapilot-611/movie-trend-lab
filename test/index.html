@@ -38,7 +38,7 @@
     :root {
       --movie-seam-color: #fbe2b7;
       --middle-fade: clamp(90px, 8vw, 150px);
-      --bottom-blend-zone: 420px;
+      --bottom-blend-zone: 560px;
       --top-image-height: calc(100vw * 916 / 1717);
     }
 
@@ -947,7 +947,7 @@
 
   :root {
     --middle-fade: clamp(42px, 12vw, 72px);
-    --bottom-blend-zone: 320px;
+    --bottom-blend-zone: 420px;
   }
 
   .bg-middle-layer {
@@ -2781,11 +2781,11 @@
             これで短い検索結果でも中部→下部のクロスフェードが潰れない。
           */
           const isMobile = window.matchMedia("(max-width: 800px)").matches;
-          const maxBlend = isMobile ? 300 : 380;
-          const minBlend = isMobile ? 140 : 180;
+          const maxBlend = isMobile ? 420 : 560;
+          const minBlend = isMobile ? 220 : 300;
           const dynamicBlend = Math.max(
             minBlend,
-            Math.min(maxBlend, Math.round(contentHeight * 0.24))
+            Math.min(maxBlend, Math.round(contentHeight * 0.34))
           );
 
           pageStageEl.style.setProperty("--bottom-blend-zone", `${dynamicBlend}px`);
