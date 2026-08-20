@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ja">
 <head>
@@ -18,104 +19,200 @@
       margin: 0;
       min-height: 100vh;
       color: #5b2f1c;
-
-      background:
-        radial-gradient(
-          ellipse at 15% 0%,
-          rgba(255, 190, 180, 0.30) 0%,
-          transparent 35%
-        ),
-        radial-gradient(
-          ellipse at 88% 8%,
-          rgba(255, 214, 170, 0.32) 0%,
-          transparent 32%
-        ),
-        radial-gradient(
-          ellipse at 50% 42%,
-          rgba(255, 255, 255, 0.95) 0%,
-          rgba(255, 248, 239, 0.55) 40%,
-          transparent 70%
-        ),
-        linear-gradient(
-          180deg,
-          #fff8f2 0%,
-          #fff3e9 35%,
-          #fff8f2 70%,
-          #fff1e5 100%
-        );
+      background-color: #fbe2b7;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-
-      background-image:
-        radial-gradient(
-          circle,
-          rgba(231, 154, 104, 0.18) 1px,
-          transparent 1.5px
-        ),
-        radial-gradient(
-          circle,
-          rgba(255, 198, 120, 0.14) 1px,
-          transparent 1.5px
-        );
-
-      background-size:
-        95px 95px,
-        140px 140px;
-
-      background-position:
-        15px 20px,
-        60px 75px;
-
-      opacity: 0.45;
-    }
 
     .wrap {
       width: min(1180px, calc(100% - 32px));
-      margin: 28px auto 56px;
+      margin: 0 auto;
     }
 
 
     /* =========================================================
-       MOVIE HERO
+       PAGE BACKGROUND LAYERS
+       上部・中間・下部はすべて「背景専用」。
+       UI（サイト説明・フィルター・カード）は背景とは独立して前面に流す。
     ========================================================= */
 
-    .movie-hero {
-      position: relative;
-      width: 100%;
-      min-height: 430px;
-      overflow: visible;
+    :root {
+      --movie-seam-color: #fbe2b7;
+      --middle-fade: clamp(90px, 8vw, 150px);
+      --bottom-blend-zone: 420px;
+      --top-image-height: calc(100vw * 916 / 1717);
     }
-  
-.movie-hero-bg {
-  display: block;
 
-  width: 100%;
-  height: 100%;
+    body {
+      margin: 0;
+      min-height: 0;
+      color: #5b2f1c;
+      background-color: var(--movie-seam-color);
+    }
 
-  object-fit: cover;
-  object-position: center top;
-}
+    /*
+      ページの高さは前面コンテンツ（フィルター＋カレンダーカード）の高さだけ。
+      背景画像のための余白・最低高さは一切足さない。
+    */
+    .page-stage {
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+      isolation: isolate;
+      background-color: var(--movie-seam-color);
+    }
 
-    .movie-hero-bg {
+    .background-stage {
       position: absolute;
       inset: 0;
       z-index: 0;
-
-      display: block;
-
-      width: 100%;
-      height: 100%;
-
-      object-fit: cover;
-      object-position: center top;
+      pointer-events: none;
+      overflow: hidden;
     }
 
+    /* 上部画像は従来どおり切り取らず表示 */
+    .bg-top-image {
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: none;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /*
+      中間背景は上部との接続からページ末尾まで存在。
+      カード数が少なければ短く、多ければその分だけ伸びる。
+    */
+    .bg-middle-layer {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      top: calc(var(--top-image-height) - var(--middle-fade));
+      bottom: 0;
+
+      background-image: url("./movie-bg-middle.webp");
+      background-repeat: repeat-y;
+      background-position: center top;
+      background-size: 100% auto;
+
+      /*
+        上部との接続は透明→中部、下部との接続は中部→透明。
+        下端フェードはページ末尾から --bottom-blend-zone 分だけ。
+      */
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0,
+        #000 var(--middle-fade),
+        #000 calc(100% - var(--bottom-blend-zone)),
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        transparent 0,
+        #000 var(--middle-fade),
+        #000 calc(100% - var(--bottom-blend-zone)),
+        transparent 100%
+      );
+    }
+
+    /*
+      下部画像はページ末尾からだけ出す。独立した下部エリアは作らない。
+      中部とまったく同じ距離で透明→100%にし、境界線を作らない。
+    */
+    .bg-bottom-wrap {
+      position: absolute;
+      z-index: 2;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--bottom-blend-zone);
+      max-height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-bottom-image {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      object-fit: cover;
+      object-position: center bottom;
+      pointer-events: none;
+      user-select: none;
+
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,0,0,.12) 15%,
+        rgba(0,0,0,.30) 30%,
+        rgba(0,0,0,.50) 50%,
+        rgba(0,0,0,.70) 70%,
+        rgba(0,0,0,.88) 85%,
+        #000 100%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,0,0,.12) 15%,
+        rgba(0,0,0,.30) 30%,
+        rgba(0,0,0,.50) 50%,
+        rgba(0,0,0,.70) 70%,
+        rgba(0,0,0,.88) 85%,
+        #000 100%
+      );
+    }
+
+    /* UIは背景より常に前面。高さは中身そのものに合わせる */
+    .page-content {
+      position: relative;
+      z-index: 10;
+      min-height: 0;
+      padding-bottom: 0;
+    }
+
+    /*
+      movie-heroはもう背景画像の箱ではない。
+      ロゴ・月移動・サイト説明を配置するためだけのUI領域。
+      高さを上部画像より短くして、フィルターとカードを上部背景上から開始させる。
+    */
+    .movie-hero {
+      position: relative;
+      z-index: 11;
+      width: 100%;
+      height: clamp(560px, 35vw, 610px);
+      min-height: 560px;
+      overflow: visible;
+      background: transparent;
+    }
+
+    /* 旧page-middleは「本文コンテンツ」の箱としてだけ使う */
+    .page-middle {
+      position: relative;
+      z-index: 12;
+      width: 100%;
+      padding: 0;
+      margin: -55px 0 0;
+      background: transparent;
+    }
+
+    .page-middle > .wrap {
+      position: relative;
+      z-index: 13;
+    }
+
+    /* 旧下部ブロックは背景画像を持たせない。レイアウト上も不要 */
+    .page-bottom {
+      display: none;
+    }
 
     /* =========================================================
        HERO LOGO
@@ -125,7 +222,7 @@
       position: absolute;
       z-index: 3;
 
-      top: 70px;
+      top: 120px;
       left: max(
         26px,
         calc((100vw - 1180px) / 2 + 26px)
@@ -159,7 +256,7 @@
       position: absolute;
       z-index: 6;
 
-      top: 220px;
+      top: 255px;
 
       right: max(
         24px,
@@ -250,7 +347,8 @@
         calc((100vw - 1180px) / 2)
       );
 
-      bottom: 22px;
+      top: 325px;
+      bottom: auto;
 
       display: flex;
       align-items: flex-end;
@@ -479,6 +577,9 @@
       flex-direction: column;
 
       gap: 10px;
+
+      /* 最後のカレンダーカード下にだけ余白を確保 */
+      padding-bottom: 30px;
     }
 
     .date-row {
@@ -812,6 +913,11 @@
 
 @media (max-width: 980px) {
 
+  .movie-hero {
+    height: 560px;
+    min-height: 560px;
+  }
+
   .movie-hero-logo {
     width: 70%;
   }
@@ -832,28 +938,41 @@
 
 @media (max-width: 800px) {
 
-  /* ヘッダー */
+  /* 背景画像はスマホでも切り取らない */
+  .bg-top-image {
+    width: 100%;
+    height: auto;
+  }
+
+  :root {
+    --middle-fade: clamp(42px, 12vw, 72px);
+    --bottom-blend-zone: 320px;
+  }
+
+  .bg-middle-layer {
+    top: calc(var(--top-image-height) - var(--middle-fade));
+    bottom: 0;
+    background-size: 100% auto;
+  }
+
+  .page-content {
+    padding-bottom: 0;
+  }
+
+  /* ヘッダーは背景の高さとは独立 */
   .movie-hero {
     position: relative;
     width: 100%;
-    height: 500px;
-    min-height: 500px;
-    overflow: hidden;
+    height: 590px;
+    min-height: 590px;
+    overflow: visible;
+    background: transparent;
   }
 
-  /* スマホ用背景 */
-  .movie-hero-bg {
-    content: url("./movie-header-bg-mobile.png");
-
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: auto;
-
-    object-fit: initial;
-    object-position: initial;
+  .page-middle {
+    margin: -35px 0 0;
+    padding: 0;
+    background: transparent;
   }
 
 
@@ -862,7 +981,7 @@
     position: absolute;
     z-index: 3;
 
-    top: 38px;
+    top: 72px;
     left: 50%;
 
     width: 92%;
@@ -878,7 +997,7 @@
     position: absolute;
     z-index: 6;
 
-    top: 190px;
+    top: 225px;
     left: 18px;
     right: 18px;
 
@@ -912,7 +1031,7 @@
     position: absolute;
     z-index: 5;
 
-    top: 230px;
+    top: 275px;
     left: 14px;
     right: 14px;
     bottom: auto;
@@ -952,8 +1071,7 @@
   /* ヘッダー直後 */
   .wrap {
     width: calc(100% - 20px);
-
-    margin: 5px auto 44px;
+    margin: 0 auto;
   }
 
 
@@ -1071,19 +1189,27 @@
 
 <body>
 
+  <div class="page-stage">
+
+    <!-- 背景専用：コンテンツとは完全に独立 -->
+    <div class="background-stage" aria-hidden="true">
+      <img class="bg-top-image" src="./movie-bg-top.webp" alt="">
+      <div class="bg-middle-layer"></div>
+      <div class="bg-bottom-wrap">
+        <img class="bg-bottom-image" src="./movie-bg-bottom.webp" alt="">
+      </div>
+    </div>
+
+    <!-- ロゴ・サイト説明・フィルター・カードは全部この前面 -->
+    <div class="page-content">
+
+
   <!-- =======================================================
        HERO
   ======================================================== -->
 
   <section class="movie-hero">
 
-    <!-- 背景 -->
-<img
-  src="./movie-header-bg.png"
-  class="movie-hero-bg"
-  alt=""
-  aria-hidden="true"
->
 
 
     <!-- ロゴ -->
@@ -1174,11 +1300,19 @@
 
     </section>
 
-<main class="wrap">
-  <div class="filters" id="filters"></div>
-  <section class="timeline" id="timeline"></section>
-</main>
+<div class="page-middle">
+  <main class="wrap">
+    <div class="filters" id="filters"></div>
+    <section class="timeline" id="timeline"></section>
+  </main>
+</div>
 
+
+
+
+    </div>
+
+  </div>
 
   <!-- =======================================================
        JAVASCRIPT
@@ -1988,6 +2122,7 @@
         }
 
 
+        syncBackgroundLayout();
         return;
       }
 
@@ -2064,6 +2199,8 @@
 
           }
         );
+
+      syncBackgroundLayout();
 
     }
 
@@ -2610,6 +2747,70 @@
       return span;
     }
 
+
+    /* =======================================================
+       BACKGROUND LAYOUT SYNC
+       ページ高さは常に前面コンテンツの実高だけ。
+       下部画像のための高さは一切追加しない。
+       フィルター・月変更・カード描画後もこの高さだけ同期する。
+    ======================================================== */
+
+    const pageStageEl = document.querySelector(".page-stage");
+    const pageContentEl = document.querySelector(".page-content");
+    const topImageEl = document.querySelector(".bg-top-image");
+
+    let backgroundLayoutFrame = 0;
+
+    function syncBackgroundLayout() {
+      cancelAnimationFrame(backgroundLayoutFrame);
+
+      backgroundLayoutFrame = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (!pageStageEl || !pageContentEl) return;
+
+          /*
+            offsetHeight = 実際に表示されているUIの高さ。
+            下部背景の高さ・画像比率・検索件数による最低高さは足さない。
+          */
+          const contentHeight = Math.max(1, Math.ceil(pageContentEl.offsetHeight));
+
+          /*
+            フェード幅も表示中コンテンツの高さから毎回決める。
+            件数が少ない時は短く、多い時は最大420px。
+            これで短い検索結果でも中部→下部のクロスフェードが潰れない。
+          */
+          const isMobile = window.matchMedia("(max-width: 800px)").matches;
+          const maxBlend = isMobile ? 320 : 420;
+          const minBlend = isMobile ? 150 : 190;
+          const dynamicBlend = Math.max(
+            minBlend,
+            Math.min(maxBlend, Math.round(contentHeight * 0.28))
+          );
+
+          pageStageEl.style.setProperty("--bottom-blend-zone", `${dynamicBlend}px`);
+          pageStageEl.style.height = `${contentHeight}px`;
+          pageStageEl.style.minHeight = "0";
+        });
+      });
+    }
+
+    if (topImageEl) {
+      if (topImageEl.complete) {
+        syncBackgroundLayout();
+      } else {
+        topImageEl.addEventListener("load", syncBackgroundLayout, { once: true });
+      }
+    }
+
+    window.addEventListener("resize", syncBackgroundLayout);
+
+    if ("ResizeObserver" in window && pageContentEl) {
+      const backgroundResizeObserver = new ResizeObserver(() => {
+        syncBackgroundLayout();
+      });
+      backgroundResizeObserver.observe(pageContentEl);
+      if (timelineEl) backgroundResizeObserver.observe(timelineEl);
+    }
 
     /* =======================================================
        MONTH BUTTONS
