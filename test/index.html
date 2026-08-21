@@ -1041,9 +1041,7 @@
     padding: 0;
     background: transparent;
   }
-
-
-  /* ロゴ */
+  
   /* ロゴ */
 .movie-hero-logo-wrap {
   top: 72px;
@@ -1067,24 +1065,78 @@
   z-index: 20;
 
   display: grid;
-  grid-template-columns: 72px 1fr 72px;
+  grid-template-columns: 82px 1fr 82px;
   align-items: center;
 
   width: 100%;
 
   gap: 8px;
 
-  margin: 0 0 10px;
+  /* 上下に余裕を持たせる */
+  margin: 14px 0 14px;
   padding: 0 4px;
+
+  transform: none;
+  top: auto;
+  left: auto;
+  right: auto;
 }
 
-  .movie-hero-nav .month-label {
-    min-width: 0;
 
-    font-size: 17px;
-    text-align: center;
-  }
+/* 前月・翌月 */
+.movie-hero-nav button {
+  appearance: none;
+  -webkit-appearance: none;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 82px;
+  min-width: 82px;
+  height: 42px;
+
+  margin: 0;
+  padding: 0 10px;
+
+  border: 1px solid rgba(177, 111, 77, 0.20);
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.92);
+
+  color: #70402d;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+
+  white-space: nowrap;
+
+  box-shadow:
+    0 4px 12px
+    rgba(119, 67, 42, 0.08);
+}
+
+
+/* 2026年10月 */
+.movie-hero-nav .month-label {
+  display: block;
+
+  width: 100%;
+  min-width: 0;
+
+  margin: 0;
+
+  color: #70402d;
+
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.2;
+
+  text-align: center;
+  white-space: nowrap;
+}
   .movie-hero-nav button {
   appearance: none;
   -webkit-appearance: none;
