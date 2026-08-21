@@ -2840,8 +2840,8 @@
             これで短い検索結果でも中部→下部のクロスフェードが潰れない。
           */
           const isMobile = window.matchMedia("(max-width: 800px)").matches;
-          const maxBlend = isMobile ? 420 : 560;
-          const minBlend = isMobile ? 220 : 300;
+          const maxBlend = isMobile ? 610 : 750;
+          const minBlend = isMobile ? 410 : 490;
           const dynamicBlend = Math.max(
             minBlend,
             Math.min(maxBlend, Math.round(contentHeight * 0.34))
