@@ -542,6 +542,128 @@
     }
 
 
+    .filter-section {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+
+    /* 絞り込むボタン */
+    .filter-toggle {
+      appearance: none;
+      -webkit-appearance: none;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      width: 100%;
+
+      margin: 0;
+      padding: 13px 16px;
+
+      border: 1px solid rgba(231, 190, 160, 0.55);
+      border-radius: 15px;
+
+      background: rgba(255, 255, 255, 0.88);
+
+      color: #70402d;
+
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 5px 16px
+        rgba(126, 76, 48, 0.05);
+
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+    }
+
+
+    /* ＋ / − */
+    .filter-toggle-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 28px;
+      height: 28px;
+
+      flex-shrink: 0;
+
+      border-radius: 50%;
+
+      background: rgba(112, 64, 45, 0.08);
+
+      font-size: 20px;
+      line-height: 1;
+
+      transition:
+        transform 0.25s ease,
+        background 0.25s ease;
+    }
+
+
+    /* =========================================================
+       フィルター本体
+       閉じた状態
+    ========================================================= */
+
+    .filter-section .filters {
+      display: flex;
+
+      max-height: 0;
+
+      margin-top: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+
+      opacity: 0;
+
+      overflow: hidden;
+
+      transform: translateY(-6px);
+
+      pointer-events: none;
+
+      transition:
+        max-height 0.32s ease,
+        opacity 0.22s ease,
+        transform 0.32s ease,
+        margin-top 0.32s ease,
+        padding-top 0.32s ease,
+        padding-bottom 0.32s ease;
+    }
+
+
+    /* =========================================================
+       開いた状態
+    ========================================================= */
+
+    .filter-section.is-open .filters {
+      max-height: 600px;
+
+      margin-top: 8px;
+
+      padding-top: 14px;
+      padding-bottom: 14px;
+
+      opacity: 1;
+
+      transform: translateY(0);
+
+      pointer-events: auto;
+    }
+
+
+    .filter-section.is-open .filter-toggle {
+      background: rgba(255, 255, 255, 0.94);
+    }
+
     /* =========================================================
        FILTERS
        ヘッダーと本文の境界をまたぐ
@@ -1438,129 +1560,7 @@
 
       </div>
 
-    </div>
-.filter-section {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-
-/* 絞り込むボタン */
-.filter-toggle {
-  appearance: none;
-  -webkit-appearance: none;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  width: 100%;
-
-  margin: 0;
-  padding: 13px 16px;
-
-  border: 1px solid rgba(231, 190, 160, 0.55);
-  border-radius: 15px;
-
-  background: rgba(255, 255, 255, 0.88);
-
-  color: #70402d;
-
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 800;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 5px 16px
-    rgba(126, 76, 48, 0.05);
-
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
-}
-
-
-/* ＋ / − */
-.filter-toggle-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 28px;
-  height: 28px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  background: rgba(112, 64, 45, 0.08);
-
-  font-size: 20px;
-  line-height: 1;
-
-  transition:
-    transform 0.25s ease,
-    background 0.25s ease;
-}
-
-
-/* =========================================================
-   フィルター本体
-   閉じた状態
-========================================================= */
-
-.filter-section .filters {
-  display: flex;
-
-  max-height: 0;
-
-  margin-top: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-
-  opacity: 0;
-
-  overflow: hidden;
-
-  transform: translateY(-6px);
-
-  pointer-events: none;
-
-  transition:
-    max-height 0.32s ease,
-    opacity 0.22s ease,
-    transform 0.32s ease,
-    margin-top 0.32s ease,
-    padding-top 0.32s ease,
-    padding-bottom 0.32s ease;
-}
-
-
-/* =========================================================
-   開いた状態
-========================================================= */
-
-.filter-section.is-open .filters {
-  max-height: 600px;
-
-  margin-top: 8px;
-
-  padding-top: 14px;
-  padding-bottom: 14px;
-
-  opacity: 1;
-
-  transform: translateY(0);
-
-  pointer-events: auto;
-}
-
-
-.filter-section.is-open .filter-toggle {
-  background: rgba(255, 255, 255, 0.94);
-}
-    <!-- =====================================================
+    </div>    <!-- =====================================================
          FILTERS
          ヘッダーと本文の境界をまたぐ
     ====================================================== -->
