@@ -1137,23 +1137,6 @@
   text-align: center;
   white-space: nowrap;
 }
-  .movie-hero-nav button {
-  appearance: none;
-  -webkit-appearance: none;
-
-  width: auto;
-  min-width: 72px;
-  height: 34px;
-
-  padding: 0 10px;
-
-  border-radius: 999px;
-
-  font-size: 11px;
-  white-space: nowrap;
-}
-
-
   /* このサイトについて */
   .movie-hero-info {
     position: absolute;
@@ -1290,24 +1273,87 @@
    SMALL SMARTPHONE
 ========================================================= */
 
+/* =========================================================
+   SMALL SMARTPHONE
+========================================================= */
+
 @media (max-width: 560px) {
 
+  /*
+    サイト説明カードの下まで
+    HERO領域をしっかり確保する
+  */
   .movie-hero {
-    height: 500px;
-    min-height: 500px;
+    height: 620px;
+    min-height: 620px;
   }
 
+
+  /* ロゴ */
   .movie-hero-logo-wrap {
-  width: 94%;
-}
+    width: 94%;
+  }
+
+
+  /* このサイトについて */
+  .movie-hero-info {
+    top: 275px;
+  }
 
   .movie-hero-info-title {
     font-size: 14px;
   }
 
+
+  /*
+    HERO終了後に月選択が来るので
+    説明カードとは絶対に重ならない
+  */
+  .page-middle {
+    margin: -20px 0 0;
+  }
+
+
+  /* 月選択 */
+  .movie-hero-nav {
+    margin: 0 0 14px;
+    padding: 0 4px;
+
+    grid-template-columns: 82px minmax(0, 1fr) 82px;
+
+    gap: 8px;
+  }
+
+
+  /* 前月・翌月 */
+  .movie-hero-nav button {
+    width: 82px;
+    min-width: 82px;
+    height: 42px;
+
+    padding: 0 8px;
+
+    border-radius: 999px;
+
+    font-size: 13px;
+  }
+
+
+  /* 2026年9月 */
+  .movie-hero-nav .month-label {
+    min-width: 0;
+
+    font-size: 20px;
+    line-height: 1.2;
+
+    text-align: center;
+    white-space: nowrap;
+  }
+
+
+  /* フィルター */
   .filter-row button {
     padding: 6px 10px;
-
     font-size: 11px;
   }
 }
