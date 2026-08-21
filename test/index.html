@@ -304,11 +304,12 @@
   user-select: none;
 }
 
-    /* =========================================================
-       MONTH NAV
-    ========================================================= */
+ /* =========================================================
+   MONTH NAV
+   フィルター直上に配置
+========================================================= */
 
-    .movie-hero-nav {
+.movie-hero-nav {
   position: relative;
   z-index: 20;
 
@@ -316,80 +317,83 @@
   align-items: center;
   justify-content: flex-end;
 
-  gap: 9px;
+  gap: 12px;
 
   width: 100%;
 
-  /* フィルターとの距離 */
-  margin: 0 0 10px;
-
-  padding: 0 4px;
+  margin: 0 0 12px;
+  padding: 0 8px;
 }
 
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
 
-      gap: 9px;
-      margin: 0;
-    }
+/* 前月・翌月ボタン */
+.movie-hero-nav button {
+  appearance: none;
+  -webkit-appearance: none;
 
-    .movie-hero-nav button {
-      min-width: 66px;
+  flex: 0 0 auto;
 
-      padding: 9px 11px;
+  min-width: 72px;
+  height: 34px;
 
-      border:
-        1px solid
-        rgba(177, 111, 77, 0.20);
+  padding: 0 14px;
 
-      border-radius: 999px;
+  border:
+    1px solid
+    rgba(177, 111, 77, 0.18);
 
-      background:
-        rgba(255, 255, 255, 0.86);
+  border-radius: 999px;
 
-      color: #70402d;
+  background:
+    rgba(255, 255, 255, 0.92);
 
-      font-size: 11px;
-      font-weight: 800;
-      line-height: 1.2;
+  color: #70402d;
 
-      cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
 
-      box-shadow:
-        0 5px 13px
-        rgba(119, 67, 42, 0.07);
+  white-space: nowrap;
 
-      backdrop-filter: blur(7px);
-      -webkit-backdrop-filter: blur(7px);
+  cursor: pointer;
 
-      transition:
-        transform .18s ease,
-        background .18s ease,
-        border-color .18s ease;
-    }
+  box-shadow:
+    0 4px 12px
+    rgba(119, 67, 42, 0.08);
 
-    .movie-hero-nav button:hover {
-      border-color:
-        rgba(177, 111, 77, 0.35);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
 
-      background: #fffaf6;
+  transition:
+    transform .18s ease,
+    background .18s ease,
+    border-color .18s ease;
+}
 
-      transform:
-        translateY(-1px);
-    }
 
-    .movie-hero-nav .month-label {
-      min-width: 104px;
+.movie-hero-nav button:hover {
+  border-color:
+    rgba(177, 111, 77, 0.34);
 
-      color: #70402d;
+  background: #fffaf6;
 
-      font-size: 17px;
-      font-weight: 900;
+  transform: translateY(-1px);
+}
 
-      text-align: center;
-      white-space: nowrap;
-    }
+
+/* 2026年10月 */
+.movie-hero-nav .month-label {
+  min-width: 108px;
+
+  color: #70402d;
+
+  font-size: 17px;
+  font-weight: 900;
+
+  text-align: center;
+  white-space: nowrap;
+}
 
 
     /* =========================================================
@@ -1082,13 +1086,20 @@
   }
 
   .movie-hero-nav button {
-    width: 100%;
-    min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
 
-    padding: 8px 6px;
+  width: auto;
+  min-width: 72px;
+  height: 34px;
 
-    font-size: 11px;
-  }
+  padding: 0 10px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  white-space: nowrap;
+}
 
 
   /* このサイトについて */
