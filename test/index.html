@@ -309,15 +309,22 @@
     ========================================================= */
 
     .movie-hero-nav {
-      position: absolute;
-      z-index: 6;
+  position: relative;
+  z-index: 20;
 
-      top: 255px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 
-      right: max(
-        24px,
-        calc((100vw - 1180px) / 2 + 24px)
-      );
+  gap: 9px;
+
+  width: 100%;
+
+  /* フィルターとの距離 */
+  margin: 0 0 10px;
+
+  padding: 0 4px;
+}
 
       display: flex;
       align-items: center;
@@ -1052,20 +1059,20 @@
 
   /* 月選択 */
   .movie-hero-nav {
-    position: absolute;
-    z-index: 6;
+  position: relative;
+  z-index: 20;
 
-    top: 225px;
-    left: 18px;
-    right: 18px;
+  display: grid;
+  grid-template-columns: 72px 1fr 72px;
+  align-items: center;
 
-    display: grid;
-    grid-template-columns: 72px 1fr 72px;
-    align-items: center;
+  width: 100%;
 
-    gap: 8px;
-    margin: 0;
-  }
+  gap: 8px;
+
+  margin: 0 0 10px;
+  padding: 0 4px;
+}
 
   .movie-hero-nav .month-label {
     min-width: 0;
@@ -1279,32 +1286,6 @@
     >
       </div>
 
-
-    <!-- 月移動 -->
-    <div class="movie-hero-nav">
-
-      <button
-        id="prev"
-        type="button"
-      >
-        ‹ 前月
-      </button>
-
-      <span
-        class="month-label"
-        id="monthLabel"
-      ></span>
-
-      <button
-        id="next"
-        type="button"
-      >
-        翌月 ›
-      </button>
-
-    </div>
-
-
     <!-- このサイトについて -->
     <div class="movie-hero-info">
 
@@ -1362,8 +1343,38 @@
 
 <div class="page-middle">
   <main class="wrap">
+
+    <!-- 月移動 -->
+    <div class="movie-hero-nav">
+
+      <button
+        id="prev"
+        type="button"
+      >
+        ‹ 前月
+      </button>
+
+      <span
+        class="month-label"
+        id="monthLabel"
+      ></span>
+
+      <button
+        id="next"
+        type="button"
+      >
+        翌月 ›
+      </button>
+
+    </div>
+
     <div class="filters" id="filters"></div>
-    <section class="timeline" id="timeline"></section>
+
+    <section
+      class="timeline"
+      id="timeline"
+    ></section>
+
   </main>
 </div>
 
