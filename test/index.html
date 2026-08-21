@@ -1033,20 +1033,22 @@
 
 
   /* ロゴ */
-  .movie-hero-logo {
-    position: absolute;
-    z-index: 3;
+  /* ロゴ */
+.movie-hero-logo-wrap {
+  top: 72px;
+  left: 50%;
 
-    top: 72px;
-    left: 50%;
+  width: 92%;
+  max-width: 520px;
 
-    width: 92%;
-    max-width: 520px;
-    height: auto;
+  transform: translateX(-50%);
+}
 
-    transform: translateX(-50%);
-  }
-
+.movie-hero-logo {
+  width: 100%;
+  max-width: none;
+  height: auto;
+}
 
   /* 月選択 */
   .movie-hero-nav {
@@ -1225,9 +1227,9 @@
     min-height: 500px;
   }
 
-  .movie-hero-logo {
-    width: 94%;
-  }
+  .movie-hero-logo-wrap {
+  width: 94%;
+}
 
   .movie-hero-info-title {
     font-size: 14px;
