@@ -216,46 +216,93 @@
     }
 
     /* =========================================================
-       HERO LOGO
-    ========================================================= */
+   HERO LOGO
+   ロゴ本体の位置は維持
+   後ろに白い楕円状のふんわりグローを表示
+========================================================= */
 
-    .movie-hero-logo {
-      position: absolute;
-      z-index: 3;
+.movie-hero-logo-wrap {
+  position: absolute;
+  z-index: 3;
 
-      top: 120px;
-      left: max(
-        26px,
-        calc((100vw - 1180px) / 2 + 26px)
-      );
+  top: 120px;
 
-      display: block;
+  left: max(
+    26px,
+    calc((100vw - 1180px) / 2 + 26px)
+  );
 
-      width: min(760px, 66%);
-      max-height: 215px;
-      height: auto;
+  width: min(760px, 66%);
 
-      object-fit: contain;
-      object-position: left top;
+  pointer-events: none;
+}
 
-      /* ロゴの後ろに白っぽい、ほわっとした下地 */
-      background: rgba(255, 252, 242, 0.30);
-      border-radius: 42px;
-      box-shadow:
-        0 0 22px 14px rgba(255, 255, 255, 0.34),
-        0 0 52px 30px rgba(255, 250, 235, 0.25),
-        0 0 90px 48px rgba(255, 248, 225, 0.12);
 
-      filter:
-        drop-shadow(
-          0 8px 12px
-          rgba(90, 52, 34, 0.08)
-        );
+/* 白いふんわり背景 */
+.movie-hero-logo-wrap::before {
+  content: "";
 
-      pointer-events: none;
-      user-select: none;
-    }
+  position: absolute;
+  z-index: 0;
 
+  /* ロゴの中央 */
+  top: 50%;
+  left: 50%;
+
+  /* ロゴより少し大きい楕円 */
+  width: 112%;
+  height: 82%;
+
+  transform: translate(-50%, -50%);
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.88) 0%,
+      rgba(255, 255, 255, 0.78) 18%,
+      rgba(255, 255, 255, 0.60) 38%,
+      rgba(255, 255, 255, 0.36) 58%,
+      rgba(255, 255, 255, 0.16) 74%,
+      rgba(255, 255, 255, 0.05) 88%,
+      rgba(255, 255, 255, 0) 100%
+    );
+
+  filter: blur(18px);
+
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+
+/* ロゴ画像本体 */
+.movie-hero-logo {
+  position: relative;
+  z-index: 1;
+
+  display: block;
+
+  width: 100%;
+  max-height: 215px;
+  height: auto;
+
+  object-fit: contain;
+  object-position: left top;
+
+  /* ロゴ画像自体には背景を付けない */
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  filter:
+    drop-shadow(
+      0 8px 12px
+      rgba(90, 52, 34, 0.08)
+    );
+
+  pointer-events: none;
+  user-select: none;
+}
 
     /* =========================================================
        MONTH NAV
@@ -1222,11 +1269,13 @@
 
 
     <!-- ロゴ -->
+    <div class="movie-hero-logo-wrap">
     <img
       src="./movie-header-logo.png"
       class="movie-hero-logo"
       alt="映画公開カレンダー"
     >
+      </div>
 
 
     <!-- 月移動 -->
